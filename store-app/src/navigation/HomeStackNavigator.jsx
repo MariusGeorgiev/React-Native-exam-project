@@ -13,7 +13,7 @@ export default function HomeStackNavigator() {
       <Stack.Screen name="HomeScreen" component={HomeScreen} />
       <Stack.Screen name="FurnitureList" component={FurnitureListScreen} />
       {/* <Stack.Screen name="FurnitureDetails" component={FurnitureDetailsScreen} /> */}
-      <Stack.Screen name="btn" component={DrawerButton} />
+      
       
     </Stack.Navigator>
   );
