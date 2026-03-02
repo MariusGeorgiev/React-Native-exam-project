@@ -12,7 +12,7 @@ export default function AppNavigator() {
             }}
         >
 
-            <Stack.Screen name="app-s" component={DrawerNavigator} />
+            <Stack.Screen name="App" component={DrawerNavigator} />
 
         </Stack.Navigator>
     );
