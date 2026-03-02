@@ -5,7 +5,9 @@ import CategoriesStackNavigator from './CategoriesStackNavigator';
 import FavoritesStackNavigator from './FavoritesStackNavigator';
 import CartStackNavigator from './CartStackNavigator';
 import DrawerButton from '../components/DrawerButton';
-import { Ionicons } from '@expo/vector-icons'; 
+import { Ionicons } from '@expo/vector-icons';
+
+import CreateFurnitureScreen from '../screens/CreateFurnitureScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -46,6 +48,19 @@ export default function BottomTabsNavigator() {
                 ),
               }}
       />
+
+      <Tab.Screen
+        name="Add"
+        component={CreateFurnitureScreen}
+        options={{
+          title: 'Add',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="add-circle-outline" size={size} color={color} />
+          ),
+        }}
+        
+    />
+
     </Tab.Navigator>
   );
 }
