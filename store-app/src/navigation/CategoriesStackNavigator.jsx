@@ -13,7 +13,7 @@ export default function CategoriesStackNavigator() {
       <Stack.Screen 
         name="CategoriesScreen" 
         component={CategoriesScreen} 
-        options={{ title: 'Categories' }}
+        options={{  headerShown: false, }}
       />
       <Stack.Screen 
         name="FurnitureList" 
