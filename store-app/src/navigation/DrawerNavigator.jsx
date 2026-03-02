@@ -17,7 +17,7 @@ export default function DrawerNavigator() {
         headerShown: false, 
         drawerType: 'front',
         drawerStyle: {
-      width: '55%',
+        width: '55%',
     },
       }}
     >

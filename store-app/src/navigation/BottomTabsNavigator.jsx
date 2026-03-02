@@ -9,13 +9,17 @@ import DrawerButton from '../components/DrawerButton';
 const Tab = createBottomTabNavigator();
 
 export default function BottomTabsNavigator() {
+
   return (
     <Tab.Navigator screenOptions={{
+      headerShown: true, 
         headerTitleAlign: 'left',   
         headerRight: () => <DrawerButton />, 
-      }}>
+      }}
+      >
       <Tab.Screen name="Home" component={HomeStackNavigator} />
-      <Tab.Screen name="Categories" component={CategoriesStackNavigator} />
+      <Tab.Screen name="Categories" component={CategoriesStackNavigator} 
+      />
       {/* <Tab.Screen name="Favorites" component={FavoritesStackNavigator} />
       <Tab.Screen name="Cart" component={CartStackNavigator} /> */}
     </Tab.Navigator>
