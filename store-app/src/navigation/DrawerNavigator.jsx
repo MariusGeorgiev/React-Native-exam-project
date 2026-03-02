@@ -15,7 +15,10 @@ export default function DrawerNavigator() {
       screenOptions={{
         drawerPosition: "right",
         headerShown: false, 
-        drawerType: 'front', 
+        drawerType: 'front',
+        drawerStyle: {
+      width: '55%',
+    },
       }}
     >
       
