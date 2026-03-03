@@ -1,8 +1,8 @@
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity  } from 'react-native';
 
-export default function FurnitureCard({ furniture }) {
+export default function FurnitureCard({ furniture, onPress  }) {
   return (
-    <View style={styles.card}>
+    <TouchableOpacity onPress={onPress} style={styles.card}>
       {furniture.images?.[0] && (
         <Image source={{ uri: furniture.images[0] }} style={styles.image} />
       )}
@@ -11,7 +11,7 @@ export default function FurnitureCard({ furniture }) {
         <Text style={styles.price}>${furniture.price.toFixed(2)}</Text>
         <Text style={styles.desc} numberOfLines={2}>{furniture.description}</Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }
 
