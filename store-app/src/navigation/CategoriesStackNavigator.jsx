@@ -1,7 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import CategoriesScreen from '../screens/CategoriesScreen';
 import FurnitureListScreen from '../screens/FurnitureListScreen';
-// import FurnitureDetailsScreen from '../screens/FurnitureDetailsScreen';
+import FurnitureDetailsScreen from '../screens/FurnitureDetailsScreen';
 import { View, Text, StyleSheet } from 'react-native';
 
 const Stack = createNativeStackNavigator();
@@ -37,11 +37,11 @@ export default function CategoriesStackNavigator() {
           
         })}
       />
-      {/* <Stack.Screen 
+      <Stack.Screen 
         name="FurnitureDetails" 
         component={FurnitureDetailsScreen} 
         options={{ title: 'Details' }}
-      /> */}
+      />
     </Stack.Navigator>
   );
 }
