@@ -4,8 +4,11 @@ import { View, FlatList, ActivityIndicator, Text, StyleSheet } from 'react-nativ
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '../firebase/firebaseConfig';
 import FurnitureCard from '../components/FurnitureCard';
+import { useNavigation } from '@react-navigation/native';
 
 export default function FurnitureListScreen({ route }) {
+
+  const navigation = useNavigation();
 
   console.log('📝 route.params:', route.params); 
   const { categoryId, subcategory } = route.params;
@@ -47,8 +50,13 @@ export default function FurnitureListScreen({ route }) {
     <FlatList
       data={furniture}
       keyExtractor={item => item.id}
-      renderItem={({ item }) => <FurnitureCard furniture={item} />}
-      contentContainerStyle={{ padding: 16 }}
+      renderItem={({ item }) => (
+      <FurnitureCard
+        furniture={item}
+        onPress={() => navigation.navigate('FurnitureDetails', { furnitureId: item.id })}
+      />
+    )}
+    contentContainerStyle={{ padding: 16 }}
     />
   );
 }
