@@ -49,8 +49,8 @@ export default function FurnitureListScreen({ route }) {
   return (
     <FlatList
       data={furniture}
-      keyExtractor={item => item.id}
-      renderItem={({ item }) => (
+    keyExtractor={item => item.id}
+    renderItem={({ item }) => (
       <FurnitureCard
         furniture={item}
         onPress={() => navigation.navigate('FurnitureDetails', { furnitureId: item.id })}
