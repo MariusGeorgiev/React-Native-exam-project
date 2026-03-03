@@ -1,14 +1,21 @@
 import { useState } from 'react';
-import { View, TextInput, Button, StyleSheet } from 'react-native';
+import { View, TextInput, Button, StyleSheet, Image, Text, ActivityIndicator, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase/firebaseConfig';
 import { Picker } from '@react-native-picker/picker';
 import { CATEGORIES } from '../data/categories';
+import { launchImageLibraryAsync, useMediaLibraryPermissions } from "expo-image-picker";
+import { uploadFile } from '../firebase/storage';
 
-export default function AddFurnitureScreen() {
+
+export default function CreateFurnitureScreen() {
+
   const [title, setTitle] = useState('');
+  const [status, requestPermission] = useMediaLibraryPermissions();
+  const [imageUri, setImageUri] = useState(null);
+
   const [category, setCategory] = useState('');
-const [subcategory, setSubcategory] = useState('');
+  const [subcategory, setSubcategory] = useState('');
   
   const selectedCategory = CATEGORIES.find(c => c.id === category);
 
@@ -22,28 +29,50 @@ const [subcategory, setSubcategory] = useState('');
   const [height, setHeight] = useState('');
   const [depth, setDepth] = useState('');
 
+
+  async function pickImage() {
+    const result = await launchImageLibraryAsync({
+        
+    });
+
+    if (!result.canceled) {
+        setImageUri(result.assets[0].uri);
+        console.log('📸 Image picked:', result.assets[0].uri);
+    }
+    }
+
   async function addFurnitureHandler() {
     try {
-      await addDoc(collection(db, 'furniture'), {
-        title,
-        category,
-        subcategory,
-        price: Number(price),
-        description,
 
-        material: material.split(',').map(m => m.trim()),
-        colors: colors.split(',').map(c => c.trim()),
+         let imageUrl = null;
 
-        dimensions: {
-          width: Number(width),
-          height: Number(height),
-          depth: Number(depth),
-        },
+            if (imageUri) {
+            imageUrl = await uploadFile(imageUri, 'furniture');
+            }
 
-        images: [],
+        const newFurniture = {
+            title,
+            images: imageUrl ? [imageUrl] : [],
+            category,
+            subcategory,
+            price: Number(price),
+            description,
+            material: material.split(',').map(m => m.trim()),
+            colors: colors.split(',').map(c => c.trim()),
+            dimensions: {
+                width: Number(width),
+                height: Number(height),
+                depth: Number(depth),
+            },
+            createdAt: serverTimestamp(),
+        };
 
-        createdAt: serverTimestamp(),
-      });
+        const docRef = await addDoc(collection(db, 'furniture'), newFurniture);
+
+        console.log('✅ Furniture added successfully!');
+        console.log('📄 Document ID:', docRef.id);
+        console.log('🖼 Image URL:', imageUrl);
+        console.log('📦 Data:', newFurniture);
 
       setTitle('');
       setCategory('');
@@ -55,14 +84,40 @@ const [subcategory, setSubcategory] = useState('');
       setWidth('');
       setHeight('');
       setDepth('');
+      setImageUri(null);
     } catch (error) {
-      console.log(error);
+      console.log('Error adding furniture:', error);
     }
   }
 
+    if (!status) {
+        return <ActivityIndicator />;
+    }
+
+    if (!status.granted) {
+        return (
+            <Button
+                title="Grant Photo Permission"
+                onPress={requestPermission}
+            />
+        );
+    }
+
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={80} // adjust if needed
+    >
+    <ScrollView  style={styles.container} keyboardShouldPersistTaps="handled">
       <TextInput placeholder="Title" value={title} onChangeText={setTitle} />
+
+        <View style={{ color: '#c1b8b8' }}>
+            <Text>Photo Permission Granted! You can now access the media library.</Text>
+            <Button title="Select Image" onPress={pickImage} />
+            {imageUri && <Image source={{ uri: imageUri }} style={{ width: 200, height: 200 }} />}
+        </View>
+
       <Picker
             selectedValue={category}
             onValueChange={(value) => {
@@ -125,8 +180,14 @@ const [subcategory, setSubcategory] = useState('');
         />
       </View>
 
-      <Button title="Add Furniture" onPress={addFurnitureHandler} />
-    </View>
+      
+        <View style={{ marginBottom: 50 }}>
+        <Button title="Add Furniture" onPress={addFurnitureHandler} />
+        </View>
+
+    </ScrollView >
+    </KeyboardAvoidingView>
+         
   );
 }
 
