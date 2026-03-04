@@ -9,10 +9,9 @@ import {
   StyleSheet,
 } from 'react-native';
 import { CATEGORIES } from '../data/categories';
-import { collection, query, orderBy, limit, getDocs } from 'firebase/firestore';
-import { db } from '../firebase/firebaseConfig';
 import FurnitureCard from '../components/FurnitureCard';
 import { useNavigation } from '@react-navigation/native';
+import { fetchLatestFurniture } from '../services/furnitureService';
 
 export default function HomeScreen() {
   const navigation = useNavigation();
@@ -24,19 +23,12 @@ export default function HomeScreen() {
   const topCategories = CATEGORIES.slice(0, 4);
 
   useEffect(() => {
-    async function fetchLatest() {
-      try {
-        const q = query(collection(db, 'furniture'), orderBy('createdAt', 'desc'), limit(5));
-        const snapshot = await getDocs(q);
-        const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    async function loadLatest() {
+        const data = await fetchLatestFurniture();
         setLatestFurniture(data);
-      } catch (error) {
-        console.log('Error fetching latest furniture:', error);
-      } finally {
         setLoadingLatest(false);
-      }
     }
-    fetchLatest();
+    loadLatest();
   }, []);
 
   const handleCategoryPress = catId => {
