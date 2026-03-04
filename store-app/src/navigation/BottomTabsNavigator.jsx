@@ -6,6 +6,7 @@ import FavoritesStackNavigator from './FavoritesStackNavigator';
 import CartStackNavigator from './CartStackNavigator';
 import DrawerButton from '../components/DrawerButton';
 import { Ionicons } from '@expo/vector-icons';
+import { SimpleHeader, BackHeader } from '../components/headers';
 
 import CreateFurnitureScreen from '../screens/CreateFurnitureScreen';
 
@@ -15,13 +16,14 @@ export default function BottomTabsNavigator() {
 
   return (
     <Tab.Navigator screenOptions={{
-      headerShown: true, 
-        headerTitleAlign: 'left',   
-        headerRight: () => <DrawerButton />, 
+      headerShown: true, // need to remove later
+        // headerTitleAlign: 'left',   
+        // headerRight: () => <DrawerButton />, 
       }}
       >
       <Tab.Screen name="Home" component={HomeStackNavigator} 
             options={{
+              headerShown: false,
               tabBarIcon: ({ color, size }) => (
                 <Ionicons name="home-outline" size={size} color={color} />
               ),
@@ -29,6 +31,7 @@ export default function BottomTabsNavigator() {
         />
       <Tab.Screen name="Categories" component={CategoriesStackNavigator}
             options={{
+              headerShown: false,
                 tabBarIcon: ({ color, size }) => (
                   <Ionicons name="list-outline" size={size} color={color} />
                 ),
@@ -36,6 +39,7 @@ export default function BottomTabsNavigator() {
       />
       <Tab.Screen name="Favorites" component={FavoritesStackNavigator} 
             options={{
+              headerShown: false,
                 tabBarIcon: ({ color, size }) => (
                   <Ionicons name="heart-outline" size={size} color={color} />
                 ),
@@ -43,6 +47,7 @@ export default function BottomTabsNavigator() {
         />
       <Tab.Screen name="Cart" component={CartStackNavigator} 
             options={{
+              headerShown: false,
                 tabBarIcon: ({ color, size }) => (
                   <Ionicons name="cart-outline" size={size} color={color} />
                 ),
@@ -53,7 +58,7 @@ export default function BottomTabsNavigator() {
         name="Add"
         component={CreateFurnitureScreen}
         options={{
-          title: 'Add',
+          header: () => <SimpleHeader title='Create new Furniture'/>,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="add-circle-outline" size={size} color={color} />
           ),
