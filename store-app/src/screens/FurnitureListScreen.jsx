@@ -1,10 +1,9 @@
 
 import { useState, useEffect } from 'react';
 import { View, FlatList, ActivityIndicator, Text, StyleSheet } from 'react-native';
-import { collection, query, where, getDocs } from 'firebase/firestore';
-import { db } from '../firebase/firebaseConfig';
 import FurnitureCard from '../components/FurnitureCard';
 import { useNavigation } from '@react-navigation/native';
+import { fetchFurnitureByCategoryAndSub } from '../services/furnitureService';
 
 export default function FurnitureListScreen({ route }) {
 
@@ -16,25 +15,14 @@ export default function FurnitureListScreen({ route }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchFurniture() {
-      try {
-        const q = query(
-          collection(db, 'furniture'),
-          where('category', '==', categoryId),
-          where('subcategory', '==', subcategory)
-        );
-        const snapshot = await getDocs(q);
-        const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setFurniture(data);
-      } catch (error) {
-        console.log('Error fetching furniture:', error);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchFurniture();
-  }, [categoryId, subcategory]);
+  async function loadFurniture() {
+      if (!categoryId || !subcategory) return;
+      const data = await fetchFurnitureByCategoryAndSub(categoryId, subcategory);
+      setFurniture(data);
+      setLoading(false); 
+  }
+  loadFurniture();
+}, [categoryId, subcategory]);
 
   if (loading) return <ActivityIndicator style={{ marginTop: 50 }} />;
 
