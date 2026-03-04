@@ -7,6 +7,7 @@ import CartStackNavigator from './CartStackNavigator';
 import DrawerButton from '../components/DrawerButton';
 import { Ionicons } from '@expo/vector-icons';
 import { SimpleHeader, BackHeader } from '../components/headers';
+import AuthStackNavigator from './AuthStackNavigator';
 
 import CreateFurnitureScreen from '../screens/CreateFurnitureScreen';
 
@@ -53,6 +54,17 @@ export default function BottomTabsNavigator() {
                 ),
               }}
       />
+
+      <Tab.Screen
+  name="Login"
+  component={AuthStackNavigator}
+  options={{
+    headerShown: false,
+    tabBarIcon: ({ color, size }) => (
+      <Ionicons name="log-in-outline" size={size} color={color} />
+    ),
+  }}
+/>
 
       <Tab.Screen
         name="Add"
