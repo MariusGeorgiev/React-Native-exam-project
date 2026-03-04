@@ -1,5 +1,13 @@
 import { useState, useEffect } from 'react';
-import { Pressable, View, Text, Image, ScrollView, FlatList, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  FlatList,
+  TouchableOpacity,
+  ActivityIndicator,
+  StyleSheet,
+} from 'react-native';
 import { CATEGORIES } from '../data/categories';
 import { collection, query, orderBy, limit, getDocs } from 'firebase/firestore';
 import { db } from '../firebase/firebaseConfig';
@@ -8,90 +16,127 @@ import { useNavigation } from '@react-navigation/native';
 
 export default function HomeScreen() {
   const navigation = useNavigation();
+
   const [latestFurniture, setLatestFurniture] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loadingLatest, setLoadingLatest] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+
+  const topCategories = CATEGORIES.slice(0, 4);
 
   useEffect(() => {
-    async function fetchLatestFurniture() {
+    async function fetchLatest() {
       try {
-        const q = query(
-          collection(db, 'furniture'),
-          orderBy('createdAt', 'desc'),
-          limit(5)
-        );
+        const q = query(collection(db, 'furniture'), orderBy('createdAt', 'desc'), limit(5));
         const snapshot = await getDocs(q);
         const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         setLatestFurniture(data);
       } catch (error) {
         console.log('Error fetching latest furniture:', error);
       } finally {
-        setLoading(false);
+        setLoadingLatest(false);
       }
     }
-    fetchLatestFurniture();
+    fetchLatest();
   }, []);
 
-  const topCategories = CATEGORIES.slice(0, 4);
+  const handleCategoryPress = catId => {
+    setSelectedCategory(catId === selectedCategory ? null : catId);
+  };
+
+  const handleSubcategoryPress = (cat, sub) => {
+    navigation.navigate('FurnitureList', {
+      categoryId: cat.id,
+      categoryTitle: cat.title,
+      subcategory: sub,
+    });
+  };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      
-     
-      <View style={styles.heroSection}>
-        <Image source={require('../../assets/icon.png')} style={styles.heroImage} />
-        <Image source={require('../../assets/adaptive-icon.png')} style={styles.heroImage} />
-      </View>
+    <FlatList
+      data={[]} 
+      keyExtractor={(_, index) => index.toString()}
+      contentContainerStyle={{ paddingBottom: 100 }}
+      ListHeaderComponent={() => (
+        <>
+          
+          <View style={styles.heroSection}>
+            <Image source={require('../../assets/icon.png')} style={styles.heroImage} />
+            <Image source={require('../../assets/adaptive-icon.png')} style={styles.heroImage} />
+          </View>
 
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Categories</Text>
-        <View style={styles.categoriesRow}>
-          {topCategories.map(cat => (
-            <TouchableOpacity
-              key={cat.id}
-              style={styles.categoryCard}
-              onPress={() =>
-                navigation.navigate('FurnitureList', {
-                  categoryId: cat.id,
-                  categoryTitle: cat.title,
-                  subcategory: cat.subcategories[0] || '', 
-                })
-              }
-            >
-              <Image source={cat.image} style={styles.categoryImage} />
-              <Text style={styles.categoryText}>{cat.title}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-      </View>
+          
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Categories</Text>
+            <View style={styles.categoriesRow}>
+              {topCategories.map(cat => (
+                <TouchableOpacity
+                  key={cat.id}
+                  style={styles.categoryCard}
+                  onPress={() => handleCategoryPress(cat.id)}
+                >
+                  <Image source={cat.image} style={styles.categoryImage} />
+                  <Text style={styles.categoryText}>{cat.title}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
 
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Latest Furniture</Text>
-        {loading ? (
-          <ActivityIndicator />
-        ) : (
-          <FlatList
-            data={latestFurniture}
-            keyExtractor={item => item.id}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            renderItem={({ item }) => (
-              <FurnitureCard
-                furniture={item}
-                onPress={() => navigation.navigate('FurnitureDetails', { furnitureId: item.id })}
+          {selectedCategory && (
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>
+                {topCategories.find(cat => cat.id === selectedCategory)?.title} Subcategories
+              </Text>
+              <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+                {topCategories
+                  .find(cat => cat.id === selectedCategory)
+                  ?.subcategories.map((sub, index) => (
+                    <TouchableOpacity
+                      key={index}
+                      onPress={() =>
+                        handleSubcategoryPress(
+                          topCategories.find(cat => cat.id === selectedCategory),
+                          sub
+                        )
+                      }
+                      style={styles.subcategoryButton}
+                    >
+                      <Text style={styles.subcategoryText}>{sub}</Text>
+                    </TouchableOpacity>
+                  ))}
+              </View>
+            </View>
+          )}
+
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Latest Furniture</Text>
+            {loadingLatest ? (
+              <ActivityIndicator />
+            ) : (
+              <FlatList
+                data={latestFurniture}
+                horizontal
+                keyExtractor={item => item.id}
+                showsHorizontalScrollIndicator={false}
+                renderItem={({ item }) => (
+                  <FurnitureCard
+                    furniture={item}
+                    onPress={() =>
+                      navigation.navigate('FurnitureDetails', { furnitureId: item.id })
+                    }
+                  />
+                )}
               />
             )}
-          />
-        )}
-      </View>
-    </ScrollView>
+          </View>
+        </>
+      )}
+      ListEmptyComponent={null}
+      renderItem={null}
+    />
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    padding: 16,
-    paddingBottom: 32,
-  },
   heroSection: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -129,5 +174,17 @@ const styles = StyleSheet.create({
   categoryText: {
     textAlign: 'center',
     fontSize: 12,
+  },
+  subcategoryButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+    backgroundColor: '#eee',
+    marginRight: 8,
+    marginBottom: 8,
+  },
+  subcategoryText: {
+    fontSize: 12,
+    color: '#333',
   },
 });
