@@ -1,20 +1,21 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import CartScreen from '../screens/CartScreen';
-// import CheckoutScreen from '../screens/CheckoutScreen'; 
+// import CheckoutScreen from '../screens/CheckoutScreen';
+import { SimpleHeader, BackHeader } from '../components/headers';
 
 const Stack = createNativeStackNavigator();
 
 export default function CartStackNavigator() {
   return (
     <Stack.Navigator
-      screenOptions={{
-                headerShown: false, 
-            }}
+      // screenOptions={{
+      //           headerShown: false, 
+      //       }}
     >
       <Stack.Screen
         name="CartScreen"
         component={CartScreen}
-        options={{ title: 'Cart' }}
+        options={{ header: () => <SimpleHeader title='Cart' /> }}
       />
       {/* <Stack.Screen
         name="Checkout"
