@@ -1,25 +1,49 @@
 import { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../firebase/firebaseConfig';
 
 export default function LoginScreen() {
   const navigation = useNavigation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [success, setSuccess] = useState(false);
 
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!email || !password) {
       Alert.alert('Error', 'Please enter email and password');
       return;
     }
-  
-    console.log('Logging in with', email, password);
+
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+
+      setSuccess(true);
+
+      setTimeout(() => {
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Home' }],
+        });
+      }, 1000);
+
+    } catch (error) {
+      Alert.alert('Login failed', error.message);
+    }
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Login</Text>
+
+
+         {success && (
+        <View style={styles.successBox}>
+          <Text style={styles.successText}>✅ Logged in successfully</Text>
+        </View>
+      )}
 
       <TextInput
         placeholder="Email"
@@ -52,6 +76,19 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, justifyContent: 'center', padding: 24 },
   title: { fontSize: 28, fontWeight: 'bold', marginBottom: 24, textAlign: 'center' },
+
+  successBox: {
+    backgroundColor: '#d4edda',
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 16,
+  },
+  successText: {
+    color: '#155724',
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
+
   input: {
     borderWidth: 1,
     borderColor: '#ccc',
@@ -64,8 +101,6 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 8,
     alignItems: 'center',
-    marginBottom: 16,
   },
   buttonText: { color: 'white', fontWeight: 'bold' },
-  switchText: { color: '#555', textAlign: 'center' },
 });
