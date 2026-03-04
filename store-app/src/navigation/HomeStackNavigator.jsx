@@ -3,20 +3,27 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from '../screens/HomeScreen';
 import FurnitureListScreen from '../screens/FurnitureListScreen';
 import FurnitureDetailsScreen from '../screens/FurnitureDetailsScreen';
+import { SimpleHeader, BackHeader } from '../components/headers';
 
 
 const Stack = createNativeStackNavigator();
 
 export default function HomeStackNavigator() {
   return (
-    <Stack.Navigator 
+    <Stack.Navigator
+    
       >
-      <Stack.Screen name="HomeScreen" component={HomeScreen} options={{
-          headerShown: false,
-         
-        }}/>
-      <Stack.Screen name="FurnitureList" component={FurnitureListScreen} />
-      <Stack.Screen name="FurnitureDetails" component={FurnitureDetailsScreen} />
+      <Stack.Screen name="HomeScreen" component={HomeScreen} 
+          options={{ header: () => <SimpleHeader title='Home furniture world' /> }}
+      />
+      <Stack.Screen name="FurnitureList" component={FurnitureListScreen}
+          options={({ navigation, route }) => ({
+             header: () => <BackHeader title={`${route.params.categoryTitle}`} navigation={navigation}/> })}
+      />
+      <Stack.Screen name="FurnitureDetails" component={FurnitureDetailsScreen} 
+          options={({ navigation }) => ({
+             header: () => <BackHeader title='Details' navigation={navigation}/> })}
+      />
       
       
     </Stack.Navigator>
