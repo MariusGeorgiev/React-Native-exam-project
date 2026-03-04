@@ -1,29 +1,62 @@
 import { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+} from 'react-native';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../firebase/firebaseConfig';
 import { useNavigation } from '@react-navigation/native';
 
 export default function RegisterScreen() {
   const navigation = useNavigation();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [success, setSuccess] = useState(false);
 
-  const handleRegister = () => {
+  const handleRegister = async () => {
     if (!email || !password || !confirmPassword) {
       Alert.alert('Error', 'Please fill all fields');
       return;
     }
+
     if (password !== confirmPassword) {
       Alert.alert('Error', 'Passwords do not match');
       return;
     }
-    // TODO: Firebase Auth register or API call
-    console.log('Registering', email, password);
+
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+
+      setSuccess(true);
+      setTimeout(() => {
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Home' }], 
+        });
+      }, 3000);
+
+    } catch (error) {
+      Alert.alert('Registration failed', error.message);
+    }
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Register</Text>
+
+      {success && (
+        <View style={styles.successBox}>
+          <Text style={styles.successText}>
+            🎉 Registration successful!
+          </Text>
+        </View>
+      )}
 
       <TextInput
         placeholder="Email"
@@ -51,11 +84,13 @@ export default function RegisterScreen() {
       />
 
       <TouchableOpacity style={styles.button} onPress={handleRegister}>
-        <Text style={styles.buttonText}>Sign Up</Text>
+        <Text style={styles.buttonText}>Create Account</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-        <Text style={styles.switchText}>Already have an account? Sign In</Text>
+      <TouchableOpacity onPress={() => navigation.replace('Login')}>
+        <Text style={styles.switchText}>
+          Already have an account? Sign In
+        </Text>
       </TouchableOpacity>
     </View>
   );
@@ -63,7 +98,25 @@ export default function RegisterScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, justifyContent: 'center', padding: 24 },
-  title: { fontSize: 28, fontWeight: 'bold', marginBottom: 24, textAlign: 'center' },
+  title: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    marginBottom: 24,
+    textAlign: 'center',
+  },
+
+  successBox: {
+    backgroundColor: '#d4edda',
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 16,
+  },
+  successText: {
+    color: '#155724',
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
+
   input: {
     borderWidth: 1,
     borderColor: '#ccc',
