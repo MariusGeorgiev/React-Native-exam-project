@@ -44,8 +44,15 @@ export async function loginUser(email, password) {
   return userCredential.user;
 }
 
-export const getUserProfile = async (uid) => {
-  const userDoc = await getDoc(doc(db, 'users', uid));
-  if (!userDoc.exists()) throw new Error('User profile not found');
-  return userDoc.data();
-};
+export async function getUserProfile(uid) {
+  if (!uid) throw new Error("No user ID provided");
+
+  const userRef = doc(db, "users", uid);
+  const userSnap = await getDoc(userRef);
+
+  if (userSnap.exists()) {
+    return userSnap.data();
+  } else {
+    return null;
+  }
+}
