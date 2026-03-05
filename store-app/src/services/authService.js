@@ -43,3 +43,9 @@ export async function loginUser(email, password) {
   const userCredential = await signInWithEmailAndPassword(auth, email, password);
   return userCredential.user;
 }
+
+export const getUserProfile = async (uid) => {
+  const userDoc = await getDoc(doc(db, 'users', uid));
+  if (!userDoc.exists()) throw new Error('User profile not found');
+  return userDoc.data();
+};
