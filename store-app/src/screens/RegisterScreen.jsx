@@ -7,9 +7,8 @@ import {
   StyleSheet,
   Alert,
 } from 'react-native';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../firebase/firebaseConfig';
 import { useNavigation } from '@react-navigation/native';
+import { registerUser } from '../services/authService';
 
 export default function RegisterScreen() {
   const navigation = useNavigation();
@@ -31,7 +30,7 @@ export default function RegisterScreen() {
     }
 
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
+      await registerUser(email, password);
 
       setSuccess(true);
       setTimeout(() => {
