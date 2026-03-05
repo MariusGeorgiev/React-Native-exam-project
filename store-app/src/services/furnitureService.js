@@ -1,4 +1,4 @@
-import { collection, query, orderBy, limit, getDocs, where } from 'firebase/firestore';
+import { doc, collection, query, orderBy, limit, getDocs, getDoc, where } from 'firebase/firestore';
 import { db } from '../firebase/firebaseConfig';
 
 export async function fetchLatestFurniture(limitNumber = 5) {
@@ -6,12 +6,6 @@ export async function fetchLatestFurniture(limitNumber = 5) {
   const snapshot = await getDocs(q);
   return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 }
-
-// export async function fetchFurnitureByCategory(categoryId) {
-//   const q = query(collection(db, 'furniture'), where('category', '==', categoryId));
-//   const snapshot = await getDocs(q);
-//   return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-// }
 
 export async function fetchFurnitureByCategoryAndSub(categoryId, subcategory) {
   const q = query(
@@ -21,4 +15,12 @@ export async function fetchFurnitureByCategoryAndSub(categoryId, subcategory) {
   );
   const snapshot = await getDocs(q);
   return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+}
+
+export async function getFurnitureById(furnitureId) {
+  const docRef = doc(db, 'furniture', furnitureId);
+  const docSnap = await getDoc(docRef);
+
+  if (!docSnap.exists()) throw new Error('Furniture not found');
+  return { id: docSnap.id, ...docSnap.data() };
 }
