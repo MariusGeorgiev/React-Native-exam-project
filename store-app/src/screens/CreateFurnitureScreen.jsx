@@ -1,17 +1,16 @@
 import { useState } from 'react';
-import { View, TextInput, Button, StyleSheet, Image, Text, ActivityIndicator, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import { Alert, View, TextInput, Button, StyleSheet, Image, Text, ActivityIndicator, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase/firebaseConfig';
 import { Picker } from '@react-native-picker/picker';
 import { CATEGORIES } from '../data/categories';
-import { launchImageLibraryAsync, useMediaLibraryPermissions } from "expo-image-picker";
+import * as ImagePicker from 'expo-image-picker';
 import { uploadFile } from '../firebase/storage';
 
 
 export default function CreateFurnitureScreen() {
 
   const [title, setTitle] = useState('');
-  const [status, requestPermission] = useMediaLibraryPermissions();
   const [imageUri, setImageUri] = useState(null);
 
   const [category, setCategory] = useState('');
@@ -30,16 +29,50 @@ export default function CreateFurnitureScreen() {
   const [depth, setDepth] = useState('');
 
 
-  async function pickImage() {
-    const result = await launchImageLibraryAsync({
-        
-    });
+const pickImage = async () => {
 
-    if (!result.canceled) {
+  const status = await ImagePicker.getMediaLibraryPermissionsAsync();
+  console.log(status);
+
+
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+  if (!permissionResult.granted) {
+      Alert.alert("Permission required to access photos.");
+      return;
+    }
+    let result = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ['images'],
+          allowsEditing: true,
+          aspect: [4, 3],
+          quality: 1,
+        });
+
+      if (!result.canceled) {
         setImageUri(result.assets[0].uri);
-        console.log('📸 Image picked:', result.assets[0].uri);
-    }
-    }
+      }
+
+  }
+
+const takePhoto = async () => {
+
+  const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+
+  if (!permissionResult.granted) {
+    Alert.alert("Permission required to use camera.");
+    return;
+  }
+
+  let result = await ImagePicker.launchCameraAsync({
+    allowsEditing: true,
+    aspect: [4, 3],
+    quality: 1,
+  });
+
+  if (!result.canceled) {
+    setImageUri(result.assets[0].uri);
+  }
+};
 
   async function addFurnitureHandler() {
     try {
@@ -90,32 +123,40 @@ export default function CreateFurnitureScreen() {
     }
   }
 
-    if (!status) {
-        return <ActivityIndicator />;
-    }
 
-    if (!status.granted) {
-        return (
-            <Button
-                title="Grant Photo Permission"
-                onPress={requestPermission}
-            />
-        );
-    }
+    // if (!status) {
+    //     return <ActivityIndicator />;
+    // }
+
+    // if (!status.granted) {
+    //     return (
+    //         <Button
+    //             title="Grant Photo Permission"
+    //             onPress={requestPermission}
+    //         />
+    //     );
+    // }
 
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={80} // adjust if needed
+      keyboardVerticalOffset={80}
     >
     <ScrollView  style={styles.container} keyboardShouldPersistTaps="handled">
       <TextInput placeholder="Title" value={title} onChangeText={setTitle} />
 
-        <View style={{ color: '#c1b8b8' }}>
-            <Text>Photo Permission Granted! You can now access the media library.</Text>
-            <Button title="Select Image" onPress={pickImage} />
-            {imageUri && <Image source={{ uri: imageUri }} style={{ width: 200, height: 200 }} />}
+        <View style={{ flexDirection: 'row', gap: 10 }}>
+              <Button title="Select Image" onPress={pickImage} />
+
+              <Button title="Take Photo" onPress={takePhoto} />
+
+              {imageUri && (
+                <Image
+                  source={{ uri: imageUri }}
+                  style={{ width: 200, height: 200, marginTop: 10 }}
+                />
+              )}
         </View>
 
       <Picker
