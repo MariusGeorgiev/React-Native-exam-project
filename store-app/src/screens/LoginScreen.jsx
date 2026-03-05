@@ -101,6 +101,8 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 8,
     alignItems: 'center',
+    marginBottom: 16,
   },
   buttonText: { color: 'white', fontWeight: 'bold' },
+  switchText: { color: '#555', textAlign: 'center' },
 });
