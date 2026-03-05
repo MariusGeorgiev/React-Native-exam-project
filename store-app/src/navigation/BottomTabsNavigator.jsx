@@ -14,7 +14,7 @@ import { useAuth } from '../contexts/AuthProvider';
 const Tab = createBottomTabNavigator();
 
 export default function BottomTabsNavigator() {
-  const { user, loading } = useAuth();
+  const { user, userProfile, loading } = useAuth();
 
   if (loading) return null;
 
@@ -65,6 +65,7 @@ export default function BottomTabsNavigator() {
             }}
           />
 
+            {userProfile?.role === "user" && (
           <Tab.Screen
             name="Cart"
             component={CartStackNavigator}
@@ -74,20 +75,27 @@ export default function BottomTabsNavigator() {
               ),
             }}
           />
+          )}
 
+
+          {userProfile?.role === "admin" && (
           <Tab.Screen
-            name="Add"
-            component={CreateFurnitureScreen}
-            options={{
-              headerShown: true,
-              header: () => <SimpleHeader title="Create new Furniture" />,
-              tabBarIcon: ({ color, size }) => (
-                <Ionicons name="add-circle-outline" size={size} color={color} />
-              ),
-            }}
+                name="Add"
+                component={CreateFurnitureScreen}
+                options={{
+                  headerShown: true,
+                  header: () => <SimpleHeader title="Create new Furniture" />,
+                  tabBarIcon: ({ color, size }) => (
+                    <Ionicons name="add-circle-outline" size={size} color={color} />
+                  ),
+                }}
           />
+           )}
+
         </>
       )}
+
+
     </Tab.Navigator>
   );
 }
