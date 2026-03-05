@@ -38,9 +38,12 @@ export default function ProfileScreen() {
   return (
     <ScrollView contentContainerStyle={styles.container}>
   
-  {profile.image && (
-    <Image source={{ uri: profile.image }} style={styles.avatar} />
-  )}
+    <Image
+        source={{
+            uri: profile.image || "https://thumbs.dreamstime.com/b/simple-silhouette-profile-photo-art-simple-silhouette-profile-photo-art-240483689.jpg", // default image
+        }}
+        style={styles.avatar}
+        />
 
   <Text style={styles.label}>Username:</Text>
   <Text style={styles.value}>{profile.username}</Text>
