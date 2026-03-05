@@ -18,7 +18,7 @@ export default function HomeStackNavigator() {
       />
       <Stack.Screen name="FurnitureList" component={FurnitureListScreen}
           options={({ navigation, route }) => ({
-             header: () => <BackHeader title={`${route.params.categoryTitle}`} navigation={navigation}/> })}
+             header: () => <BackHeader title={`${route.params.categoryTitle} › ${route.params.subcategory}`} navigation={navigation}/> })}
       />
       <Stack.Screen name="FurnitureDetails" component={FurnitureDetailsScreen} 
           options={({ navigation }) => ({
