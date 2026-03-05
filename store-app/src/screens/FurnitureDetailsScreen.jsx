@@ -1,23 +1,17 @@
 import { useEffect, useState } from 'react';
 import { View, Text, Image, ActivityIndicator, ScrollView, StyleSheet } from 'react-native';
-import { doc, getDoc } from 'firebase/firestore';
-import { db } from '../firebase/firebaseConfig';
+import { getFurnitureById } from '../services/furnitureService';
 
 export default function FurnitureDetailsScreen({ route }) {
   const { furnitureId } = route.params;
   const [furniture, setFurniture] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    async function fetchFurniture() {
+   useEffect(() => {
+    async function fetchDetails() {
       try {
-        const docRef = doc(db, 'furniture', furnitureId);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          setFurniture({ id: docSnap.id, ...docSnap.data() });
-        } else {
-          console.log('No such furniture!');
-        }
+        const data = await getFurnitureById(furnitureId);
+        setFurniture(data);
       } catch (error) {
         console.log('Error fetching furniture details:', error);
       } finally {
@@ -25,7 +19,7 @@ export default function FurnitureDetailsScreen({ route }) {
       }
     }
 
-    fetchFurniture();
+    fetchDetails();
   }, [furnitureId]);
 
   if (loading) return <ActivityIndicator size="large" style={{ marginTop: 50 }} />;
