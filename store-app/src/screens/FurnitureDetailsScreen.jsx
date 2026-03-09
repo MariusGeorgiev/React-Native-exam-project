@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react';
-import { View, Text, Image, ActivityIndicator, ScrollView, StyleSheet } from 'react-native';
-import { getFurnitureById } from '../services/furnitureService';
+import { Alert, View, Text, Image, ActivityIndicator, ScrollView, StyleSheet, Button } from 'react-native';
+import { getFurnitureById, deleteFurniture } from '../services/furnitureService';
+import { useAuth } from '../contexts/AuthProvider';
 
-export default function FurnitureDetailsScreen({ route }) {
+export default function FurnitureDetailsScreen({ route, navigation }) {
   const { furnitureId } = route.params;
   const [furniture, setFurniture] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const { user, userProfile} = useAuth();
 
    useEffect(() => {
     async function fetchDetails() {
@@ -26,6 +29,28 @@ export default function FurnitureDetailsScreen({ route }) {
 
   if (!furniture) return <Text>Furniture not found</Text>;
 
+const handleDelete = () => {
+  Alert.alert(
+    "Delete furniture",
+    "Are you sure you want to delete this item?",
+    [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Delete",
+        style: "destructive",
+        onPress: async () => {
+          try {
+            await deleteFurniture(furnitureId);
+            navigation.goBack();
+          } catch (error) {
+            console.log("Delete error:", error);
+          }
+        }
+      }
+    ]
+  );
+};
+
   return (
     <ScrollView contentContainerStyle={{ padding: 16 }}>
       
@@ -43,6 +68,23 @@ export default function FurnitureDetailsScreen({ route }) {
       <Text>Dimensions: W {furniture.dimensions.width} × H {furniture.dimensions.height} × D {furniture.dimensions.depth}</Text>
         <Text>Price: ${furniture.price}</Text>
         <Text>Description: {furniture.description}</Text>
+
+
+        {user && userProfile?.role === "admin" && (
+          <View style={{ marginTop: 20 }}>
+            <Button
+              title="Edit"
+              onPress={() => navigation.navigate('EditFurniture', { furnitureId })}
+            />
+
+            <Button
+              title="Delete"
+              color="red"
+              onPress={handleDelete}
+            />
+          </View>
+        )}
+
     </ScrollView>
   );
 }
