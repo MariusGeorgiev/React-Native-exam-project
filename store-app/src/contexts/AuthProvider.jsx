@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth, db } from '../firebase/firebaseConfig';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
 
 const AuthContext = createContext();
 
@@ -35,8 +35,33 @@ export function AuthProvider({ children }) {
     setUser(null);
   };
 
+  const toggleFavorite = async (furnitureId) => {
+    if (!user) throw new Error("User not logged in");
+
+    const docRef = doc(db, 'users', user.uid);
+    let added = false;
+
+    if (userProfile.favorites.includes(furnitureId)) {
+     
+      await updateDoc(docRef, { favorites: arrayRemove(furnitureId) });
+    } else {
+      
+      await updateDoc(docRef, { favorites: arrayUnion(furnitureId) });
+      added = true;
+    }
+
+    setUserProfile(prev => ({
+      ...prev,
+      favorites: added
+        ? [...prev.favorites, furnitureId]
+        : prev.favorites.filter(id => id !== furnitureId)
+    }));
+
+    return added;
+  };
+
   return (
-    <AuthContext.Provider value={{ user, userProfile, loading, logout }}>
+    <AuthContext.Provider value={{ user, userProfile, loading, logout, toggleFavorite }}>
       {children}
     </AuthContext.Provider>
   );

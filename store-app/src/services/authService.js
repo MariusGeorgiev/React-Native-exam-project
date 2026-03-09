@@ -57,24 +57,6 @@ export async function getUserProfile(uid) {
   }
 }
 
-export async function toggleFavorite(uid, furnitureId) {
-  if (!uid) return;
-
-  const userRef = doc(db, "users", uid);
-  const userSnap = await getDoc(userRef);
-
-  if (!userSnap.exists()) return;
-
-  const favorites = userSnap.data().favorites || [];
-
-  if (favorites.includes(furnitureId)) {
-    await updateDoc(userRef, { favorites: arrayRemove(furnitureId) });
-    return false; 
-  } else {
-    await updateDoc(userRef, { favorites: arrayUnion(furnitureId) });
-    return true; 
-  }
-}
 
 export async function addToCart(uid, furnitureId, quantity = 1) {
   if (!uid) return;
