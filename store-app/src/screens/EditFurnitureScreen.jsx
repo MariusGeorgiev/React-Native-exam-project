@@ -213,6 +213,7 @@ export default function EditFurnitureScreen({ route, navigation }) {
                 <Picker
                     selectedValue={subcategory}
                     onValueChange={setSubcategory}
+                     enabled={!!category}
                 >
                     <Picker.Item label="Select subcategory" value="" />
 
