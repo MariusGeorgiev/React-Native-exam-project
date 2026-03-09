@@ -1,5 +1,5 @@
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
-import { doc, setDoc, getDoc, serverTimestamp } from "firebase/firestore";
+import { doc, updateDoc, setDoc, getDoc, arrayUnion, arrayRemove, serverTimestamp } from "firebase/firestore";
 import { auth, db } from "../firebase/firebaseConfig";
 
 export async function registerUser(email, password) {
@@ -54,5 +54,49 @@ export async function getUserProfile(uid) {
     return userSnap.data();
   } else {
     return null;
+  }
+}
+
+export async function toggleFavorite(uid, furnitureId) {
+  if (!uid) return;
+
+  const userRef = doc(db, "users", uid);
+  const userSnap = await getDoc(userRef);
+
+  if (!userSnap.exists()) return;
+
+  const favorites = userSnap.data().favorites || [];
+
+  if (favorites.includes(furnitureId)) {
+    await updateDoc(userRef, { favorites: arrayRemove(furnitureId) });
+    return false; 
+  } else {
+    await updateDoc(userRef, { favorites: arrayUnion(furnitureId) });
+    return true; 
+  }
+}
+
+export async function addToCart(uid, furnitureId, quantity = 1) {
+  if (!uid) return;
+
+  const userRef = doc(db, "users", uid);
+  const userSnap = await getDoc(userRef);
+
+  if (!userSnap.exists()) return;
+
+  const cart = userSnap.data().cart || [];
+
+  const existingItem = cart.find(item => item.furnitureId === furnitureId);
+
+  if (existingItem) {
+    
+    const updatedCart = cart.map(item => 
+      item.furnitureId === furnitureId 
+        ? { ...item, quantity: item.quantity + quantity } 
+        : item
+    );
+    await updateDoc(userRef, { cart: updatedCart });
+  } else {
+    await updateDoc(userRef, { cart: arrayUnion({ furnitureId, quantity }) });
   }
 }
