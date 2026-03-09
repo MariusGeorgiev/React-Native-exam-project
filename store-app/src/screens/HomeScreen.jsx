@@ -7,7 +7,9 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   StyleSheet,
+  RefreshControl,
 } from 'react-native';
+import usePullToRefresh from '../hooks/usePullToRefresh';
 import { CATEGORIES } from '../data/categories';
 import FurnitureCard from '../components/FurnitureCard';
 import { useNavigation } from '@react-navigation/native';
@@ -19,17 +21,27 @@ export default function HomeScreen() {
   const [latestFurniture, setLatestFurniture] = useState([]);
   const [loadingLatest, setLoadingLatest] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState(null);
+  
 
   const topCategories = CATEGORIES.slice(0, 4);
 
-  useEffect(() => {
-    async function loadLatest() {
-        const data = await fetchLatestFurniture();
-        setLatestFurniture(data);
-        setLoadingLatest(false);
+    const loadLatest = async () => {
+    setLoadingLatest(true);
+    try {
+      const data = await fetchLatestFurniture();
+      setLatestFurniture(data);
+    } catch (error) {
+      console.log('Error loading latest furniture:', error);
+    } finally {
+      setLoadingLatest(false);
     }
+  };
+
+   const { refreshing, onRefresh } = usePullToRefresh(loadLatest);
+
+    useEffect(() => {
     loadLatest();
-  }, []);
+  }, [])
 
   const handleCategoryPress = catId => {
     setSelectedCategory(catId === selectedCategory ? null : catId);
@@ -48,6 +60,9 @@ export default function HomeScreen() {
       data={[]} 
       keyExtractor={(_, index) => index.toString()}
       contentContainerStyle={{ paddingBottom: 100 }}
+      refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
       ListHeaderComponent={() => (
         <>
           
