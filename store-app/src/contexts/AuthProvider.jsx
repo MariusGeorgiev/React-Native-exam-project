@@ -11,24 +11,31 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      setUser(currentUser);
+  const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+    setUser(currentUser);
 
-      if (currentUser) {
-        const docRef = doc(db, 'users', currentUser.uid);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          setUserProfile(docSnap.data());
-        }
-      } else {
-        setUserProfile(null);
+    if (currentUser) {
+      const docRef = doc(db, 'users', currentUser.uid);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+
+        setUserProfile({
+          ...data,
+          cart: data.cart || [],
+          favorites: data.favorites || []
+        });
       }
+    } else {
+      setUserProfile(null);
+    }
 
-      setLoading(false);
-    });
+    setLoading(false);
+  });
 
-    return unsubscribe;
-  }, []);
+  return unsubscribe;
+}, []);
 
   const logout = async () => {
     await signOut(auth);
@@ -60,8 +67,62 @@ export function AuthProvider({ children }) {
     return added;
   };
 
+
+const addToCart = async (furnitureId, quantity = 1) => {
+  if (!user) return;
+
+  const userRef = doc(db, 'users', user.uid);
+
+  const existingItem = userProfile.cart?.find(item => item.id === furnitureId);
+
+  let updatedCart;
+
+  if (existingItem) {
+
+    updatedCart = userProfile.cart.map(item =>
+      item.id === furnitureId
+        ? { ...item, quantity: item.quantity + quantity }
+        : item
+    );
+  } else {
+    
+    updatedCart = [
+      ...(userProfile.cart || []),
+      { id: furnitureId, quantity }
+    ];
+  }
+
+  await updateDoc(userRef, { cart: updatedCart });
+
+  setUserProfile(prev => ({
+    ...prev,
+    cart: updatedCart
+  }));
+};
+
+  const removeFromCart = async (furnitureId) => {
+    if (!user) return;
+
+    const userRef = doc(db, 'users', user.uid);
+    const updatedCart = userProfile.cart.filter(item => item.id !== furnitureId);
+
+    await updateDoc(userRef, { cart: updatedCart });
+    setUserProfile(prev => ({ ...prev, cart: updatedCart }));
+  };
+
+  const updateCartQuantity = async (furnitureId, quantity) => {
+    if (!user) return;
+    const userRef = doc(db, 'users', user.uid);
+
+    const updatedCart = userProfile.cart.map(item =>
+      item.id === furnitureId ? { ...item, quantity } : item
+    );
+    await updateDoc(userRef, { cart: updatedCart });
+    setUserProfile(prev => ({ ...prev, cart: updatedCart }));
+  };
+
   return (
-    <AuthContext.Provider value={{ user, userProfile, loading, logout, toggleFavorite }}>
+    <AuthContext.Provider value={{ user, userProfile, loading, logout, toggleFavorite, addToCart, removeFromCart, updateCartQuantity }}>
       {children}
     </AuthContext.Provider>
   );
