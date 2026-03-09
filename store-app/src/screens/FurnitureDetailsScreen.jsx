@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Alert, View, Text, Image, ActivityIndicator, ScrollView, StyleSheet, Button, TouchableOpacity } from 'react-native';
 import { getFurnitureById, deleteFurniture } from '../services/furnitureService';
-import { toggleFavorite, addToCart } from "../services/authService";
+import { addToCart } from "../services/authService";
 import { useAuth } from '../contexts/AuthProvider';
 import { FontAwesome } from '@expo/vector-icons';
 
@@ -9,9 +9,8 @@ export default function FurnitureDetailsScreen({ route, navigation }) {
   const { furnitureId } = route.params;
   const [furniture, setFurniture] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [isFavorite, setIsFavorite] = useState(false);
 
-  const { user, userProfile} = useAuth();
+  const { user, userProfile, toggleFavorite} = useAuth();
 
    useEffect(() => {
     async function fetchDetails() {
@@ -28,11 +27,6 @@ export default function FurnitureDetailsScreen({ route, navigation }) {
     fetchDetails();
   }, [furnitureId]);
   
-  useEffect(() => {
-  if (furniture && userProfile?.favorites) {
-    setIsFavorite(userProfile.favorites.includes(furniture.id));
-  }
-}, [furniture, userProfile]);
 
   if (loading) return <ActivityIndicator size="large" style={{ marginTop: 50 }} />;
 
@@ -61,18 +55,6 @@ const handleDelete = () => {
 };
 
 
-
-const handleFavorite = async () => {
-  if (!user) return alert("Please login to use favorites");
-
-  try {
-    const added = await toggleFavorite(user.uid, furniture.id);
-    setIsFavorite(added);
-    alert(added ? "Added to favorites!" : "Removed from favorites!");
-  } catch (error) {
-    console.log("Favorite error:", error);
-  }
-};
 
 const handleAddToCart = async () => {
   if (!user) return;
@@ -124,16 +106,17 @@ const handleAddToCart = async () => {
                   
                 )}
 
-                 <TouchableOpacity
-                  style={styles.favoriteBtn}
-                  onPress={handleFavorite}
-                >
-                  <FontAwesome
-                    name={isFavorite ? "heart" : "heart-o"}
-                    size={32}
-                    color={isFavorite ? "red" : "gray"}
-                  />
-                </TouchableOpacity>
+                <TouchableOpacity
+            style={styles.favoriteBtn}
+            onPress={() => toggleFavorite(furniture.id)}
+          >
+            <FontAwesome
+              name={userProfile?.favorites?.includes(furniture.id) ? "heart" : "heart-o"}
+              size={32}
+              color={userProfile?.favorites?.includes(furniture.id) ? "red" : "gray"}
+            />
+          </TouchableOpacity>
+
             </>
          )}
 
@@ -147,4 +130,5 @@ const styles = StyleSheet.create({
   marginTop: 16,
   alignSelf: 'flex-start',
 },
+  favoriteBtn: { marginTop: 16, alignSelf: 'flex-start' },
 });
