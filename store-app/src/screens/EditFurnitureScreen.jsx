@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Alert, View, TextInput, Button, StyleSheet, Image, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import { Text, Alert, View, TextInput, Button, StyleSheet, Image, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import * as ImagePicker from 'expo-image-picker';
 
@@ -156,16 +156,18 @@ export default function EditFurnitureScreen({ route, navigation }) {
     <KeyboardAvoidingView
       style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={80}
+    //   keyboardVerticalOffset={5}
     >
 
       <ScrollView style={styles.container} keyboardShouldPersistTaps="handled">
 
-        <TextInput
-          placeholder="Title"
-          value={title}
-          onChangeText={setTitle}
-        />
+        <Text style={styles.label}>Title:</Text>
+            <TextInput
+            placeholder="Enter furniture title"
+            value={title}
+            onChangeText={setTitle}
+            style={styles.input}
+            />
 
         <View style={{ flexDirection: 'row', gap: 10 }}>
 
@@ -182,92 +184,134 @@ export default function EditFurnitureScreen({ route, navigation }) {
           />
         )}
 
-        <Picker
-          selectedValue={category}
-          onValueChange={(value) => {
-            setCategory(value);
-            setSubcategory('');
-          }}
-        >
-          <Picker.Item label="Select category" value="" />
+       <View style={styles.CatAndSubCat}>
+            <Text style={styles.label}>Category: </Text>
 
-          {CATEGORIES.map(cat => (
-            <Picker.Item key={cat.id} label={cat.title} value={cat.id} />
-          ))}
+            <View style={styles.pickerWrapper}>
+                <Picker
+                selectedValue={category}
+                onValueChange={(value) => {
+                    setCategory(value);
+                    setSubcategory('');
+                }}
+                >
+                <Picker.Item label="Select category" value="" />
 
-        </Picker>
-
-
-        {selectedCategory && (
-
-          <Picker
-            selectedValue={subcategory}
-            onValueChange={setSubcategory}
-          >
-
-            <Picker.Item label="Select subcategory" value="" />
-
-            {selectedCategory.subcategories.map(sub => (
-              <Picker.Item key={sub} label={sub} value={sub} />
-            ))}
-
-          </Picker>
-
-        )}
+                {CATEGORIES.map(cat => (
+                    <Picker.Item key={cat.id} label={cat.title} value={cat.id} />
+                ))}
+                </Picker>
+            </View>
+        </View>
 
 
+           <View style={styles.CatAndSubCat}>
+            <Text style={styles.label}>Subcategory: </Text>
+
+            {selectedCategory && (
+                <View style={styles.pickerWrapper}>
+                <Picker
+                    selectedValue={subcategory}
+                    onValueChange={setSubcategory}
+                >
+                    <Picker.Item label="Select subcategory" value="" />
+
+                    {selectedCategory.subcategories.map(sub => (
+                    <Picker.Item key={sub} label={sub} value={sub} />
+                    ))}
+                </Picker>
+                </View>
+            )}
+        </View>
+
+
+
+        <Text style={styles.label}>Price:</Text>
+            <TextInput
+            placeholder="Enter price"
+            value={price}
+            onChangeText={setPrice}
+            keyboardType="numeric"
+            style={styles.input}
+            />
+
+        
+
+        <Text style={styles.label}>Material:</Text>
         <TextInput
-          placeholder="Price"
-          value={price}
-          onChangeText={setPrice}
-          keyboardType="numeric"
-        />
-
-        <TextInput
-          placeholder="Description"
-          value={description}
-          onChangeText={setDescription}
-        />
-
-        <TextInput
-          placeholder="Material (Wood, Metal)"
+          placeholder="Wood, Metal"
           value={material}
           onChangeText={setMaterial}
+          style={styles.input}
         />
 
+        <Text style={styles.label}>Colors:</Text>
         <TextInput
-          placeholder="Colors (Black, White)"
+          placeholder="Black, White"
           value={colors}
           onChangeText={setColors}
+          style={styles.input}
         />
 
+
+        <Text style={styles.label}>Description:</Text>
+            <TextInput
+            placeholder="Enter Description of the Furniture"
+            value={description}
+            onChangeText={setDescription}
+            style={styles.input}
+            />
 
 
         <View style={styles.row}>
+        
+            <View style={styles.dimensionRow}>
+            <Text style={styles.label}>Width: </Text>
 
-          <TextInput
-            placeholder="Width"
-            value={width}
-            onChangeText={setWidth}
-            keyboardType="numeric"
-            style={styles.dimInput}
-          />
+            <View style={styles.inputWithUnit}>
+                <TextInput
+                placeholder="0"
+                value={width}
+                onChangeText={setWidth}
+                keyboardType="numeric"
+                maxLength={4}
+                />
+                
+            </View>
+            <Text style={styles.unit}>mm</Text>
+            </View>
 
-          <TextInput
-            placeholder="Height"
-            value={height}
-            onChangeText={setHeight}
-            keyboardType="numeric"
-            style={styles.dimInput}
-          />
+            <View style={styles.dimensionRow}>
+            <Text style={styles.label}>Height: </Text>
 
-          <TextInput
-            placeholder="Depth"
-            value={depth}
-            onChangeText={setDepth}
-            keyboardType="numeric"
-            style={styles.dimInput}
-          />
+            <View style={styles.inputWithUnit}>
+                <TextInput
+                placeholder="0"
+                value={height}
+                onChangeText={setHeight}
+                keyboardType="numeric"
+                maxLength={4}
+                />
+                
+            </View>
+            <Text style={styles.unit}>mm</Text>
+            </View>
+
+            <View style={styles.dimensionRow}>
+            <Text style={styles.label}>Depth: </Text>
+
+            <View style={styles.inputWithUnit}>
+                <TextInput
+                placeholder="0"
+                value={depth}
+                onChangeText={setDepth}
+                keyboardType="numeric"
+                maxLength={4}
+                />
+                
+            </View>
+            <Text style={styles.unit}>mm</Text>
+            </View>
 
         </View>
 
@@ -305,5 +349,53 @@ const styles = StyleSheet.create({
   dimInput: {
     flex: 1,
   },
+
+  label: {
+  marginTop: 10,
+  marginBottom: 4,
+  fontWeight: '600',
+},
+
+input: {
+  borderWidth: 1,
+  borderColor: '#ccc',
+  borderRadius: 6,
+  padding: 10,
+  marginBottom: 10,
+},
+dimensionRow: {
+//   marginBottom: 12,
+  flexDirection: 'row',
+},
+inputWithUnit: {
+  flexDirection: "row",
+  alignItems: "center",
+  borderWidth: 1,
+  borderColor: "#ccc",
+  borderRadius: 6,
+  paddingHorizontal: 5,
+},
+dimInput: {
+  flex: 1,
+  paddingVertical: 8,
+},
+
+unit: {
+  marginLeft: 8,
+  color: "#555",
+  fontWeight: "500",
+},
+CatAndSubCat: {
+  flexDirection: "row",
+  alignItems: "center",
+  marginBottom: 12,
+},
+
+pickerWrapper: {
+  flex: 1,
+  borderWidth: 1,
+  borderColor: "#ccc",
+  borderRadius: 6,
+}
 
 });
