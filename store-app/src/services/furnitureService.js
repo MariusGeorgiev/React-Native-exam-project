@@ -1,4 +1,4 @@
-import { doc, collection, query, orderBy, limit, getDocs, getDoc, where } from 'firebase/firestore';
+import { doc, collection, query, orderBy, limit, getDocs, getDoc, where, deleteDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase/firebaseConfig';
 
 export async function fetchLatestFurniture(limitNumber = 5) {
@@ -23,4 +23,13 @@ export async function getFurnitureById(furnitureId) {
 
   if (!docSnap.exists()) throw new Error('Furniture not found');
   return { id: docSnap.id, ...docSnap.data() };
+}
+
+export async function deleteFurniture(id) {
+  await deleteDoc(doc(db, 'furniture', id));
+}
+
+export async function updateFurniture(id, data) {
+  const furnitureRef = doc(db, 'furniture', id);
+  await updateDoc(furnitureRef, data);
 }
