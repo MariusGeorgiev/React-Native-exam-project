@@ -1,7 +1,7 @@
 import { useEffect, useState  } from 'react';
 import { Alert, View, Text, Image, ActivityIndicator, ScrollView, StyleSheet, Button, TouchableOpacity } from 'react-native';
 import { getFurnitureById, deleteFurniture } from '../services/furnitureService';
-import { addToCart } from "../services/authService";
+// import { addToCart } from "../services/authService";
 import { useAuth } from '../contexts/AuthProvider';
 import { FontAwesome } from '@expo/vector-icons';
 import { useHideTabBar } from '../hooks/useHideTabBar';
@@ -10,8 +10,9 @@ export default function FurnitureDetailsScreen({ route, navigation }) {
   const { furnitureId } = route.params;
   const [furniture, setFurniture] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [quantity, setQuantity] = useState(1);
 
-  const { user, userProfile, toggleFavorite} = useAuth();
+  const { user, userProfile, toggleFavorite, addToCart} = useAuth();
 
   useHideTabBar(navigation);
 
@@ -34,6 +35,10 @@ export default function FurnitureDetailsScreen({ route, navigation }) {
   if (loading) return <ActivityIndicator size="large" style={{ marginTop: 50 }} />;
 
   if (!furniture) return <Text>Furniture not found</Text>;
+
+const handleIncrement = () => setQuantity(prev => prev + 1);
+
+const handleDecrement = () => setQuantity(prev => (prev > 1 ? prev - 1 : 1));
 
 const handleDelete = () => {
   Alert.alert(
@@ -58,15 +63,16 @@ const handleDelete = () => {
 };
 
 
-
-
 const handleAddToCart = async () => {
-  if (!user) return;
-  await addToCart(user.uid, furniture.id);
-  alert("Added to cart!");
+  if (!user) return alert("Please login");
+
+  await addToCart(furniture.id, quantity);
+
+  const addedQty = quantity; 
+  setQuantity(1); 
+
+  alert(`Added ${addedQty} item${addedQty > 1 ? "s" : ""} to cart`);
 };
-
-
 
   return (
     <ScrollView contentContainerStyle={{ padding: 16 }}>
@@ -90,9 +96,21 @@ const handleAddToCart = async () => {
         {user && (
             <>
                 {userProfile?.role === "user" && (
-                  <>
-                    <Button title="🛒 Add to Cart" onPress={handleAddToCart} />
-                  </>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 10 }}>
+                    <TouchableOpacity onPress={handleDecrement} style={styles.qtyBtn}>
+                      <Text style={styles.qtyBtnText}>-</Text>
+                    </TouchableOpacity>
+
+                    <Text style={{ marginHorizontal: 12 }}>{quantity}</Text>
+
+                    <TouchableOpacity onPress={handleIncrement} style={styles.qtyBtn}>
+                      <Text style={styles.qtyBtnText}>+</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity onPress={handleAddToCart} style={styles.addToCartBtn}>
+                      <Text style={styles.addToCartBtnText}>🛒 Add to Cart ({quantity})</Text>
+                    </TouchableOpacity>
+                  </View>
                 )}
 
                 {userProfile?.role === "admin" && (
@@ -136,4 +154,25 @@ const styles = StyleSheet.create({
   marginTop: 16,
   alignSelf: 'flex-start',
 },
+  qtyBtn: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    backgroundColor: '#ddd',
+    borderRadius: 4,
+  },
+  qtyBtnText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  addToCartBtn: {
+    marginLeft: 12,
+    backgroundColor: '#b09999',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 4,
+  },
+  addToCartBtnText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  }
 });
