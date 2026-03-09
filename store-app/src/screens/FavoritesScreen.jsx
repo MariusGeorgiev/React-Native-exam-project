@@ -37,7 +37,7 @@ export default function FavoritesScreen({ navigation }) {
   }
 }
 
-    const { refreshing, onRefresh } = usePullToRefresh(fetchFavorites);
+  const { refreshing, onRefresh } = usePullToRefresh(fetchFavorites);
 
   useEffect(() => {
     fetchFavorites();
