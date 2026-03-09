@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react';
-import { Alert, View, Text, Image, ActivityIndicator, ScrollView, StyleSheet, Button } from 'react-native';
+import { Alert, View, Text, Image, ActivityIndicator, ScrollView, StyleSheet, Button, TouchableOpacity } from 'react-native';
 import { getFurnitureById, deleteFurniture } from '../services/furnitureService';
+import { toggleFavorite, addToCart } from "../services/authService";
 import { useAuth } from '../contexts/AuthProvider';
+import { FontAwesome } from '@expo/vector-icons';
 
 export default function FurnitureDetailsScreen({ route, navigation }) {
   const { furnitureId } = route.params;
   const [furniture, setFurniture] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isFavorite, setIsFavorite] = useState(false);
 
   const { user, userProfile} = useAuth();
 
@@ -24,6 +27,12 @@ export default function FurnitureDetailsScreen({ route, navigation }) {
 
     fetchDetails();
   }, [furnitureId]);
+  
+  useEffect(() => {
+  if (furniture && userProfile?.favorites) {
+    setIsFavorite(userProfile.favorites.includes(furniture.id));
+  }
+}, [furniture, userProfile]);
 
   if (loading) return <ActivityIndicator size="large" style={{ marginTop: 50 }} />;
 
@@ -51,6 +60,26 @@ const handleDelete = () => {
   );
 };
 
+
+
+const handleFavorite = async () => {
+  if (!user) return alert("Please login to use favorites");
+
+  try {
+    const added = await toggleFavorite(user.uid, furniture.id);
+    setIsFavorite(added);
+    alert(added ? "Added to favorites!" : "Removed from favorites!");
+  } catch (error) {
+    console.log("Favorite error:", error);
+  }
+};
+
+const handleAddToCart = async () => {
+  if (!user) return;
+  await addToCart(user.uid, furniture.id);
+  alert("Added to cart!");
+};
+
   return (
     <ScrollView contentContainerStyle={{ padding: 16 }}>
       
@@ -70,20 +99,43 @@ const handleDelete = () => {
         <Text>Description: {furniture.description}</Text>
 
 
-        {user && userProfile?.role === "admin" && (
-          <View style={{ marginTop: 20 }}>
-            <Button
-              title="Edit"
-              onPress={() => navigation.navigate('EditFurniture', { furnitureId })}
-            />
+        {user && (
+            <>
+                {userProfile?.role === "user" && (
+                  <>
+                    <Button title="🛒 Add to Cart" onPress={handleAddToCart} />
+                  </>
+                )}
 
-            <Button
-              title="Delete"
-              color="red"
-              onPress={handleDelete}
-            />
-          </View>
-        )}
+                {userProfile?.role === "admin" && (
+                  
+                  <View style={{ marginTop: 20 }}>
+                    <Button
+                      title="Edit"
+                      onPress={() => navigation.navigate('EditFurniture', { furnitureId })}
+                    />
+
+                    <Button
+                      title="Delete"
+                      color="red"
+                      onPress={handleDelete}
+                    />
+                  </View>
+                  
+                )}
+
+                 <TouchableOpacity
+                  style={styles.favoriteBtn}
+                  onPress={handleFavorite}
+                >
+                  <FontAwesome
+                    name={isFavorite ? "heart" : "heart-o"}
+                    size={32}
+                    color={isFavorite ? "red" : "gray"}
+                  />
+                </TouchableOpacity>
+            </>
+         )}
 
     </ScrollView>
   );
@@ -91,4 +143,8 @@ const handleDelete = () => {
 
 const styles = StyleSheet.create({
   title: { fontSize: 20, fontWeight: 'bold', marginBottom: 8 },
+  favoriteBtn: {
+  marginTop: 16,
+  alignSelf: 'flex-start',
+},
 });
