@@ -2,6 +2,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import CategoriesScreen from '../screens/CategoriesScreen';
 import FurnitureListScreen from '../screens/FurnitureListScreen';
 import FurnitureDetailsScreen from '../screens/FurnitureDetailsScreen';
+import EditFurnitureScreen from '../screens/EditFurnitureScreen';
 // import { TouchableOpacity, View, Text, StyleSheet } from 'react-native';
 import { SimpleHeader, BackHeader } from '../components/headers';
 
@@ -43,6 +44,14 @@ export default function CategoriesStackNavigator() {
           ),
         })}
       />
+
+
+      <Stack.Screen
+        name="EditFurniture"
+        component={EditFurnitureScreen}
+        options={{ title: "Edit Furniture" }}
+      />
+
     </Stack.Navigator>
   );
 }
