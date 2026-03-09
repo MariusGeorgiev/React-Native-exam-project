@@ -1,33 +1,45 @@
 import { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity, Image, RefreshControl, } from 'react-native';
 import { useAuth } from '../contexts/AuthProvider';
 import { getFurnitureById } from '../services/furnitureService';
+import usePullToRefresh from '../hooks/usePullToRefresh';
 
 export default function FavoritesScreen({ navigation }) {
   const { userProfile } = useAuth();
   const [favorites, setFavorites] = useState([]);
   const [loading, setLoading] = useState(true);
 
+   async function fetchFavorites() {
+  if (!userProfile?.favorites?.length) {
+    setFavorites([]);
+    setLoading(false);
+    return;
+  }
+
+  try {
+    const items = await Promise.all(
+      userProfile.favorites.map(async id => {
+        try {
+          return await getFurnitureById(id);
+        } catch (error) {
+          console.warn(`Furniture with id ${id} not found, skipping`);
+          return null; 
+        }
+      })
+    );
+
+    const validItems = items.filter(item => item !== null);
+    setFavorites(validItems);
+  } catch (error) {
+    console.log("Error fetching favorite items:", error);
+  } finally {
+    setLoading(false);
+  }
+}
+
+    const { refreshing, onRefresh } = usePullToRefresh(fetchFavorites);
+
   useEffect(() => {
-    async function fetchFavorites() {
-      if (!userProfile?.favorites?.length) {
-        setFavorites([]);
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const items = await Promise.all(
-          userProfile.favorites.map(id => getFurnitureById(id))
-        );
-        setFavorites(items);
-      } catch (error) {
-        console.log("Error fetching favorite items:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-
     fetchFavorites();
   }, [userProfile?.favorites]);
 
@@ -59,6 +71,9 @@ export default function FavoritesScreen({ navigation }) {
       <FlatList
         data={favorites}
         keyExtractor={item => item.id}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
         renderItem={renderItem}
       />
     </View>
