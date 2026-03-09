@@ -50,48 +50,68 @@ export default function CartScreen({ navigation }) {
     );
   }
 
-  const totalPrice = cartItems.reduce((sum, item) => sum + item.furniture.price * item.quantity, 0);
+  const totalPrice = cartItems.reduce(
+    (sum, item) => sum + item.furniture.price * item.quantity,
+    0
+  );
 
-const renderItem = ({ item }) => (
-  <TouchableOpacity
-    style={styles.itemContainer}
-    onPress={() =>
-      navigation.navigate('FurnitureDetails', { furnitureId: item.furniture.id })
-    }
-  >
-    {item.furniture.images?.[0] && (
-      <Image source={{ uri: item.furniture.images[0] }} style={styles.image} />
-    )}
-    <View style={styles.info}>
-      <Text style={styles.title}>{item.furniture.title}</Text>
-      <Text>Price: ${item.furniture.price}</Text>
-      <Text>Quantity: {item.quantity}</Text>
+  const renderItem = ({ item }) => (
+    <View style={styles.itemContainer}>
+      <TouchableOpacity
+        onPress={() => navigation.navigate('FurnitureDetails', { furnitureId: item.furniture.id })}
+        style={{flexDirection: 'row'}}
+      >
+        {item.furniture.images?.[0] && (
+          <Image source={{ uri: item.furniture.images[0] }} style={styles.image} />
+        )}
 
-      <View style={styles.qtyRow}>
-        <TouchableOpacity
-          style={styles.qtyBtn}
-          onPress={() => item.quantity > 1 && updateCartQuantity(item.id, item.quantity - 1)}
-        >
-          <Text>-</Text>
-        </TouchableOpacity>
+        <View>
+          <Text style={styles.title}>{item.furniture.title}</Text>
+          <Text>Price: ${item.furniture.price}</Text>
+          <Text>Quantity: {item.quantity}</Text>
+          <Text>Total price items: ${item.quantity * item.furniture.price}</Text>
+          <TouchableOpacity
+            style={styles.removeBtn}
+            onPress={() => removeFromCart(item.id)}
+          >
+            <Text style={{ color: 'white' }}>Remove</Text>
+          </TouchableOpacity>
+        </View>
+        
+      </TouchableOpacity>
+      
 
-        <TouchableOpacity
-          style={styles.qtyBtn}
-          onPress={() => updateCartQuantity(item.id, item.quantity + 1)}
-        >
-          <Text>+</Text>
-        </TouchableOpacity>
+      <View style={styles.info}>
+        
 
-        <TouchableOpacity
-          style={styles.removeBtn}
-          onPress={() => removeFromCart(item.id)}
-        >
-          <Text style={{ color: 'white' }}>Remove</Text>
-        </TouchableOpacity>
+        
+
+        <View style={styles.qtyRow}>
+          <TouchableOpacity
+            style={styles.qtyBtn}
+            onPress={() =>
+              item.quantity > 1 && updateCartQuantity(item.id, item.quantity - 1)
+            }
+          >
+            <Text>-</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.qtyBtn}
+            onPress={() => updateCartQuantity(item.id, item.quantity + 1)}
+          >
+            <Text>+</Text>
+          </TouchableOpacity>
+
+          
+
+        </View>
+        
+
       </View>
+      
     </View>
-  </TouchableOpacity>
-);
+  );
 
   return (
     <View style={styles.container}>
@@ -112,13 +132,13 @@ const renderItem = ({ item }) => (
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff' },
   center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  itemContainer: { flexDirection: 'row', padding: 16, borderBottomWidth: 1, borderColor: '#eee' },
+  itemContainer: { flexDirection: 'row', justifyContent: 'space-between', padding: 16, borderBottomWidth: 1, borderColor: '#eee' },
   image: { width: 80, height: 80, borderRadius: 8, marginRight: 12 },
-  info: { flex: 1 },
+  info: { flexDirection: "row"},
   title: { fontSize: 16, fontWeight: 'bold' },
-  qtyRow: { flexDirection: 'row', marginTop: 8, alignItems: 'center' },
-  qtyBtn: { padding: 6, backgroundColor: '#ddd', marginRight: 8, borderRadius: 4 },
-  removeBtn: { padding: 6, backgroundColor: 'red', borderRadius: 4 },
+  qtyRow: { flexDirection: 'column', gap: 8,  alignItems: "flex-end" },
+  qtyBtn: { padding: 10, backgroundColor: '#ddd', marginRight: 8, borderRadius: 4, width: 40, alignItems: 'center', },
+  removeBtn: { padding: 8, backgroundColor: 'red', marginTop: 10, borderRadius: 4, alignItems: 'center' },
   footer: { padding: 16, borderTopWidth: 1, borderColor: '#eee', backgroundColor: '#fafafa' },
   total: { fontSize: 18, fontWeight: 'bold', marginBottom: 8 },
 });
