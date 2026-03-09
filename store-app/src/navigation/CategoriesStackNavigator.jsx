@@ -49,7 +49,14 @@ export default function CategoriesStackNavigator() {
       <Stack.Screen
         name="EditFurniture"
         component={EditFurnitureScreen}
-        options={{ title: "Edit Furniture" }}
+        options={({ navigation }) => ({
+          header: () => (
+            <BackHeader
+              title="Edit Furniture"
+              navigation={navigation}
+            />
+          ),
+        })}
       />
 
     </Stack.Navigator>
