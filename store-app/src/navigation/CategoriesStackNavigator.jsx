@@ -42,6 +42,7 @@ export default function CategoriesStackNavigator() {
               navigation={navigation}
             />
           ),
+          // tabBarStyle: { display: 'none' }
         })}
       />
 
