@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState  } from 'react';
 import { Alert, View, Text, Image, ActivityIndicator, ScrollView, StyleSheet, Button, TouchableOpacity } from 'react-native';
 import { getFurnitureById, deleteFurniture } from '../services/furnitureService';
 import { addToCart } from "../services/authService";
 import { useAuth } from '../contexts/AuthProvider';
 import { FontAwesome } from '@expo/vector-icons';
+import { useHideTabBar } from '../hooks/useHideTabBar';
 
 export default function FurnitureDetailsScreen({ route, navigation }) {
   const { furnitureId } = route.params;
@@ -11,6 +12,8 @@ export default function FurnitureDetailsScreen({ route, navigation }) {
   const [loading, setLoading] = useState(true);
 
   const { user, userProfile, toggleFavorite} = useAuth();
+
+  useHideTabBar(navigation);
 
    useEffect(() => {
     async function fetchDetails() {
@@ -56,11 +59,14 @@ const handleDelete = () => {
 
 
 
+
 const handleAddToCart = async () => {
   if (!user) return;
   await addToCart(user.uid, furniture.id);
   alert("Added to cart!");
 };
+
+
 
   return (
     <ScrollView contentContainerStyle={{ padding: 16 }}>
@@ -130,5 +136,4 @@ const styles = StyleSheet.create({
   marginTop: 16,
   alignSelf: 'flex-start',
 },
-  favoriteBtn: { marginTop: 16, alignSelf: 'flex-start' },
 });
