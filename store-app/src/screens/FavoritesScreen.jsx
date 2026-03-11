@@ -67,7 +67,7 @@ export default function FavoritesScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Favorites</Text>
+      <Text style={styles.title}>All Favorites Furniture ({favorites?.length || 0})</Text>
       <FlatList
         data={favorites}
         keyExtractor={item => item.id}
