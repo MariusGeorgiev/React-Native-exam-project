@@ -65,7 +65,7 @@ export default function BottomTabsNavigator() {
             }}
           />
 
-            {userProfile?.role === "user" && (
+            
           <Tab.Screen
             name="Cart"
             component={CartStackNavigator}
@@ -75,7 +75,6 @@ export default function BottomTabsNavigator() {
               ),
             }}
           />
-          )}
 
 
           {userProfile?.role === "admin" && (
