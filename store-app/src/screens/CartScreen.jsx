@@ -123,7 +123,15 @@ export default function CartScreen({ navigation }) {
       />
       <View style={styles.footer}>
         <Text style={styles.total}>Total: ${totalPrice.toFixed(2)}</Text>
-        <Button title="Go to Checkout" onPress={() => navigation.navigate('Checkout')} />
+        <Button
+          title="Go to Checkout"
+          onPress={() =>
+            navigation.navigate("Checkout", {
+              cartItems,
+              totalPrice,
+            })
+          }
+        />
       </View>
     </View>
   );
