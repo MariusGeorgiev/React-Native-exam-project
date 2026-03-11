@@ -406,15 +406,10 @@ export default function ProfileScreen() {
                 <Text style={{ color: "white" }}>Use Current Location</Text>
               </TouchableOpacity>
 
-      <TouchableOpacity style={styles.saveBtn} onPress={handleSave}>
-      <Text style={{ color: "white" }}>Save Changes</Text>
-    </TouchableOpacity>
+          <TouchableOpacity style={styles.saveBtn} onPress={handleSave}>
+             <Text style={{ color: "white" }}>Save Changes</Text>
+          </TouchableOpacity>
 
-  <Text style={styles.label}>Orders:</Text>
-  <Text style={styles.value}>{profile.orders?.length || 0}</Text>
-
-  <Text style={styles.label}>Favorites:</Text>
-  <Text style={styles.value}>{profile.favorites?.length || 0}</Text>
 </ScrollView>
   );
 }
