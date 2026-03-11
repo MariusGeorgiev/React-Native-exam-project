@@ -82,3 +82,15 @@ export async function addToCart(uid, furnitureId, quantity = 1) {
     await updateDoc(userRef, { cart: arrayUnion({ furnitureId, quantity }) });
   }
 }
+
+
+export async function updateUserProfile(userId, data) {
+  try {
+    const userRef = doc(db, "users", userId);
+    await updateDoc(userRef, data);
+    return true;
+  } catch (error) {
+    console.log("Error updating profile:", error);
+    throw error;
+  }
+}
