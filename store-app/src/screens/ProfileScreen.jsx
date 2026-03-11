@@ -67,6 +67,18 @@ export default function ProfileScreen() {
       }
     }
 
+    async function takePicture() {
+      const result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        quality: 0.7,
+      });
+
+      if (!result.canceled) {
+        const uri = result.assets[0].uri;
+        const uploaded = await uploadFile(uri, "profileImages");
+        setEditData(prev => ({ ...prev, image: uploaded }));
+      }
+    }
 
     async function handleSave() {
       try {
@@ -158,6 +170,24 @@ export default function ProfileScreen() {
 
         alert("Location saved!");
       }
+    
+      function formatDate(date) {
+  const d = date?.toDate ? date.toDate() : new Date(date);
+
+  const datePart = d.toLocaleDateString("en-US", {
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+  }).replace(",", "");
+
+  const timePart = d.toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+
+  return `${datePart} ${timePart}`;
+}
 
   if (loading) return <ActivityIndicator style={{ marginTop: 50 }} />;
 
@@ -171,47 +201,57 @@ export default function ProfileScreen() {
   return (
     <ScrollView contentContainerStyle={styles.container}>
   
-        <Image
-          source={{
-            uri:
-              editData.image ||
-              "https://thumbs.dreamstime.com/b/simple-silhouette-profile-photo-art-simple-silhouette-profile-photo-art-240483689.jpg",
-          }}
-          style={styles.avatar}
-        />
-
-        <TouchableOpacity onPress={pickImage}>
-          <Text style={{ color: "blue" }}>Change picture</Text>
-        </TouchableOpacity>
+        {/* Centered profile picture */}
+        <View style={{ alignItems: "center", marginBottom: 16 }}>
+          <View style={[styles.nameAndRoleGroup, {marginBottom: 5}]}>
+              <Text style={{fontSize: 16, fontWeight: 'bold'}}>Role:</Text>
+              <Text style={{fontSize: 16, fontWeight: '500'}}>{profile.role}</Text>
+            </View>
+          <Image
+            source={{
+              uri:
+                editData.image ||
+                "https://thumbs.dreamstime.com/b/simple-silhouette-profile-photo-art-simple-silhouette-profile-photo-art-240483689.jpg",
+            }}
+            style={styles.avatar}
+          />
+          <View style={{ flexDirection: "row", gap: 10, marginTop: 5 }}>
+            <TouchableOpacity onPress={pickImage}>
+              <Text style={{ color: "blue" }}>Pick from Library</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={takePicture}>
+              <Text style={{ color: "blue" }}>Take a Picture</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
 
 
           <View style={styles.nameAndRole}>
-            <View style={styles.nameAndRoleGroup}>
-            <Text style={{fontSize: 16, fontWeight: 'bold'}}>Email:</Text>
-            <Text style={{fontSize: 16, fontWeight: '500'}}>{profile.email}</Text>
+
+            <View style={[styles.nameAndRoleGroup, {flexDirection:'column'}]}>
+              <Text style={{fontSize: 16, fontWeight: 'bold'}}>Email:</Text>
+              <Text style={{fontSize: 16, fontWeight: '500'}}>{profile.email}</Text>
             </View>
 
-            <View style={styles.nameAndRoleGroup}>
-            <Text style={{fontSize: 16, fontWeight: 'bold'}}>Role:</Text>
-            <Text style={{fontSize: 16, fontWeight: '500'}}>{profile.role}</Text>
+            
+
+            <View style={[styles.nameAndRoleGroup, {flexDirection:'column'}]}>
+              <Text style={{fontSize: 16, fontWeight: 'bold'}}>Crated At:</Text>
+              <Text style={{fontSize: 16, fontWeight: '500'}}>
+                {formatDate(profile.createdAt)}
+              </Text>
             </View>
+
           </View>
 
 
-      <Text style={styles.label}>Username</Text>
-      <TextInput
-        style={styles.input}
-        value={editData.username}
-        onChangeText={(text) =>
-          setEditData(prev => ({ ...prev, username: text }))
-        }
-      />
+      
 
   
-        <View style={styles.ageAndGenderGroup}>
+        <View style={[styles.genderAndNameGroup, {flexDirection: 'row', justifyContent: 'space-between'}]}>
 
-          <View>
-              <Text style={styles.label}>Gender</Text>
+          <View style={[styles.gender, {flex: 0.25} ]}>
+              <Text style={styles.label}>Gender:</Text>
               <View style={styles.pickerWrapper}>
                 <Picker
                   selectedValue={editData.gender}
@@ -226,62 +266,86 @@ export default function ProfileScreen() {
               </View>
           </View>
 
-          <View>
-              <Text style={styles.label}>Age</Text>
-              <TextInput
-                style={styles.ageInput}
-                keyboardType="numeric"
-                maxLength={3}
-                value={editData.age}
-                onChangeText={(text) =>
-                  setEditData(prev => ({ ...prev, age: text }))
-                }
-              />
+         <View style={[styles.username, {flex: 0.62} ]}>
+            <Text style={styles.label}>Username:</Text>
+            <TextInput
+              style={styles.inputName}
+              value={editData.username}
+              onChangeText={(text) =>
+                setEditData(prev => ({ ...prev, username: text }))
+              }
+            />
           </View>
+
+          
 
       </View>
 
-        <Text style={styles.label}>Phone Number:</Text>
-        <View style={styles.phoneRow}>
 
-          <View style={styles.phoneCode}>
-            <Picker
-              selectedValue={editData.phoneCode}
-              onValueChange={(value) =>
-                setEditData(prev => ({ ...prev, phoneCode: value }))
-              }
-            >
-              <Picker.Item label="+359 (BG)" value="+359" />
-              <Picker.Item label="+1 (US)" value="+1" />
-              <Picker.Item label="+44 (UK)" value="+44" />
-              <Picker.Item label="+49 (DE)" value="+49" />
-              <Picker.Item label="+33 (FR)" value="+33" />
-              <Picker.Item label="+39 (IT)" value="+39" />
-              <Picker.Item label="+34 (ES)" value="+34" />
-              <Picker.Item label="+31 (NL)" value="+31" />
-              <Picker.Item label="+32 (BE)" value="+32" />
-              <Picker.Item label="+40 (RO)" value="+40" />
-            </Picker>
+          <View style={{flex: 1, flexDirection: 'row', gap: 25, justifyContent: 'center',}}>
+            <View style={{ flex: 0.15, fontSize: 16 }}> 
+                <Text style={styles.label}>Age:</Text>
+                <TextInput
+                  style={styles.ageInput}
+                  keyboardType="numeric"
+                  maxLength={3}
+                  value={editData.age}
+                  onChangeText={(text) =>
+                    setEditData(prev => ({ ...prev, age: text }))
+                  }
+                />
+            </View>
+
+            
+              <View style={{flex: 0.85, flexDirection: 'row',}}>
+              
+                <View >
+                    <Text style={styles.label}>Code:</Text>
+                  <View style={styles.phoneCode}>
+                    <Picker
+                      selectedValue={editData.phoneCode}
+                      onValueChange={(value) =>
+                        setEditData(prev => ({ ...prev, phoneCode: value }))
+                      }
+                    >
+                      <Picker.Item label="+359 (BG)" value="+359" />
+                      <Picker.Item label="+1 (US)" value="+1" />
+                      <Picker.Item label="+44 (UK)" value="+44" />
+                      <Picker.Item label="+49 (DE)" value="+49" />
+                      <Picker.Item label="+33 (FR)" value="+33" />
+                      <Picker.Item label="+39 (IT)" value="+39" />
+                      <Picker.Item label="+34 (ES)" value="+34" />
+                      <Picker.Item label="+31 (NL)" value="+31" />
+                      <Picker.Item label="+32 (BE)" value="+32" />
+                      <Picker.Item label="+40 (RO)" value="+40" />
+                    </Picker>
+                  </View>
+                </View>
+
+                <View>
+                  <Text style={styles.label}>Number:</Text>
+                  <TextInput
+                    style={[styles.phoneInput, ]}
+                    value={editData.phone}
+                    keyboardType="numeric"
+                    maxLength={12}
+                    placeholder="Phone number"
+                    onChangeText={(text) =>
+                      setEditData(prev => ({ ...prev, phone: text }))
+                    }
+                  />
+                </View>
+                
+              </View>
+            
           </View>
-
-          <TextInput
-            style={styles.phoneInput}
-            value={editData.phone}
-            keyboardType="numeric"
-            maxLength={15}
-            placeholder="Phone number"
-            onChangeText={(text) =>
-              setEditData(prev => ({ ...prev, phone: text }))
-            }
-          />
-        </View>
 
         
         <Text style={styles.label}>Address</Text>
           
-          <View style={styles.addressRow}>
+          <View style={[styles.addressRow, { gap: 5 }]}>
 
-            <View style={styles.addressColumn}>
+            <View style={[styles.addressColumn, { flex: 0.5 }]}>
             <Text style={styles.label}>City:</Text>
             <TextInput
               style={[styles.input, styles.addressInput]}
@@ -293,7 +357,7 @@ export default function ProfileScreen() {
             />
             </View>
             
-            <View style={styles.addressColumn}>
+            <View style={[styles.addressColumn, { flex: 0.5 }]}>
             <Text style={styles.label}>Country:</Text>
             <TextInput
               style={[styles.input, styles.addressInput]}
@@ -307,14 +371,15 @@ export default function ProfileScreen() {
           </View>
 
       
-          <View style={styles.addressRow}>
+          <View style={[styles.addressRow, { gap: 5 }]}>
 
-            <View style={styles.addressColumn}>
+            <View style={[styles.addressColumn, { flex: 0.25 }]}>
             <Text style={styles.label}>Postal Code:</Text>
             <TextInput
               style={[styles.input, styles.addressInput]}
               placeholder="Postal Code"
               keyboardType="numeric"
+              maxLength={9}
               value={editData.postalCode}
               onChangeText={(text) =>
                 setEditData(prev => ({ ...prev, postalCode: text }))
@@ -322,7 +387,7 @@ export default function ProfileScreen() {
             />
             </View>
             
-            <View style={styles.addressColumn}>
+            <View style={[styles.addressColumn, { flex: 0.75 }]}>
             <Text style={styles.label}>Street:</Text>
             <TextInput
               style={[styles.input, styles.addressInput]}
@@ -355,11 +420,10 @@ export default function ProfileScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { padding: 24 },
+  container: { padding: 10 },
   center: { flex: 1, justifyContent: "center", alignItems: "center" },
   label: { fontWeight: "bold", marginTop: 16, textAlign: "center" },
   value: { fontSize: 16, marginTop: 4 },
-  avatar: { width: 100, height: 100, borderRadius: 50, marginBottom: 16 },
   input: {
   borderWidth: 1,
   borderColor: "#ccc",
@@ -383,7 +447,8 @@ pickerWrapper: {
 },
 phoneRow: {
   flexDirection: "row",
-  alignItems: "center",
+  // justifyContent: 'center',
+  // alignItems: "center",
   marginTop: 4
 },
 
@@ -396,12 +461,15 @@ phoneCode: {
 },
 
 phoneInput: {
-  flex: 1,
+  fontSize: 16,
   borderWidth: 1,
   borderColor: "#ccc",
   borderRadius: 6,
-  paddingTop: 17,
-  paddingBottom: 17
+  paddingTop: 16,
+  paddingBottom: 16,
+  paddingLeft: 12,
+  paddingRight: 12,
+  minWidth: 125,
 },
 locationBtn: {
   marginTop: 10,
@@ -417,14 +485,13 @@ addressRow: {
 },
 addressInput: {
   flex: 1,
-  minWidth: 120,
-  marginRight: 8
+  // minWidth: 120,
+  // marginRight: 8
 },
 nameAndRole: {
   fontSize: 18,
   flexDirection: "row",
-  justifyContent: "space-between",
-  gap: 20,
+  justifyContent: 'space-around',
 
 },
 nameAndRoleGroup:{ 
@@ -433,12 +500,22 @@ nameAndRoleGroup:{
   
 
 },
-ageAndGenderGroup: {
-  flexDirection: 'row',
-  justifyContent: "space-evenly",
-},
+// ageAndGenderGroup: {
+//   flexDirection: 'row',
+//   justifyContent: "space-evenly",
+// },
 ageInput: {
   borderWidth: 1,
+  borderColor: "#ccc",
+  borderRadius: 6,
+  // marginTop: 4,
+  paddingTop: 17,
+  paddingBottom: 17,
+  paddingLeft: 12, 
+  paddingRight: 12, 
+},
+inputName: {
+borderWidth: 1,
   borderColor: "#ccc",
   borderRadius: 6,
   marginTop: 4,
@@ -446,6 +523,15 @@ ageInput: {
   paddingBottom: 17,
   paddingLeft: 12, 
   paddingRight: 12, 
-}
+  
+},
+avatar: {
+  width: 120,
+  height: 120,
+  borderRadius: 60,
+  marginBottom: 12
+},
+
+
 
 });
