@@ -53,7 +53,7 @@ export default function CustomDrawerContent(props) {
 
 
         {user && (
-                
+                <>
                   <DrawerItem
                     label={`Profile's ${username}`}
                     icon={({ color, size }) => (
@@ -61,6 +61,16 @@ export default function CustomDrawerContent(props) {
                     )}
                     onPress={() => props.navigation.navigate("Profile")}
                   />
+
+                  <DrawerItem
+                    label="Orders"
+                    icon={({ color, size }) => (
+                      <Ionicons name="person-outline" size={size} color={color} />
+                    )}
+                    onPress={() => props.navigation.navigate("Orders")}
+                  />
+
+                  </>
                 
               )}
 
@@ -76,11 +86,11 @@ export default function CustomDrawerContent(props) {
 
 
         <DrawerItem
-          label="Info"
+          label="Info & Contact"
           icon={({ color, size }) => (
             <Ionicons name="information-circle-outline" size={size} color={color} />
           )}
-          onPress={() => props.navigation.navigate('Info')}
+          onPress={() => props.navigation.navigate('Info & Contact')}
         />
       </View>
 
