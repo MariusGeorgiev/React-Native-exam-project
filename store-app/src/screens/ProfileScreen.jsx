@@ -185,11 +185,18 @@ export default function ProfileScreen() {
         </TouchableOpacity>
 
 
-        <Text style={styles.label}>Email:</Text>
-  <Text style={styles.value}>{profile.email}</Text>
+          <View style={styles.nameAndRole}>
+            <View style={styles.nameAndRoleGroup}>
+            <Text style={{fontSize: 16, fontWeight: 'bold'}}>Email:</Text>
+            <Text style={{fontSize: 16, fontWeight: '500'}}>{profile.email}</Text>
+            </View>
 
-  <Text style={styles.label}>Role:</Text>
-  <Text style={styles.value}>{profile.role}</Text>
+            <View style={styles.nameAndRoleGroup}>
+            <Text style={{fontSize: 16, fontWeight: 'bold'}}>Role:</Text>
+            <Text style={{fontSize: 16, fontWeight: '500'}}>{profile.role}</Text>
+            </View>
+          </View>
+
 
       <Text style={styles.label}>Username</Text>
       <TextInput
@@ -201,32 +208,40 @@ export default function ProfileScreen() {
       />
 
   
+        <View style={styles.ageAndGenderGroup}>
 
-      <Text style={styles.label}>Gender</Text>
-      <View style={styles.pickerWrapper}>
-        <Picker
-          selectedValue={editData.gender}
-          onValueChange={(value) =>
-            setEditData(prev => ({ ...prev, gender: value }))
-          }
-        >
-          <Picker.Item label="Select gender..." value="" />
-          <Picker.Item label="Male" value="male" />
-          <Picker.Item label="Female" value="female" />
-        </Picker>
+          <View>
+              <Text style={styles.label}>Gender</Text>
+              <View style={styles.pickerWrapper}>
+                <Picker
+                  selectedValue={editData.gender}
+                  onValueChange={(value) =>
+                    setEditData(prev => ({ ...prev, gender: value }))
+                  }
+                >
+                  <Picker.Item label="Select gender..." value="" />
+                  <Picker.Item label="Male" value="male" />
+                  <Picker.Item label="Female" value="female" />
+                </Picker>
+              </View>
+          </View>
+
+          <View>
+              <Text style={styles.label}>Age</Text>
+              <TextInput
+                style={styles.ageInput}
+                keyboardType="numeric"
+                maxLength={3}
+                value={editData.age}
+                onChangeText={(text) =>
+                  setEditData(prev => ({ ...prev, age: text }))
+                }
+              />
+          </View>
+
       </View>
 
-      <Text style={styles.label}>Age</Text>
-      <TextInput
-        style={styles.input}
-        keyboardType="numeric"
-        value={editData.age}
-        onChangeText={(text) =>
-          setEditData(prev => ({ ...prev, age: text }))
-        }
-      />
-
-        <Text style={styles.label}>Phone</Text>
+        <Text style={styles.label}>Phone Number:</Text>
         <View style={styles.phoneRow}>
 
           <View style={styles.phoneCode}>
@@ -261,46 +276,64 @@ export default function ProfileScreen() {
           />
         </View>
 
+        
         <Text style={styles.label}>Address</Text>
-
-            <TextInput
-            style={styles.input}
-            placeholder="City"
-            value={editData.city}
-            onChangeText={(text) =>
-              setEditData(prev => ({ ...prev, city: text }))
-            }
-          />
-
-          <TextInput
-            style={styles.input}
-            placeholder="Country"
-            value={editData.country}
-            onChangeText={(text) =>
-              setEditData(prev => ({ ...prev, country: text }))
-            }
-          />
-
-          <TextInput
-            style={styles.input}
-            placeholder="Street"
-            value={editData.street}
-            onChangeText={(text) =>
-              setEditData(prev => ({ ...prev, street: text }))
-            }
-          />
-
           
+          <View style={styles.addressRow}>
 
-          <TextInput
-            style={styles.input}
-            placeholder="Postal Code"
-            keyboardType="numeric"
-            value={editData.postalCode}
-            onChangeText={(text) =>
-              setEditData(prev => ({ ...prev, postalCode: text }))
-            }
-          />
+            <View style={styles.addressColumn}>
+            <Text style={styles.label}>City:</Text>
+            <TextInput
+              style={[styles.input, styles.addressInput]}
+              placeholder="City"
+              value={editData.city}
+              onChangeText={(text) =>
+                setEditData(prev => ({ ...prev, city: text }))
+              }
+            />
+            </View>
+            
+            <View style={styles.addressColumn}>
+            <Text style={styles.label}>Country:</Text>
+            <TextInput
+              style={[styles.input, styles.addressInput]}
+              placeholder="Country"
+              value={editData.country}
+              onChangeText={(text) =>
+                setEditData(prev => ({ ...prev, country: text }))
+              }
+            />
+            </View>
+          </View>
+
+      
+          <View style={styles.addressRow}>
+
+            <View style={styles.addressColumn}>
+            <Text style={styles.label}>Postal Code:</Text>
+            <TextInput
+              style={[styles.input, styles.addressInput]}
+              placeholder="Postal Code"
+              keyboardType="numeric"
+              value={editData.postalCode}
+              onChangeText={(text) =>
+                setEditData(prev => ({ ...prev, postalCode: text }))
+              }
+            />
+            </View>
+            
+            <View style={styles.addressColumn}>
+            <Text style={styles.label}>Street:</Text>
+            <TextInput
+              style={[styles.input, styles.addressInput]}
+              placeholder="Street"
+              value={editData.street}
+              onChangeText={(text) =>
+                setEditData(prev => ({ ...prev, street: text }))
+              }
+            />
+            </View>
+          </View>
 
           
 
@@ -324,7 +357,7 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   container: { padding: 24 },
   center: { flex: 1, justifyContent: "center", alignItems: "center" },
-  label: { fontWeight: "bold", marginTop: 16 },
+  label: { fontWeight: "bold", marginTop: 16, textAlign: "center" },
   value: { fontSize: 16, marginTop: 4 },
   avatar: { width: 100, height: 100, borderRadius: 50, marginBottom: 16 },
   input: {
@@ -345,7 +378,8 @@ pickerWrapper: {
   borderWidth: 1,
   borderColor: "#ccc",
   borderRadius: 6,
-  marginTop: 4
+  marginTop: 4,
+  width: 120,
 },
 phoneRow: {
   flexDirection: "row",
@@ -366,7 +400,8 @@ phoneInput: {
   borderWidth: 1,
   borderColor: "#ccc",
   borderRadius: 6,
-  padding: 8
+  paddingTop: 17,
+  paddingBottom: 17
 },
 locationBtn: {
   marginTop: 10,
@@ -375,4 +410,42 @@ locationBtn: {
   borderRadius: 6,
   alignItems: "center"
 },
+addressRow: {
+  flexDirection: "row",
+  justifyContent: "space-evenly",
+  
+},
+addressInput: {
+  flex: 1,
+  minWidth: 120,
+  marginRight: 8
+},
+nameAndRole: {
+  fontSize: 18,
+  flexDirection: "row",
+  justifyContent: "space-between",
+  gap: 20,
+
+},
+nameAndRoleGroup:{ 
+  flexDirection: 'row',
+  gap: 3,
+  
+
+},
+ageAndGenderGroup: {
+  flexDirection: 'row',
+  justifyContent: "space-evenly",
+},
+ageInput: {
+  borderWidth: 1,
+  borderColor: "#ccc",
+  borderRadius: 6,
+  marginTop: 4,
+  paddingTop: 17,
+  paddingBottom: 17,
+  paddingLeft: 12, 
+  paddingRight: 12, 
+}
+
 });
