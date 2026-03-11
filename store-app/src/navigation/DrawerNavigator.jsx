@@ -1,5 +1,5 @@
 import ProfileScreen from '../screens/ProfileScreen';
-// import OrdersScreen from '../screens/OrdersScreen';
+import OrdersScreen from '../screens/OrdersScreen';
 
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import BottomTabsNavigator from './BottomTabsNavigator';
@@ -29,8 +29,18 @@ export default function DrawerNavigator() {
           options={({ navigation }) => ({
              header: () => <BackHeader title='Profile' navigation={navigation}/> })}
       />
-      <Drawer.Screen name="Settings" component={SettingsScreen} />
-      <Drawer.Screen name="Info" component={InfoScreen} />
+      <Drawer.Screen name="Orders" component={OrdersScreen} 
+          options={({ navigation }) => ({
+             header: () => <BackHeader title='Orders' navigation={navigation}/> })}
+      />
+      <Drawer.Screen name="Settings" component={SettingsScreen} 
+        options={({ navigation }) => ({
+             header: () => <BackHeader title='Settings' navigation={navigation}/> })}
+      />
+      <Drawer.Screen name="Info & Contact" component={InfoScreen} 
+        options={({ navigation }) => ({
+             header: () => <BackHeader title='Info & Contact' navigation={navigation}/> })}
+      />
     </Drawer.Navigator>
   );
 }
