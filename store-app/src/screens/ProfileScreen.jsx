@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, ActivityIndicator, ScrollView, Image, TextInput
 import { useAuth } from "../contexts/AuthProvider";
 import { getUserProfile, updateUserProfile } from "../services/authService";
 import * as ImagePicker from "expo-image-picker";
+import * as Location from "expo-location";
 import { uploadFile } from "../firebase/storage";
 import { Picker } from '@react-native-picker/picker';
 
@@ -92,6 +93,25 @@ export default function ProfileScreen() {
         alert("Error updating profile");
       }
     }
+
+      async function pickLocation() {
+        let { status } = await Location.requestForegroundPermissionsAsync();
+
+        if (status !== "granted") {
+          alert("Permission to access location was denied");
+          return;
+        }
+
+        const location = await Location.getCurrentPositionAsync({});
+
+        setEditData(prev => ({
+          ...prev,
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude
+        }));
+
+        alert("Location saved!");
+      }
 
   if (loading) return <ActivityIndicator style={{ marginTop: 50 }} />;
 
@@ -196,31 +216,13 @@ export default function ProfileScreen() {
         </View>
 
         <Text style={styles.label}>Address</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Street"
-            value={editData.street}
-            onChangeText={(text) =>
-              setEditData(prev => ({ ...prev, street: text }))
-            }
-          />
 
-          <TextInput
+            <TextInput
             style={styles.input}
             placeholder="City"
             value={editData.city}
             onChangeText={(text) =>
               setEditData(prev => ({ ...prev, city: text }))
-            }
-          />
-
-          <TextInput
-            style={styles.input}
-            placeholder="Postal Code"
-            keyboardType="numeric"
-            value={editData.postalCode}
-            onChangeText={(text) =>
-              setEditData(prev => ({ ...prev, postalCode: text }))
             }
           />
 
@@ -232,6 +234,33 @@ export default function ProfileScreen() {
               setEditData(prev => ({ ...prev, country: text }))
             }
           />
+
+          <TextInput
+            style={styles.input}
+            placeholder="Street"
+            value={editData.street}
+            onChangeText={(text) =>
+              setEditData(prev => ({ ...prev, street: text }))
+            }
+          />
+
+          
+
+          <TextInput
+            style={styles.input}
+            placeholder="Postal Code"
+            keyboardType="numeric"
+            value={editData.postalCode}
+            onChangeText={(text) =>
+              setEditData(prev => ({ ...prev, postalCode: text }))
+            }
+          />
+
+          
+
+              <TouchableOpacity style={styles.locationBtn} onPress={pickLocation}>
+                <Text style={{ color: "white" }}>Use Current Location</Text>
+              </TouchableOpacity>
 
       <TouchableOpacity style={styles.saveBtn} onPress={handleSave}>
       <Text style={{ color: "white" }}>Save Changes</Text>
@@ -292,5 +321,12 @@ phoneInput: {
   borderColor: "#ccc",
   borderRadius: 6,
   padding: 8
+},
+locationBtn: {
+  marginTop: 10,
+  backgroundColor: "#444",
+  padding: 10,
+  borderRadius: 6,
+  alignItems: "center"
 },
 });
