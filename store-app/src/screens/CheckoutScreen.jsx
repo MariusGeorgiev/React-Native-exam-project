@@ -13,8 +13,9 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 
-export default function CheckoutScreen({ navigation }) {
+export default function CheckoutScreen({ navigation, route }) {
   const { user } = useAuth();
+  const { cartItems, totalPrice } = route.params;
 
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -37,45 +38,50 @@ export default function CheckoutScreen({ navigation }) {
     fetchProfile();
   }, [user]);
 
-  async function placeOrder() {
-    if (!profile) return;
+async function placeOrder() {
 
-    try {
-      setPlacingOrder(true);
+  if (!profile) return;
 
-      const orderData = {
-        userId: user.uid,
-        username: profile.username,
-        email: profile.email,
-        phone: profile.phone,
-        phoneCode: profile.phoneCode,
+  try {
 
-        address: profile.address,
+    const orderItems = cartItems.map(item => ({
+      productId: item.furniture.id,
+      title: item.furniture.title,
+      price: item.furniture.price,
+      quantity: item.quantity
+    }));
 
-        items: [], 
-        total: 0,  
+    const orderData = {
+      userId: user.uid,
+      username: profile.username,
+      phone: profile.phone,
+      phoneCode: profile.phoneCode,
 
-        status: "pending",
-        createdAt: serverTimestamp(),
-      };
+      address: profile.address,
 
-      const orderRef = await addDoc(collection(db, "orders"), orderData);
+      items: orderItems,
+      total: totalPrice,
 
-      await updateDoc(doc(db, "users", user.uid), {
-        orders: arrayUnion(orderRef.id),
-      });
+      status: "pending",
+      createdAt: serverTimestamp(),
+    };
 
-      alert("Order placed successfully!");
+    const orderRef = await addDoc(collection(db, "orders"), orderData);
 
-      navigation.navigate("Profile");
+    await updateDoc(doc(db, "users", user.uid), {
+      orders: arrayUnion(orderRef.id),
+      cart: []   // clear cart after order
+    });
 
-    } catch (error) {
-      console.log("Order error:", error);
-      alert("Failed to place order.");
-    } finally {
-      setPlacingOrder(false);
-    }
+    alert("Order placed successfully!");
+
+    navigation.navigate("Profile");
+
+  } catch (error) {
+    console.log(error);
+    alert("Order failed");
   }
+}
 
   if (loading) {
     return (
@@ -96,6 +102,20 @@ export default function CheckoutScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Checkout</Text>
+      
+          <Text style={styles.section}>Order Summary</Text>
+
+    {cartItems.map(item => (
+      <View key={item.id} style={{marginTop:5}}>
+        <Text>
+          {item.furniture.title} x {item.quantity}
+        </Text>
+      </View>
+    ))}
+
+    <Text style={{fontWeight:"bold", marginTop:10}}>
+      Total: ${totalPrice.toFixed(2)}
+    </Text>
 
       {/* Customer Info */}
       <Text style={styles.section}>Customer</Text>
