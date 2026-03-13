@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
   View,
   Text,
@@ -6,7 +6,9 @@ import {
   FlatList,
   ActivityIndicator,
   TouchableOpacity,
+  RefreshControl
 } from "react-native";
+import { useFocusEffect } from '@react-navigation/native';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "../contexts/AuthProvider";
 import { db } from "../firebase/firebaseConfig";
@@ -14,6 +16,9 @@ import { collection, query, where, orderBy, getDocs } from "firebase/firestore";
 import { getFurnitureById } from "../services/furnitureService";
 import OrderDetailsModal from "../components/OrderDetailsModal";
 import { formatDate } from "../utils/formatDateUtils";
+import usePullToRefresh from '../hooks/usePullToRefresh';
+
+
 
 export default function OrdersScreen({ navigation }) {
   const { user } = useAuth();
@@ -22,6 +27,12 @@ export default function OrdersScreen({ navigation }) {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
+
+    useFocusEffect(
+    useCallback(() => {
+      fetchOrders();
+    }, [user])
+    );
 
   useEffect(() => {
     fetchOrders();
@@ -79,6 +90,8 @@ export default function OrdersScreen({ navigation }) {
     }
   }
 
+   const { refreshing, onRefresh } = usePullToRefresh(fetchOrders);
+
 
   if (loading)
     return (
@@ -87,62 +100,59 @@ export default function OrdersScreen({ navigation }) {
       </View>
     );
 
-  if (!orders.length)
-    return (
-      <View style={styles.center}>
-        <Text style={styles.title}>Orders</Text>
-        <Text>You have no orders yet.</Text>
-      </View>
-    );
-
-  const renderOrderCard = ({ item }) => (
-    <TouchableOpacity
-      style={styles.orderCard}
-      onPress={() => {
-        setSelectedOrder(item);
-        setModalVisible(true);
-      }}
-    >
-      <Text style={styles.orderId}>Order #{item.id.slice(0, 6)}</Text>
-      <Text style={styles.text}>Date: {formatDate(item.createdAt)}</Text>
-      <Text style={styles.text}>Items: {(item.items || []).length}</Text>
-      <Text style={styles.text}>Total: ${item.total?.toFixed(2)}</Text>
-      <Text style={styles.status}>Status: {item.status}</Text>
-    </TouchableOpacity>
-  );
-
   return (
     <SafeAreaView edges={['left','right','bottom']} style={styles.container}>
-      <Text style={styles.header}>Total Orders ({orders.length})</Text>
 
       <FlatList
         data={orders}
         keyExtractor={(item) => item.id}
-        renderItem={renderOrderCard}
-        contentContainerStyle={{ paddingBottom: 30 }}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        renderItem={({ item }) => (
+           <TouchableOpacity
+            style={styles.orderCard}
+            onPress={() => {
+              setSelectedOrder(item);
+              setModalVisible(true);
+            }}
+          >
+            <Text style={styles.orderId}>Order #{item.id.slice(0, 6)}</Text>
+            <Text style={styles.text}>Date: {formatDate(item.createdAt)}</Text>
+            <Text style={styles.text}>Items: {(item.items || []).length}</Text>
+            <Text style={styles.text}>Total: ${item.total?.toFixed(2)}</Text>
+            <Text style={styles.status}>Status: {item.status}</Text>
+          </TouchableOpacity>
+        )}
+
+         ListHeaderComponent={orders.length >= 1 ? () => (
+                      <Text style={styles.title}>Total Orders ({orders.length})</Text>
+                    ) : null}
+
+         ListEmptyComponent={() => (
+            <View style={styles.empty}>
+                <Text style={styles.emptyText}>You have no orders yet.</Text>
+            </View>
+          )}
+          contentContainerStyle={orders.length === 0 ? { flex: 1, justifyContent: 'center' } : undefined}
       />
 
       <OrderDetailsModal
-  visible={modalVisible}
-  order={selectedOrder}
-  onClose={() => setModalVisible(false)}
-  navigation={navigation}
-  formatDate={formatDate}
-/>
+        visible={modalVisible}
+        order={selectedOrder}
+        onClose={() => setModalVisible(false)}
+        navigation={navigation}
+        formatDate={formatDate}
+      />
 
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-     flex: 1,
-     padding: 16,
-     backgroundColor: "#fff" 
-    },
-  center: { flex: 1, justifyContent: "center", alignItems: "center",  },
+  container: { flex: 1, padding: 16, backgroundColor: '#fff' },
+  title: { fontSize: 20, fontWeight: 'bold', marginBottom: 12, textAlign: 'center' },
+  emptyText: { fontSize: 22, color: '#555', textAlign: 'center' },
   header: { fontSize: 22, fontWeight: "bold", marginBottom: 16, textAlign: 'center', },
-  title: { fontSize: 22, fontWeight: "bold", marginBottom: 10,  },
   orderCard: {
     padding: 16,
     borderRadius: 10,
