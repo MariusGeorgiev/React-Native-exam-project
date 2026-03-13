@@ -6,6 +6,7 @@ import { Picker } from '@react-native-picker/picker';
 import { formatDate } from "../utils/formatDateUtils";
 import { pickLocation } from "../services/locationService";
 import { pickImageAndUpload, takePhotoAndUpload } from "../services/pickerService";
+import defaultProfileImage from '../../assets/profileImageDefault.jpg'; 
 
 
 export default function ProfileScreen() {
@@ -138,11 +139,11 @@ const handleTakePhoto = async () => {
               <Text style={{fontSize: 16, fontWeight: '500'}}>{profile.role}</Text>
             </View>
           <Image
-            source={{
-              uri:
-                editData.image ||
-                "https://thumbs.dreamstime.com/b/simple-silhouette-profile-photo-art-simple-silhouette-profile-photo-art-240483689.jpg",
-            }}
+            source={
+               editData.image
+                ? { uri: editData.image }
+                : defaultProfileImage
+            }
             style={styles.avatar}
           />
           <View style={{ flexDirection: "row", gap: 10, marginTop: 5 }}>
