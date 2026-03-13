@@ -5,7 +5,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import BottomTabsNavigator from './BottomTabsNavigator';
 
 import SettingsScreen from '../screens/SettingsScreen';
-import InfoScreen from '../screens/InfoScreen';
+import InfoAndContactScreen from '../screens/InfoAndContactScreen';
 import CustomDrawerContent from '../components/CustomDrawerContent';
 import { SimpleHeader, BackHeader } from '../components/headers';
 
@@ -38,7 +38,7 @@ export default function DrawerNavigator() {
         options={({ navigation }) => ({
              header: () => <BackHeader title='Settings' navigation={navigation}/> })}
       />
-      <Drawer.Screen name="Info & Contact" component={InfoScreen} 
+      <Drawer.Screen name="Info & Contact" component={InfoAndContactScreen} 
         options={({ navigation }) => ({
              header: () => <BackHeader title='Info & Contact' navigation={navigation}/> })}
       />
