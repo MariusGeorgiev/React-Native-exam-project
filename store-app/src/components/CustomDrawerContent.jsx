@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
 import { Ionicons } from '@expo/vector-icons';
@@ -6,22 +5,10 @@ import { signOut } from 'firebase/auth';
 import { auth } from '../firebase/firebaseConfig';
 import { CommonActions } from '@react-navigation/native';
 import { useAuth } from '../contexts/AuthProvider';
-import { getUserProfile } from '../services/authService';
 
 export default function CustomDrawerContent(props) {
   const { user } = useAuth();
-  const [username, setUsername] = useState('');
-  
-    useEffect(() => {
-      const fetchUsername = async () => {
-        if (!user) return;
-        const profileData = await getUserProfile(user.uid);
-        setUsername(profileData.username);
-      };
 
-      fetchUsername();
-    }, [user]);
-  
 
   const handleLogout = async () => {
     try {
@@ -55,7 +42,7 @@ export default function CustomDrawerContent(props) {
         {user && (
                 <>
                   <DrawerItem
-                    label={`Profile's ${username}`}
+                    label="Profile"
                     icon={({ color, size }) => (
                       <Ionicons name="person-outline" size={size} color={color} />
                     )}
