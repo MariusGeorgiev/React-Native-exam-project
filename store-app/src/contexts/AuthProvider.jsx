@@ -6,6 +6,7 @@ import { doc, getDoc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firest
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
+
   const [user, setUser] = useState(null);
   const [userProfile, setUserProfile] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -122,7 +123,7 @@ const addToCart = async (furnitureId, quantity = 1) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, userProfile, loading, logout, toggleFavorite, addToCart, removeFromCart, updateCartQuantity }}>
+    <AuthContext.Provider value={{ user, userProfile, setUserProfile, loading, logout, toggleFavorite, addToCart, removeFromCart, updateCartQuantity }}>
       {children}
     </AuthContext.Provider>
   );

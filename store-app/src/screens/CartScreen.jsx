@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback  } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import { View, FlatList, ActivityIndicator, Text, StyleSheet, TouchableOpacity, Image, Button } from 'react-native';
 import { useAuth } from '../contexts/AuthProvider';
 import { getFurnitureById } from '../services/furnitureService';
@@ -7,6 +8,8 @@ export default function CartScreen({ navigation }) {
   const { userProfile, updateCartQuantity, removeFromCart } = useAuth();
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
+
+    
 
   async function fetchCartItems() {
     if (!userProfile?.cart?.length) {
@@ -34,6 +37,12 @@ export default function CartScreen({ navigation }) {
       setLoading(false);
     }
   }
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchCartItems();
+    }, [userProfile?.cart])
+    );
 
   useEffect(() => {
     fetchCartItems();
