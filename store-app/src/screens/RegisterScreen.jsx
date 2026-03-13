@@ -6,6 +6,9 @@ import {
   TouchableOpacity,
   StyleSheet,
   Alert,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { registerUser } from '../services/authService';
@@ -36,7 +39,7 @@ export default function RegisterScreen() {
       setTimeout(() => {
         navigation.reset({
           index: 0,
-          routes: [{ name: 'Home' }], 
+          routes: [{ name: 'Profile' }],
         });
       }, 3000);
 
@@ -46,57 +49,66 @@ export default function RegisterScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Register</Text>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}
+    >
+      <ScrollView
+        contentContainerStyle={styles.container}
+        keyboardShouldPersistTaps="handled"
+      >
+        <Text style={styles.title}>Register</Text>
 
-      {success && (
-        <View style={styles.successBox}>
-          <Text style={styles.successText}>
-            🎉 Registration successful!
+        {success && (
+          <View style={styles.successBox}>
+            <Text style={styles.successText}>
+               Registration successful!
+            </Text>
+          </View>
+        )}
+
+        <TextInput
+          placeholder="Email"
+          style={styles.input}
+          value={email}
+          onChangeText={setEmail}
+          keyboardType="email-address"
+          autoCapitalize="none"
+        />
+
+        <TextInput
+          placeholder="Password"
+          style={styles.input}
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
+        />
+
+        <TextInput
+          placeholder="Confirm Password"
+          style={styles.input}
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+          secureTextEntry
+        />
+
+        <TouchableOpacity style={styles.button} onPress={handleRegister}>
+          <Text style={styles.buttonText}>Create Account</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => navigation.replace('Login')}>
+          <Text style={styles.switchText}>
+            Already have an account? Sign In
           </Text>
-        </View>
-      )}
-
-      <TextInput
-        placeholder="Email"
-        style={styles.input}
-        value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
-
-      <TextInput
-        placeholder="Password"
-        style={styles.input}
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
-
-      <TextInput
-        placeholder="Confirm Password"
-        style={styles.input}
-        value={confirmPassword}
-        onChangeText={setConfirmPassword}
-        secureTextEntry
-      />
-
-      <TouchableOpacity style={styles.button} onPress={handleRegister}>
-        <Text style={styles.buttonText}>Create Account</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity onPress={() => navigation.replace('Login')}>
-        <Text style={styles.switchText}>
-          Already have an account? Sign In
-        </Text>
-      </TouchableOpacity>
-    </View>
+        </TouchableOpacity>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', padding: 24 },
+  container: { flexGrow: 1, justifyContent: 'center', padding: 24 },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
