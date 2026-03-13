@@ -83,41 +83,83 @@ const handleTakePhoto = async () => {
   }
 };
 
-  async function updateFurnitureHandler() {
+ async function updateFurnitureHandler() {
 
-    try {
-
-      const updatedFurniture = {
-
-        title,
-        images: imageUri ? [imageUri] : [],
-        category,
-        subcategory,
-        price: Number(price),
-        description,
-        material: material.split(',').map(m => m.trim()),
-        colors: colors.split(',').map(c => c.trim()),
-        dimensions: {
-          width: Number(width),
-          height: Number(height),
-          depth: Number(depth),
-        },
-
-      };
-
-      await updateFurniture(furnitureId, updatedFurniture);
-
-      Alert.alert("Success", "Furniture updated successfully");
-
-      navigation.goBack();
-
-    } catch (error) {
-
-      console.log("Error updating furniture:", error);
-
-      Alert.alert("Error", "Failed to update furniture");
-    }
+  if (!title.trim() || title.length < 3 || title.length > 100) {
+    return Alert.alert("Validation Error", "Title must be 3-100 characters.");
   }
+
+  if (!category) return Alert.alert("Validation Error", "Please select a category.");
+  if (!subcategory) return Alert.alert("Validation Error", "Please select a subcategory.");
+
+  const priceNum = Number(price);
+  if (isNaN(priceNum) || priceNum <= 0) {
+    return Alert.alert("Validation Error", "Price must be a positive number.");
+  }
+
+   if (!material.trim() || material.length < 3 || material.length > 50) {
+    return Alert.alert("Validation Error", "Material must be 3-50 characters.");
+  }
+
+  if (!colors.trim() || colors.length < 3 || colors.length > 50) {
+    return Alert.alert("Validation Error", "Colors must be 3-50 characters.");
+  }
+
+  const widthNum = Number(width);
+  const heightNum = Number(height);
+  const depthNum = Number(depth);
+
+  if ([widthNum, heightNum, depthNum].some(v => isNaN(v) || v <= 0)) {
+    return Alert.alert("Validation Error", "Dimensions must be positive numbers.");
+  }
+
+  if (!description.trim() || description.length < 10 || description.length > 500) {
+    return Alert.alert("Validation Error", "Description must be 10-500 characters.");
+  }
+
+  
+  if (!imageUri) {
+    const proceed = await new Promise((resolve) => {
+      Alert.alert(
+        "No image selected",
+        "You did not select an image. Do you want to continue?",
+        [
+          { text: "Cancel", onPress: () => resolve(false) },
+          { text: "Continue", onPress: () => resolve(true) },
+        ]
+      );
+    });
+    if (!proceed) return;
+  }
+
+  // Prepare updated furniture
+  try {
+    const updatedFurniture = {
+      title,
+      images: imageUri ? [imageUri] : [],
+      category,
+      subcategory,
+      price: priceNum,
+      description,
+      material: material.split(',').map(m => m.trim()),
+      colors: colors.split(',').map(c => c.trim()),
+      dimensions: { width: widthNum, height: heightNum, depth: depthNum },
+    };
+
+    await updateFurniture(furnitureId, updatedFurniture);
+
+    Alert.alert("Success", "Furniture updated successfully");
+    
+    if (route.params?.onUpdate) {
+        await route.params.onUpdate();
+      }
+    navigation.goBack();
+
+  } catch (error) {
+    console.log("Error updating furniture:", error);
+    Alert.alert("Error", "Failed to update furniture");
+  }
+}
 
 
 
@@ -135,10 +177,12 @@ const handleTakePhoto = async () => {
             placeholder="Enter furniture title"
             value={title}
             onChangeText={setTitle}
-            style={styles.input}
+            style={[styles.input, styles.titleInput]}
+            multiline
+            numberOfLines={2}
             />
 
-        <View style={{ flexDirection: 'row', gap: 10 }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
 
           <Button title="Select Image" onPress={handlePickImage} />
 
@@ -147,11 +191,13 @@ const handleTakePhoto = async () => {
         </View>
 
         {imageUri && (
-          <Image
-            source={{ uri: imageUri }}
-            style={{ width: 200, height: 200, marginTop: 10 }}
-          />
-        )}
+      <View style={styles.imageWrapper}>
+        <Image
+          source={{ uri: imageUri }}
+          style={styles.imagePreview}
+        />
+      </View>
+    )}
 
        <View style={styles.CatAndSubCat}>
             <Text style={styles.label}>Category: </Text>
@@ -225,12 +271,14 @@ const handleTakePhoto = async () => {
 
 
         <Text style={styles.label}>Description:</Text>
-            <TextInput
+          <TextInput
             placeholder="Enter Description of the Furniture"
             value={description}
             onChangeText={setDescription}
-            style={styles.input}
-            />
+            style={[styles.input, styles.descriptionInput]}
+            multiline
+            numberOfLines={6}
+          />
 
 
         <View style={styles.row}>
@@ -366,6 +414,32 @@ pickerWrapper: {
   borderWidth: 1,
   borderColor: "#ccc",
   borderRadius: 6,
-}
+},
+imageWrapper: {
+  alignItems: 'center',
+  marginVertical: 10,
+  borderWidth: 1,
+  borderColor: '#ccc',
+  borderRadius: 8,
+  padding: 5,
+  backgroundColor: '#f9f9f9',
+},
 
+imagePreview: {
+  width: 250,
+  height: 250,
+  borderRadius: 8,
+  resizeMode: 'cover',
+},
+
+descriptionInput: {
+  height: 140,
+  textAlignVertical: 'top',
+  paddingTop: 10,
+},
+titleInput: {
+  height: 60,
+  textAlignVertical: 'top',
+  paddingTop: 10,
+},
 });
