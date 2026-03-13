@@ -3,10 +3,10 @@ import { View, Text, StyleSheet, ActivityIndicator, ScrollView, Image, TextInput
 import { useAuth } from "../contexts/AuthProvider";
 import { getUserProfile, updateUserProfile } from "../services/authService";
 import * as ImagePicker from "expo-image-picker";
-import * as Location from "expo-location";
 import { uploadFile } from "../firebase/storage";
 import { Picker } from '@react-native-picker/picker';
 import { formatDate } from "../utils/formatDateUtils";
+import { pickLocation } from "../services/locationService";
 
 export default function ProfileScreen() {
   const { user } = useAuth();
@@ -106,71 +106,21 @@ export default function ProfileScreen() {
       }
     }
 
-      async function pickLocation() {
-        let { status } = await Location.requestForegroundPermissionsAsync();
-
-        if (status !== "granted") {
-          alert("Permission to access location was denied");
-          return;
-        }
-
-        const location = await Location.getCurrentPositionAsync({ accuracy: Location.LocationAccuracy.BestForNavigation });
-        const address = await Location.reverseGeocodeAsync(location.coords);
-
-        console.log("address:", address)
-        const street = address[0].street;
-        const streetNumber = address[0].streetNumber || "";
-
-        let streetAndNumber = ""
-        if (street !== null && streetNumber === null) {
-            streetAndNumber = street
-        }
-        if (street === null && streetNumber === null) {
-            streetAndNumber = null
-        }
-        if (street && streetNumber) {
-            streetAndNumber = `${street} ${streetNumber}`;
-        }
-       
-        let formattedAddress = address[0].formattedAddress || "";
-        if (formattedAddress) {
-
-          const toRemove = [address[0].postalCode, address[0].city, address[0].country].filter(Boolean);
-          toRemove.forEach(part => {
-            const regex = new RegExp(`\\b${part}\\b`, "gi");
-            formattedAddress = formattedAddress.replace(regex, "");
-          });
-
-          formattedAddress = formattedAddress
-            .split(",")          
-            .map(p => p.trim())  
-            .filter(Boolean)     
-            .join(", ");     
-          
-        }
-
-        const streetOrFormatAddress = streetAndNumber || formattedAddress || "";
-
-        console.log("streetAndNumber:", streetAndNumber)
-        console.log("formattedAddress:", formattedAddress.split(",")[0])
-        console.log("formattedAddress:", formattedAddress.split(",")[1])
-        console.log("formattedAddress:", formattedAddress.split(",")[2])
-        console.log("formattedAddress:", formattedAddress.split(",")[3])
-
-
-        setEditData(prev => ({
-          ...prev,
-          street: streetOrFormatAddress,
-          city: address[0].city,
-          country: address[0].country,
-          postalCode: address[0].postalCode,
-          latitude: location.coords.latitude,
-          longitude: location.coords.longitude
-        }));
-
-        alert("Location saved!");
-      }
     
+      async function handlePickLocation() {
+          try {
+            const locationData = await pickLocation();
+
+            setEditData((prev) => ({
+              ...prev,
+              ...locationData,
+            }));
+
+            alert("Location saved!");
+          } catch (error) {
+            alert(error.message);
+          }
+        }
 
   if (loading) return <ActivityIndicator style={{ marginTop: 50 }} />;
 
@@ -385,7 +335,7 @@ export default function ProfileScreen() {
 
           
 
-              <TouchableOpacity style={styles.locationBtn} onPress={pickLocation}>
+              <TouchableOpacity style={styles.locationBtn} onPress={handlePickLocation}>
                 <Text style={{ color: "white" }}>Use Current Location</Text>
               </TouchableOpacity>
 
