@@ -2,6 +2,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import FavoritesScreen from '../screens/FavoritesScreen';
 import FurnitureDetailsScreen from '../screens/FurnitureDetailsScreen';
 import { SimpleHeader, BackHeader } from '../components/headers';
+import EditFurnitureScreen from '../screens/EditFurnitureScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -20,6 +21,19 @@ export default function FavoritesStackNavigator() {
       <Stack.Screen name="FurnitureDetails" component={FurnitureDetailsScreen} 
                 options={({ navigation }) => ({
                    header: () => <BackHeader title='Details' navigation={navigation}/> })}
+            />
+
+            <Stack.Screen
+              name="EditFurniture"
+              component={EditFurnitureScreen}
+              options={({ navigation }) => ({
+                header: () => (
+                  <BackHeader
+                    title="Edit Furniture"
+                    navigation={navigation}
+                  />
+                ),
+              })}
             />
     </Stack.Navigator>
   );
