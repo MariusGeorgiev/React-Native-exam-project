@@ -67,7 +67,7 @@ export default function FavoritesScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>All Favorites Furniture ({favorites?.length || 0})</Text>
+      <Text style={styles.title}>All Favorites ({favorites?.length || 0})</Text>
       <FlatList
         data={favorites}
         keyExtractor={item => item.id}
@@ -82,7 +82,7 @@ export default function FavoritesScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 16, backgroundColor: '#fff' },
-  title: { fontSize: 20, fontWeight: 'bold', marginBottom: 12 },
+  title: { fontSize: 20, fontWeight: 'bold', marginBottom: 12, textAlign: 'center' },
   itemContainer: { flexDirection: 'row', marginBottom: 12, alignItems: 'center' },
   image: { width: 80, height: 80, borderRadius: 8, marginRight: 12 },
   itemInfo: { flex: 1 },

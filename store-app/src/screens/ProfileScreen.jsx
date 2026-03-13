@@ -217,6 +217,7 @@ const handleTakePhoto = async () => {
             <View style={{ flex: 0.15, fontSize: 16 }}> 
                 <Text style={styles.label}>Age:</Text>
                 <TextInput
+                  placeholder="0"
                   style={styles.ageInput}
                   keyboardType="numeric"
                   maxLength={3}
@@ -431,14 +432,15 @@ nameAndRoleGroup:{
 //   justifyContent: "space-evenly",
 // },
 ageInput: {
+  textAlign: 'center',
   borderWidth: 1,
   borderColor: "#ccc",
   borderRadius: 6,
   // marginTop: 4,
   paddingTop: 17,
   paddingBottom: 17,
-  paddingLeft: 12, 
-  paddingRight: 12, 
+  // paddingLeft: 12, 
+  // paddingRight: 12, 
 },
 inputName: {
 borderWidth: 1,

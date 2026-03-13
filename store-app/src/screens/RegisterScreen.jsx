@@ -39,7 +39,7 @@ export default function RegisterScreen() {
       setTimeout(() => {
         navigation.reset({
           index: 0,
-          routes: [{ name: 'Profile' }],
+          routes: [{ name: 'Home' }],
         });
       }, 3000);
 
@@ -52,7 +52,7 @@ export default function RegisterScreen() {
     <KeyboardAvoidingView
       style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0} 
     >
       <ScrollView
         contentContainerStyle={styles.container}
@@ -63,7 +63,7 @@ export default function RegisterScreen() {
         {success && (
           <View style={styles.successBox}>
             <Text style={styles.successText}>
-               Registration successful!
+              🎉 Registration successful!
             </Text>
           </View>
         )}

@@ -59,7 +59,7 @@ export default function LoginScreen() {
 
         {success && (
           <View style={styles.successBox}>
-            <Text style={styles.successText}>Logged in successfully</Text>
+            <Text style={styles.successText}>✅ Logged in successfully</Text>
           </View>
         )}
 

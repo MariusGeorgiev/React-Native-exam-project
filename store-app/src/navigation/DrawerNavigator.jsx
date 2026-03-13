@@ -1,5 +1,4 @@
 import ProfileScreen from '../screens/ProfileScreen';
-// import OrdersScreen from '../screens/OrdersScreen';
 import OrdersStackNavigator from './OrdersStackNavigator';
 
 import { createDrawerNavigator } from '@react-navigation/drawer';
