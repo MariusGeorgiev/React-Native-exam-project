@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { registerUser } from '../services/authService';
+import { Ionicons } from "@expo/vector-icons";
 
 export default function RegisterScreen() {
   const navigation = useNavigation();
@@ -19,34 +20,58 @@ export default function RegisterScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [success, setSuccess] = useState(false);
 
-  const handleRegister = async () => {
-    if (!email || !password || !confirmPassword) {
-      Alert.alert('Error', 'Please fill all fields');
-      return;
-    }
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (password !== confirmPassword) {
-      Alert.alert('Error', 'Passwords do not match');
-      return;
-    }
+const handleRegister = async () => {
+  if (!email || !password || !confirmPassword) {
+    Alert.alert('Error', 'Please fill all fields');
+    return;
+  }
 
-    try {
-      await registerUser(email, password);
+  if (!emailRegex.test(email)) {
+    Alert.alert('Error', 'Please enter a valid email address');
+    return;
+  }
 
-      setSuccess(true);
-      setTimeout(() => {
-        navigation.reset({
-          index: 0,
-          routes: [{ name: 'Home' }],
-        });
-      }, 3000);
+  if (password.includes(' ')) {
+    Alert.alert('Error', 'Password cannot contain spaces');
+    return;
+  }
 
-    } catch (error) {
-      Alert.alert('Registration failed', error.message);
-    }
-  };
+  if (password.length < 6) {
+    Alert.alert('Error', 'Password must be at least 6 characters');
+    return;
+  }
+
+  if (password !== confirmPassword) {
+    Alert.alert('Error', 'Passwords do not match');
+    return;
+  }
+
+  try {
+    await registerUser(email.trim(), password);
+
+    setSuccess(true);
+
+  } catch (error) {
+
+    let message = "Something went Wrong!";
+
+      if (error.code === "auth/network-request-failed") {
+        message = "Network error. Please check your internet connection.";
+      } 
+      if (error.code === "auth/email-already-in-use") {
+        message = "The email is already occupied";
+      }
+
+      Alert.alert("Registration failed", message);
+
+  }
+};
 
   return (
     <KeyboardAvoidingView
@@ -63,7 +88,7 @@ export default function RegisterScreen() {
         {success && (
           <View style={styles.successBox}>
             <Text style={styles.successText}>
-              🎉 Registration successful!
+              Registration successful!
             </Text>
           </View>
         )}
@@ -77,21 +102,43 @@ export default function RegisterScreen() {
           autoCapitalize="none"
         />
 
-        <TextInput
-          placeholder="Password"
-          style={styles.input}
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-        />
+        <View style={styles.passwordContainer}>
+          <TextInput
+            placeholder="Password"
+            style={styles.passwordInput}
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry={!showPassword}
+          />
 
-        <TextInput
-          placeholder="Confirm Password"
-          style={styles.input}
-          value={confirmPassword}
-          onChangeText={setConfirmPassword}
-          secureTextEntry
-        />
+          <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+            <Ionicons
+              name={showPassword ? "eye-off-outline" : "eye-outline"}
+              size={22}
+              color="#555"
+            />
+          </TouchableOpacity>
+        </View>
+
+
+        <View style={styles.passwordContainer}>
+          <TextInput
+            placeholder="Confirm Password"
+            style={styles.passwordInput}
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+            secureTextEntry={!showConfirmPassword}
+          />
+
+          <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
+            <Ionicons
+              name={showConfirmPassword ? "eye-off-outline" : "eye-outline"}
+              size={22}
+              color="#555"
+            />
+          </TouchableOpacity>
+        </View>
+        
 
         <TouchableOpacity style={styles.button} onPress={handleRegister}>
           <Text style={styles.buttonText}>Create Account</Text>
@@ -144,4 +191,17 @@ const styles = StyleSheet.create({
   },
   buttonText: { color: 'white', fontWeight: 'bold' },
   switchText: { color: '#555', textAlign: 'center' },
+ passwordContainer: {
+  flexDirection: "row",
+  alignItems: "center",
+  borderWidth: 1,
+  borderColor: "#ccc",
+  borderRadius: 8,
+  marginBottom: 16,
+  paddingHorizontal: 12,
+},
+passwordInput: {
+  flex: 1,
+  paddingVertical: 12,
+},
 });
