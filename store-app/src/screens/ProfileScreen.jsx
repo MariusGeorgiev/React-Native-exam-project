@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 import { View, Text, StyleSheet, ActivityIndicator, ScrollView, Image, TextInput, TouchableOpacity } from "react-native";
 import { useAuth } from "../contexts/AuthProvider";
 import { getUserProfile, updateUserProfile } from "../services/authService";
-import * as ImagePicker from "expo-image-picker";
-import { uploadFile } from "../firebase/storage";
 import { Picker } from '@react-native-picker/picker';
 import { formatDate } from "../utils/formatDateUtils";
 import { pickLocation } from "../services/locationService";
+import { pickImageAndUpload, takePhotoAndUpload } from "../services/pickerService";
+
 
 export default function ProfileScreen() {
   const { user } = useAuth();
@@ -49,36 +49,46 @@ export default function ProfileScreen() {
       }
     }, [profile]);
 
-      async function pickImage() {
-      const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        quality: 0.7,
-      });
 
-      if (!result.canceled) {
-        const uri = result.assets[0].uri;
 
-        const uploaded = await uploadFile(uri, "profileImages");
-
-        setEditData(prev => ({
-          ...prev,
-          image: uploaded
-        }));
-      }
+const handlePickImage = async () => {
+  try {
+    const url = await pickImageAndUpload(`users/${user.uid}`);
+    if (url) {
+      setEditData(prev => ({ ...prev, image: url }));
     }
+  } catch (err) {
+    console.log("Error picking image:", err);
+    alert("Failed to pick image");
+  }
+};
 
-    async function takePicture() {
-      const result = await ImagePicker.launchCameraAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        quality: 0.7,
-      });
-
-      if (!result.canceled) {
-        const uri = result.assets[0].uri;
-        const uploaded = await uploadFile(uri, "profileImages");
-        setEditData(prev => ({ ...prev, image: uploaded }));
-      }
+const handleTakePhoto = async () => {
+  try {
+    const url = await takePhotoAndUpload(`users/${user.uid}`);
+    if (url) {
+      setEditData(prev => ({ ...prev, image: url }));
     }
+  } catch (err) {
+    console.log("Error taking photo:", err);
+    alert("Failed to take photo");
+  }
+};
+
+      async function handlePickLocation() {
+          try {
+            const locationData = await pickLocation();
+
+            setEditData((prev) => ({
+              ...prev,
+              ...locationData,
+            }));
+
+            alert("Location Extracted!");
+          } catch (error) {
+            alert(error.message);
+          }
+        }
 
     async function handleSave() {
       try {
@@ -107,20 +117,7 @@ export default function ProfileScreen() {
     }
 
     
-      async function handlePickLocation() {
-          try {
-            const locationData = await pickLocation();
 
-            setEditData((prev) => ({
-              ...prev,
-              ...locationData,
-            }));
-
-            alert("Location saved!");
-          } catch (error) {
-            alert(error.message);
-          }
-        }
 
   if (loading) return <ActivityIndicator style={{ marginTop: 50 }} />;
 
@@ -149,10 +146,10 @@ export default function ProfileScreen() {
             style={styles.avatar}
           />
           <View style={{ flexDirection: "row", gap: 10, marginTop: 5 }}>
-            <TouchableOpacity onPress={pickImage}>
+            <TouchableOpacity onPress={handlePickImage}>
               <Text style={{ color: "blue" }}>Pick from Library</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={takePicture}>
+            <TouchableOpacity onPress={handleTakePhoto}>
               <Text style={{ color: "blue" }}>Take a Picture</Text>
             </TouchableOpacity>
           </View>
