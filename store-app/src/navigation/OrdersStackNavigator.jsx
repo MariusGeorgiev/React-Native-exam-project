@@ -9,13 +9,13 @@ const Stack = createNativeStackNavigator();
 
 export default function OrdersStackNavigator() {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator >
 
       <Stack.Screen
         name="OrdersList"
         component={OrdersScreen}
-        options={({  }) => ({
-          headerShown: false,
+        options={({ navigation }) => ({
+          header: () => <BackHeader title="Orders" navigation={navigation} />,
         })}
       />
 
@@ -23,7 +23,7 @@ export default function OrdersStackNavigator() {
         name="FurnitureDetails"
         component={FurnitureDetails}
         options={({ navigation }) => ({
-          header: () => <BackHeader title="Furniture Details" navigation={navigation} />,
+          header: () => <BackHeader title="Details" navigation={navigation} />,
           
         })}
       />

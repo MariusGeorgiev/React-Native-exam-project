@@ -31,8 +31,9 @@ export default function DrawerNavigator() {
              header: () => <BackHeader title='Profile' navigation={navigation}/> })}
       />
       <Drawer.Screen name="Orders" component={OrdersStackNavigator} 
-          options={({ navigation }) => ({
-             header: () => <BackHeader title='Orders' navigation={navigation}/> })}
+          options={{
+            headerShown: false
+          }}
       />
       <Drawer.Screen name="Settings" component={SettingsScreen} 
         options={({ navigation }) => ({
