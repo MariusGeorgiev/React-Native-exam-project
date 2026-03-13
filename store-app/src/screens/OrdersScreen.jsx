@@ -13,6 +13,7 @@ import { db } from "../firebase/firebaseConfig";
 import { collection, query, where, orderBy, getDocs } from "firebase/firestore";
 import { getFurnitureById } from "../services/furnitureService";
 import OrderDetailsModal from "../components/OrderDetailsModal";
+import { formatDate } from "../utils/formatDateUtils";
 
 export default function OrdersScreen({ navigation }) {
   const { user } = useAuth();
@@ -78,11 +79,6 @@ export default function OrdersScreen({ navigation }) {
     }
   }
 
-  function formatDate(date) {
-    if (!date) return "";
-    const d = date?.toDate ? date.toDate() : new Date(date);
-    return `${d.toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" }).replace(",", "")} ${d.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: false })}`;
-  }
 
   if (loading)
     return (
