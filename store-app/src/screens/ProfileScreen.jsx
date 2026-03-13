@@ -6,7 +6,7 @@ import * as ImagePicker from "expo-image-picker";
 import * as Location from "expo-location";
 import { uploadFile } from "../firebase/storage";
 import { Picker } from '@react-native-picker/picker';
-
+import { formatDate } from "../utils/formatDateUtils";
 
 export default function ProfileScreen() {
   const { user } = useAuth();
@@ -171,23 +171,6 @@ export default function ProfileScreen() {
         alert("Location saved!");
       }
     
-      function formatDate(date) {
-  const d = date?.toDate ? date.toDate() : new Date(date);
-
-  const datePart = d.toLocaleDateString("en-US", {
-    month: "short",
-    day: "2-digit",
-    year: "numeric",
-  }).replace(",", "");
-
-  const timePart = d.toLocaleTimeString("en-US", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  });
-
-  return `${datePart} ${timePart}`;
-}
 
   if (loading) return <ActivityIndicator style={{ marginTop: 50 }} />;
 
@@ -201,7 +184,7 @@ export default function ProfileScreen() {
   return (
     <ScrollView contentContainerStyle={styles.container}>
   
-        {/* Centered profile picture */}
+       
         <View style={{ alignItems: "center", marginBottom: 16 }}>
           <View style={[styles.nameAndRoleGroup, {marginBottom: 5}]}>
               <Text style={{fontSize: 16, fontWeight: 'bold'}}>Role:</Text>
