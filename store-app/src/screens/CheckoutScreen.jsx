@@ -75,7 +75,7 @@ async function placeOrder() {
 
     alert("Order placed successfully!");
 
-    navigation.navigate("Profile");
+    navigation.navigate("Orders");
 
   } catch (error) {
     console.log(error);
