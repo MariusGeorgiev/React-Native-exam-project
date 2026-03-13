@@ -19,7 +19,12 @@ export default function BottomTabsNavigator() {
   if (loading) return null;
 
   return (
-    <Tab.Navigator screenOptions={{ headerShown: false }}>
+    <Tab.Navigator
+  screenOptions={({ route }) => ({
+    headerShown: false,
+    tabBarStyle: hideTabBarForRoutes(route),
+  })}
+>
       
       <Tab.Screen
         name="Home"
@@ -98,3 +103,16 @@ export default function BottomTabsNavigator() {
     </Tab.Navigator>
   );
 }
+
+function hideTabBarForRoutes(route) {
+  const hiddenRoutes = ['FurnitureDetails', 'EditFurniture']; 
+  const routeName = getFocusedRouteNameFromRoute(route) ?? '';
+
+  if (hiddenRoutes.includes(routeName)) {
+    return { display: 'none' };
+  }
+
+  return undefined;
+}
+
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
