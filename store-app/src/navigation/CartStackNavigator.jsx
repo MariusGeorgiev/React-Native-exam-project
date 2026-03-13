@@ -3,6 +3,7 @@ import CartScreen from '../screens/CartScreen';
 import CheckoutScreen from '../screens/CheckoutScreen';
 import FurnitureDetailsScreen from '../screens/FurnitureDetailsScreen';
 import { SimpleHeader, BackHeader } from '../components/headers';
+import EditFurnitureScreen from '../screens/EditFurnitureScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -22,6 +23,19 @@ export default function CartStackNavigator() {
           options={({ navigation }) => ({
              header: () => <BackHeader title='Details' navigation={navigation}/> })}
       />
+
+      <Stack.Screen
+                    name="EditFurniture"
+                    component={EditFurnitureScreen}
+                    options={({ navigation }) => ({
+                      header: () => (
+                        <BackHeader
+                          title="Edit Furniture"
+                          navigation={navigation}
+                        />
+                      ),
+                    })}
+                  />
 
       <Stack.Screen
         name="Checkout"
