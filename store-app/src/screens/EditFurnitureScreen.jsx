@@ -1,11 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Text, Alert, View, TextInput, Button, StyleSheet, Image, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import * as ImagePicker from 'expo-image-picker';
-
 import { CATEGORIES } from '../data/categories';
-import { uploadFile } from '../firebase/storage';
 import { getFurnitureById, updateFurniture } from '../services/furnitureService';
+import { pickImageAndUpload, takePhotoAndUpload } from "../services/pickerService";
 
 export default function EditFurnitureScreen({ route, navigation }) {
 
@@ -59,75 +57,45 @@ export default function EditFurnitureScreen({ route, navigation }) {
   }, [furnitureId]);
 
 
-
-  const pickImage = async () => {
-
-    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-    if (!permissionResult.granted) {
-      Alert.alert("Permission required to access photos.");
-      return;
+const handlePickImage = async () => {
+  try {
+    const url = await pickImageAndUpload(`furniture/${furnitureId}`);
+    if (url) {
+      setImageUri(url); 
     }
+  } catch (err) {
+    console.log("Error picking image:", err);
+    alert("Failed to pick image");
+  }
+};
 
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
 
-    if (!result.canceled) {
-      setImageUri(result.assets[0].uri);
+const handleTakePhoto = async () => {
+  try {
+    const url = await takePhotoAndUpload(`furniture/${furnitureId}`);
+    if (url) {
+      setImageUri(url); 
     }
-  };
-
-
-  const takePhoto = async () => {
-
-    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
-
-    if (!permissionResult.granted) {
-      Alert.alert("Permission required to use camera.");
-      return;
-    }
-
-    let result = await ImagePicker.launchCameraAsync({
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    if (!result.canceled) {
-      setImageUri(result.assets[0].uri);
-    }
-  };
-
-
+  } catch (err) {
+    console.log("Error taking photo:", err);
+    alert("Failed to take photo");
+  }
+};
 
   async function updateFurnitureHandler() {
 
     try {
 
-      let imageUrl = imageUri;
-
-      if (imageUri && imageUri.startsWith('file')) {
-        imageUrl = await uploadFile(imageUri, 'furniture');
-      }
-
       const updatedFurniture = {
 
         title,
-        images: imageUrl ? [imageUrl] : [],
-
+        images: imageUri ? [imageUri] : [],
         category,
         subcategory,
-
         price: Number(price),
         description,
-
         material: material.split(',').map(m => m.trim()),
         colors: colors.split(',').map(c => c.trim()),
-
         dimensions: {
           width: Number(width),
           height: Number(height),
@@ -171,9 +139,9 @@ export default function EditFurnitureScreen({ route, navigation }) {
 
         <View style={{ flexDirection: 'row', gap: 10 }}>
 
-          <Button title="Select Image" onPress={pickImage} />
+          <Button title="Select Image" onPress={handlePickImage} />
 
-          <Button title="Take Photo" onPress={takePhoto} />
+          <Button title="Take Photo" onPress={handleTakePhoto} />
 
         </View>
 
