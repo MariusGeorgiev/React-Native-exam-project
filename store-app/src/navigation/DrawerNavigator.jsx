@@ -1,5 +1,6 @@
 import ProfileScreen from '../screens/ProfileScreen';
-import OrdersScreen from '../screens/OrdersScreen';
+// import OrdersScreen from '../screens/OrdersScreen';
+import OrdersStackNavigator from './OrdersStackNavigator';
 
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import BottomTabsNavigator from './BottomTabsNavigator';
@@ -29,7 +30,7 @@ export default function DrawerNavigator() {
           options={({ navigation }) => ({
              header: () => <BackHeader title='Profile' navigation={navigation}/> })}
       />
-      <Drawer.Screen name="Orders" component={OrdersScreen} 
+      <Drawer.Screen name="Orders" component={OrdersStackNavigator} 
           options={({ navigation }) => ({
              header: () => <BackHeader title='Orders' navigation={navigation}/> })}
       />
