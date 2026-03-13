@@ -38,37 +38,35 @@ export default function FurnitureListScreen({ route }) {
   if (loading) return <ActivityIndicator style={{ marginTop: 50 }} />;
 
     return (
-    <FlatList
-      data={furniture}
-      keyExtractor={item => item.id}
-      contentContainerStyle={{ padding: 16 }}
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }
-      renderItem={({ item }) => (
-        <FurnitureCard
-          furniture={item}
-          onPress={() =>
-            navigation.navigate('FurnitureDetails', { furnitureId: item.id })
+      <View style={styles.container}>
+        <FlatList
+          data={furniture}
+          keyExtractor={item => item.id}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
+          renderItem={({ item }) => (
+            <FurnitureCard
+              furniture={item}
+              onPress={() =>
+                navigation.navigate('FurnitureDetails', { furnitureId: item.id })
+              }
+            />
+          )}
+          
+          ListEmptyComponent={() => (
+            <View style={styles.empty}>
+              <Text style={styles.emptyText}>No furniture found in this category.</Text>
+            </View>
+          )}
+            contentContainerStyle={furniture.length === 0 ? { flex: 1, justifyContent: 'center' } : undefined}
         />
-      )}
-      
-      ListEmptyComponent={() => (
-        <View style={styles.center}>
-          <Text>No furniture found in this category.</Text>
-        </View>
-      )}
-
-    />
+      </View>
   );
 }
 
 const styles = StyleSheet.create({
-  center: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingTop: 50,
-  },
+  container: { flex: 1, padding: 16, backgroundColor: '#fff' },
+  title: { fontSize: 20, fontWeight: 'bold', marginBottom: 12, textAlign: 'center' },
+  emptyText: { fontSize: 22, color: '#555', textAlign: 'center' },
 });
