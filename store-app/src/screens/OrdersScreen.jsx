@@ -6,16 +6,13 @@ import {
   FlatList,
   ActivityIndicator,
   TouchableOpacity,
-  Modal,
-  ScrollView,
-  Pressable,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "../contexts/AuthProvider";
 import { db } from "../firebase/firebaseConfig";
 import { collection, query, where, orderBy, getDocs } from "firebase/firestore";
 import { getFurnitureById } from "../services/furnitureService";
-import FurnitureCard from "../components/FurnitureCard";
+import OrderDetailsModal from "../components/OrderDetailsModal";
 
 export default function OrdersScreen({ navigation }) {
   const { user } = useAuth();
@@ -129,70 +126,14 @@ export default function OrdersScreen({ navigation }) {
         contentContainerStyle={{ paddingBottom: 30 }}
       />
 
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <Pressable
-          style={styles.modalOverlay}
-          onPress={() => setModalVisible(false)}
-        >
-          <View style={styles.modalContainer}>
+      <OrderDetailsModal
+  visible={modalVisible}
+  order={selectedOrder}
+  onClose={() => setModalVisible(false)}
+  navigation={navigation}
+  formatDate={formatDate}
+/>
 
-            
-            
-            <Text style={styles.modalHeader}>
-              Order #{selectedOrder?.id.slice(0, 6)}
-            </Text>
-
-            <Text style={styles.text}>Recipient name: {selectedOrder?.username}</Text>
-            <Text style={styles.text}>Contact phone number: {selectedOrder?.phoneCode} {selectedOrder?.phone}</Text>
-            <Text style={styles.text}>
-                Address for Delivery: {selectedOrder?.address 
-                    ? `${selectedOrder.address.street}, ${selectedOrder.address.city}, ${selectedOrder.address.postalCode}, ${selectedOrder.address.country}`
-                    : "N/A"}
-            </Text>
-            <Text style={styles.modalText}>
-              Date: {formatDate(selectedOrder?.createdAt)}
-            </Text>
-            <Text style={styles.modalText}>
-              Status: {selectedOrder?.status}
-            </Text>
-            <Text style={[styles.modalText, { marginTop: 10 }]}>Items:</Text>
-
-            <ScrollView style={{ maxHeight: 300 }}>
-              {(selectedOrder?.items || []).map((item, index) => (
-                <View key={index} style={{ marginBottom: 10 }}>
-                  {item.furniture ? (
-                    <FurnitureCard
-                        furniture={item.furniture}
-                        onPress={() => {
-                            setModalVisible(false);
-
-                            navigation.navigate("FurnitureDetails", {
-                            furnitureId: item.productId
-                            });
-                        }}
-                        />
-                  ) : (
-                    <Text>Item data not found</Text>
-                  )}
-                  <Text>Quantity: {item.quantity}</Text>
-                </View>
-              ))}
-            </ScrollView>
-
-            <TouchableOpacity
-              style={styles.closeBtn}
-              onPress={() => setModalVisible(false)}
-            >
-              <Text style={{ color: "white", textAlign: "center" }}>Close</Text>
-            </TouchableOpacity>
-          </View>
-        </Pressable>
-      </Modal>
     </SafeAreaView>
   );
 }
