@@ -113,10 +113,17 @@ const handleAddToCart = async () => {
                 {userProfile?.role === "admin" && (
                   
                   <View style={{ marginTop: 20 }}>
-                    <Button
-                      title="Edit"
-                      onPress={() => navigation.navigate('EditFurniture', { furnitureId })}
-                    />
+                    
+                  <Button
+                    title="Edit"
+                    onPress={() => navigation.navigate("EditFurniture", {
+                      furnitureId,
+                      onUpdate: async () => {
+                        const data = await getFurnitureById(furnitureId);
+                        setFurniture(data); 
+                      },
+                    })}
+                  />
 
                     <Button
                       title="Delete"
