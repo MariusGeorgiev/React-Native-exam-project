@@ -2,8 +2,10 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import OrdersScreen from "../screens/OrdersScreen";
 import FurnitureDetails from "../screens/FurnitureDetailsScreen";
+import EditFurnitureScreen from "../screens/EditFurnitureScreen";
 
 import { BackHeader } from "../components/headers";
+
 
 const Stack = createNativeStackNavigator();
 
@@ -27,6 +29,20 @@ export default function OrdersStackNavigator() {
           
         })}
       />
+
+      <Stack.Screen
+                    name="EditFurniture"
+                    component={EditFurnitureScreen}
+                    options={({ navigation }) => ({
+                      header: () => (
+                        <BackHeader
+                          title="Edit Furniture"
+                          navigation={navigation}
+                        />
+                      ),
+                    })}
+                  />
+
 
     </Stack.Navigator>
   );
