@@ -1,10 +1,8 @@
 import { useEffect, useState  } from 'react';
 import { Alert, View, Text, Image, ActivityIndicator, ScrollView, StyleSheet, Button, TouchableOpacity } from 'react-native';
 import { getFurnitureById, deleteFurniture } from '../services/furnitureService';
-// import { addToCart } from "../services/authService";
 import { useAuth } from '../contexts/AuthProvider';
 import { FontAwesome } from '@expo/vector-icons';
-import { useHideTabBar } from '../hooks/useHideTabBar';
 
 export default function FurnitureDetailsScreen({ route, navigation }) {
   const { furnitureId } = route.params;
@@ -14,7 +12,6 @@ export default function FurnitureDetailsScreen({ route, navigation }) {
 
   const { user, userProfile, toggleFavorite, addToCart} = useAuth();
 
-  useHideTabBar(navigation);
 
    useEffect(() => {
     async function fetchDetails() {
@@ -95,7 +92,7 @@ const handleAddToCart = async () => {
 
         {user && (
             <>
-                {userProfile?.role === "user" && (
+                
                   <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 10 }}>
                     <TouchableOpacity onPress={handleDecrement} style={styles.qtyBtn}>
                       <Text style={styles.qtyBtnText}>-</Text>
@@ -111,7 +108,7 @@ const handleAddToCart = async () => {
                       <Text style={styles.addToCartBtnText}>🛒 Add to Cart ({quantity})</Text>
                     </TouchableOpacity>
                   </View>
-                )}
+                
 
                 {userProfile?.role === "admin" && (
                   

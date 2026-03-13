@@ -7,6 +7,7 @@ import { pickImageAndUpload, takePhotoAndUpload } from "../services/pickerServic
 
 export default function EditFurnitureScreen({ route, navigation }) {
 
+
   const { furnitureId } = route.params;
 
   const [title, setTitle] = useState('');
