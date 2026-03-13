@@ -119,7 +119,7 @@ export default function OrdersScreen({ navigation }) {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView edges={['left','right','bottom']} style={styles.container}>
       <Text style={styles.header}>Total Orders ({orders.length})</Text>
 
       <FlatList
@@ -198,7 +198,11 @@ export default function OrdersScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, backgroundColor: "#fff" },
+  container: {
+     flex: 1,
+     padding: 16,
+     backgroundColor: "#fff" 
+    },
   center: { flex: 1, justifyContent: "center", alignItems: "center",  },
   header: { fontSize: 22, fontWeight: "bold", marginBottom: 16, textAlign: 'center', },
   title: { fontSize: 22, fontWeight: "bold", marginBottom: 10,  },
