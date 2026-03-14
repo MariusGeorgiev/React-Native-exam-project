@@ -2,22 +2,26 @@ export const CATEGORIES = [
   { 
     id: 'living', 
     title: 'Living Room',
-    subcategories: ['Sofas', 'Chairs', 'Coffee Tables', 'TV Stands', 'Shelves']
+    subcategories: ['Sofas', 'Chairs', 'Coffee Tables', 'TV Stands', 'Shelves'],
+    image: require('../../assets/living-room.jpg'),
   },
   { 
     id: 'bedroom', 
     title: 'Bedroom',
-    subcategories: ['Beds', 'Wardrobes', 'Bedroom Sets', 'Nightstands', 'Dressers']
+    subcategories: ['Beds', 'Wardrobes', 'Bedroom Sets', 'Nightstands', 'Dressers'],
+    image: require('../../assets/bedroom.jpg'),
   },
   { 
     id: 'kitchen', 
     title: 'Kitchen',
-    subcategories: ['Tables', 'Cabinets', 'Kitchen Islands', 'Dining Sets', 'Bar Stools', 'Pantry Storage']
+    subcategories: ['Tables', 'Cabinets', 'Kitchen Islands', 'Dining Sets', 'Bar Stools', 'Pantry Storage'],
+    image: require('../../assets/kitchen.jpg'),
   },
   { 
     id: 'bathroom', 
     title: 'Bathroom',
-    subcategories: ['Cabinets', 'Mirrors', 'Shelving', 'Bathroom Sets', 'Vanities']
+    subcategories: ['Cabinets', 'Mirrors', 'Shelving', 'Bathroom Sets', 'Vanities'],
+    image: require('../../assets/bathroom.jpg'),
   },
   { 
     id: 'office', 
