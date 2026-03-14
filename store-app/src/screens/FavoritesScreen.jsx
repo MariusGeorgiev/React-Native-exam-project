@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import { View, Text, StyleSheet, FlatList, ActivityIndicator, RefreshControl } from 'react-native';
 import { useAuth } from '../contexts/AuthProvider';
 import { getFurnitureById } from '../services/furnitureService';
@@ -40,9 +41,11 @@ export default function FavoritesScreen({ navigation }) {
 
   const { refreshing, onRefresh } = usePullToRefresh(fetchFavorites);
 
-  useEffect(() => {
-    fetchFavorites();
-  }, [userProfile?.favorites]);
+     useFocusEffect(
+      useCallback(() => {
+        fetchFavorites();
+      }, [userProfile?.favorites])
+    );
 
   if (loading) return <ActivityIndicator size="large" style={{ marginTop: 50 }} />;
 
