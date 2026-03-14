@@ -7,9 +7,9 @@ export default function FurnitureCard({ furniture, onPress  }) {
         <Image source={{ uri: furniture.images[0] }} style={styles.image} />
       )}
       <View style={styles.info}>
-        <Text style={styles.title}>{furniture.title}</Text>
+        <Text style={styles.title} numberOfLines={2}>{furniture.title}</Text>
         <Text style={styles.price}>${furniture.price.toFixed(2)}</Text>
-        <Text style={styles.desc} numberOfLines={2}>{furniture.description}</Text>
+        <Text style={styles.desc} numberOfLines={3}>{furniture.description}</Text>
       </View>
     </TouchableOpacity>
   );
