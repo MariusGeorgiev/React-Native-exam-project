@@ -81,7 +81,7 @@ return (
         
         
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Categories</Text>
+            <Text style={styles.sectionTitle}>Best Categories</Text>
             <View style={styles.categoriesGrid}>
               {topCategories.map(cat => (
                 <TouchableOpacity
@@ -91,13 +91,14 @@ return (
                 >
                   <Text style={styles.categoryText}>{cat.title}</Text>
                   <Image
-                    source={require('../../assets/adaptive-icon.png')} 
+                    source={cat.image}  
                     style={styles.categoryImage}
                   />
                 </TouchableOpacity>
               ))}
             </View>
           </View>
+
 
       
         {selectedCategory && (
@@ -198,19 +199,20 @@ const styles = StyleSheet.create({
   // gap: 2, 
 },
 categoryCard: {
-  width: '45%', 
+  width: '48%', 
   borderRadius: 8,
   overflow: 'hidden',
   alignItems: 'center',
-  marginBottom: 8,
+  marginBottom: 5,
+  paddingTop: 2,
   backgroundColor: '#f8f8f8', 
-  paddingVertical: 8,
+  // paddingVertical: 2,
 },
 categoryImage: {
   width: '100%',
-  height: 70,
+  height: 130,
   borderRadius: 8,
-  marginTop: 6,
+  marginTop: 2,
   resizeMode: 'cover',
 },
 categoryText: {
