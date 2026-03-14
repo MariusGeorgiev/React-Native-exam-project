@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
   StyleSheet,
   RefreshControl,
+  Dimensions
 } from 'react-native';
 import usePullToRefresh from '../hooks/usePullToRefresh';
 import { CATEGORIES } from '../data/categories';
@@ -18,6 +19,8 @@ import { fetchLatestFurniture } from '../services/furnitureService';
 
 export default function HomeScreen() {
   const navigation = useNavigation();
+
+  const SCREEN_WIDTH = Dimensions.get('window').width;
 
   const [latestFurniture, setLatestFurniture] = useState([]);
   const [loadingLatest, setLoadingLatest] = useState(true);
@@ -59,110 +62,126 @@ export default function HomeScreen() {
     });
   };
 
-  return (
-    <FlatList
-      data={[]} 
-      keyExtractor={(_, index) => index.toString()}
-      contentContainerStyle={{ paddingBottom: 100 }}
-      refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }
-      ListHeaderComponent={() => (
-        <>
-          
-          <View style={styles.heroSection}>
-            <Image source={require('../../assets/icon.png')} style={styles.heroImage} />
-            <Image source={require('../../assets/adaptive-icon.png')} style={styles.heroImage} />
-          </View>
+return (
+  <FlatList
+    data={[]} 
+    keyExtractor={(_, index) => index.toString()}
+    contentContainerStyle={{ paddingBottom: 100 }}
+    refreshControl={
+      <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+    }
+    ListHeaderComponent={() => (
+      <>
+       
+        <View style={styles.heroSection}>
+          <Image source={require('../../assets/home.jpg')} style={styles.heroImage} />
+      
+        </View>
 
-          
+        
+        
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Categories</Text>
-            <View style={styles.categoriesRow}>
+            <View style={styles.categoriesGrid}>
               {topCategories.map(cat => (
                 <TouchableOpacity
                   key={cat.id}
                   style={styles.categoryCard}
                   onPress={() => handleCategoryPress(cat.id)}
                 >
-                  <Image source={cat.image} style={styles.categoryImage} />
                   <Text style={styles.categoryText}>{cat.title}</Text>
+                  <Image
+                    source={require('../../assets/adaptive-icon.png')} 
+                    style={styles.categoryImage}
+                  />
                 </TouchableOpacity>
               ))}
             </View>
           </View>
 
-          {selectedCategory && (
-            <View style={styles.section}>
-              <Text style={styles.sectionTitle}>
-                {topCategories.find(cat => cat.id === selectedCategory)?.title} Subcategories
-              </Text>
-              <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
-                {topCategories
-                  .find(cat => cat.id === selectedCategory)
-                  ?.subcategories.map((sub, index) => (
-                    <TouchableOpacity
-                      key={index}
-                      onPress={() =>
-                        handleSubcategoryPress(
-                          topCategories.find(cat => cat.id === selectedCategory),
-                          sub
-                        )
-                      }
-                      style={styles.subcategoryButton}
-                    >
-                      <Text style={styles.subcategoryText}>{sub}</Text>
-                    </TouchableOpacity>
-                  ))}
-              </View>
+      
+        {selectedCategory && (
+          <View style={styles.sectionCat}>
+            <Text style={styles.sectionTitle}>
+              {topCategories.find(cat => cat.id === selectedCategory)?.title} Subcategories
+            </Text>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center' }}>
+              {topCategories
+                .find(cat => cat.id === selectedCategory)
+                ?.subcategories.map((sub, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    onPress={() =>
+                      handleSubcategoryPress(
+                        topCategories.find(cat => cat.id === selectedCategory),
+                        sub
+                      )
+                    }
+                    style={styles.subcategoryButton}
+                  >
+                    <Text style={styles.subcategoryText}>{sub}</Text>
+                  </TouchableOpacity>
+                ))}
             </View>
-          )}
+          </View>
+        )}
 
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Latest Furniture</Text>
-            {loadingLatest ? (
-              <ActivityIndicator />
-            ) : (
-              <FlatList
-                data={latestFurniture}
-                horizontal
-                keyExtractor={item => item.id}
-                showsHorizontalScrollIndicator={false}
-                renderItem={({ item }) => (
+       
+        <View style={styles.sectionLatest}>
+          <Text style={styles.sectionTitle}>Latest Furniture</Text>
+          {loadingLatest ? (
+            <ActivityIndicator />
+          ) : (
+            <FlatList
+              data={latestFurniture}
+              horizontal
+              keyExtractor={item => item.id}
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{ paddingHorizontal: 16 }}
+              snapToInterval={SCREEN_WIDTH * 0.7 + 12}
+              decelerationRate="fast"
+              renderItem={({ item }) => (
+                <View style={{ width: SCREEN_WIDTH * 0.7, marginRight: 12 }}>
                   <FurnitureCard
                     furniture={item}
                     onPress={() =>
                       navigation.navigate('FurnitureDetails', { furnitureId: item.id })
                     }
                   />
-                )}
-              />
-            )}
-          </View>
-        </>
-      )}
-      ListEmptyComponent={null}
-      renderItem={null}
-    />
-  );
+                </View>
+              )}
+            />
+          )}
+        </View>
+      </>
+    )}
+    ListEmptyComponent={null}
+    renderItem={null}
+  />
+);
+
 }
 
 const styles = StyleSheet.create({
   heroSection: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 24,
+    // flexDirection: 'row',
+    // justifyContent: 'space-between',
+    marginBottom: 20,
   },
   heroImage: {
-    width: '48%',
+    width: '100%',
     height: 150,
-    borderRadius: 12,
+    borderRadius: 0,
   },
-  section: {
-    marginBottom: 24,
+  sectionCat: {
+    // marginBottom: 20,
+  },
+  sectionLatest: {
+     marginTop: 15,
   },
   sectionTitle: {
     fontSize: 18,
+    textAlign: 'center',
     fontWeight: 'bold',
     marginBottom: 12,
   },
@@ -170,22 +189,36 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  categoryCard: {
-    width: '23%',
-    borderRadius: 8,
-    overflow: 'hidden',
-    alignItems: 'center',
-  },
-  categoryImage: {
-    width: '100%',
-    height: 80,
-    borderRadius: 8,
-    marginBottom: 4,
-  },
-  categoryText: {
-    textAlign: 'center',
-    fontSize: 12,
-  },
+
+
+  categoriesGrid: {
+  flexDirection: 'row',
+  flexWrap: 'wrap',
+  justifyContent: 'space-evenly',
+  // gap: 2, 
+},
+categoryCard: {
+  width: '45%', 
+  borderRadius: 8,
+  overflow: 'hidden',
+  alignItems: 'center',
+  marginBottom: 8,
+  backgroundColor: '#f8f8f8', 
+  paddingVertical: 8,
+},
+categoryImage: {
+  width: '100%',
+  height: 70,
+  borderRadius: 8,
+  marginTop: 6,
+  resizeMode: 'cover',
+},
+categoryText: {
+  textAlign: 'center',
+  fontSize: 14,
+  fontWeight: '600',
+},
+
   subcategoryButton: {
     paddingHorizontal: 12,
     paddingVertical: 6,
