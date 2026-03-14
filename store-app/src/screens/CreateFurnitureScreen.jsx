@@ -1,13 +1,12 @@
-import { useState } from 'react';
-import { Alert, View, TextInput, Button, StyleSheet, Image, Text, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
-import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
+import { useState, useEffect } from 'react';
+import { Alert, View, TextInput, Button, StyleSheet, Image, Text, Keyboard, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import { addDoc, collection, serverTimestamp, doc, setDoc, } from 'firebase/firestore';
 import { db } from '../firebase/firebaseConfig';
 import { Picker } from '@react-native-picker/picker';
 import { CATEGORIES } from '../data/categories';
-import * as ImagePicker from 'expo-image-picker';
-import { uploadFile } from '../firebase/storage';
+import { pickImageAndUpload, takePhotoAndUpload } from "../services/pickerService";
 
-export default function CreateFurnitureScreen() {
+export default function CreateFurnitureScreen({ navigation }) {
   const [title, setTitle] = useState('');
   const [imageUri, setImageUri] = useState(null);
   const [category, setCategory] = useState('');
@@ -19,28 +18,41 @@ export default function CreateFurnitureScreen() {
   const [width, setWidth] = useState('');
   const [height, setHeight] = useState('');
   const [depth, setDepth] = useState('');
+  const [furnitureId, setFurnitureId] = useState(null);
+  
+
+  useEffect(() => {
+  const newDocRef = doc(collection(db, "furniture"));
+  setFurnitureId(newDocRef.id);
+}, []);
+
 
   const selectedCategory = CATEGORIES.find(c => c.id === category);
 
-  const pickImage = async () => {
-    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (!permission.granted) {
-      Alert.alert("Permission required to access photos.");
-      return;
-    }
-    const result = await ImagePicker.launchImageLibraryAsync({ allowsEditing: true, aspect: [4,3], quality: 1 });
-    if (!result.canceled) setImageUri(result.assets[0].uri);
-  };
+const handlePickImage = async () => {
+  if (!furnitureId) return;
 
-  const takePhoto = async () => {
-    const permission = await ImagePicker.requestCameraPermissionsAsync();
-    if (!permission.granted) {
-      Alert.alert("Permission required to use camera.");
-      return;
-    }
-    const result = await ImagePicker.launchCameraAsync({ allowsEditing: true, aspect: [4,3], quality: 1 });
-    if (!result.canceled) setImageUri(result.assets[0].uri);
-  };
+  try {
+    const url = await pickImageAndUpload(`furniture/${furnitureId}`);
+    if (url) setImageUri(url);
+  } catch (err) {
+    console.log("Error picking image:", err);
+    alert("Failed to pick image");
+  }
+};
+
+const handleTakePhoto = async () => {
+  if (!furnitureId) return;
+
+  try {
+    const url = await takePhotoAndUpload(`furniture/${furnitureId}`);
+    if (url) setImageUri(url);
+  } catch (err) {
+    console.log("Error taking photo:", err);
+    alert("Failed to take photo");
+  }
+};
+
 
   const validateInputs = () => {
     if (!title.trim() || title.length < 3) return "Title must be at least 3 characters.";
@@ -56,38 +68,61 @@ export default function CreateFurnitureScreen() {
     return null;
   };
 
-  async function addFurnitureHandler() {
-    const error = validateInputs();
-    if (error) return Alert.alert("Validation Error", error);
+async function addFurnitureHandler() {
+  const error = validateInputs();
+  if (error) return Alert.alert("Validation Error", error);
 
-    let imageUrl = null;
-    if (imageUri) imageUrl = await uploadFile(imageUri, 'furniture');
+  try {
 
     const newFurniture = {
       title,
-      images: imageUrl ? [imageUrl] : [],
+      images: imageUri ? [imageUri] : [],
       category,
       subcategory,
       price: Number(price),
       description,
       material: material.split(',').map(m => m.trim()),
       colors: colors.split(',').map(c => c.trim()),
-      dimensions: { width: Number(width), height: Number(height), depth: Number(depth) },
+      dimensions: {
+        width: Number(width),
+        height: Number(height),
+        depth: Number(depth),
+      },
       createdAt: serverTimestamp(),
     };
 
-    try {
-      await addDoc(collection(db, 'furniture'), newFurniture);
-      Alert.alert("Success", "Furniture added successfully!");
-      // Reset form
-      setTitle(''); setCategory(''); setSubcategory(''); setPrice('');
-      setDescription(''); setMaterial(''); setColors('');
-      setWidth(''); setHeight(''); setDepth(''); setImageUri(null);
-    } catch (err) {
-      console.log(err);
-      Alert.alert("Error", "Failed to add furniture.");
-    }
+    await setDoc(doc(db, "furniture", furnitureId), newFurniture);
+
+    const createdId = furnitureId;
+
+    setTitle('');
+    setCategory('');
+    setSubcategory('');
+    setPrice('');
+    setDescription('');
+    setMaterial('');
+    setColors('');
+    setWidth('');
+    setHeight('');
+    setDepth('');
+    setImageUri(null);
+
+    Alert.alert("Success", "Furniture added successfully!");
+
+    navigation.navigate("Categories", {
+      screen: "FurnitureDetails",
+      params: { furnitureId: createdId },
+    });
+
+
+  } catch (err) {
+    console.log(err);
+    Alert.alert("Error", "Failed to add furniture.");
   }
+}
+
+
+
 
   return (
     <KeyboardAvoidingView style={{flex:1}} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
@@ -103,8 +138,8 @@ export default function CreateFurnitureScreen() {
         />
 
         <View style={{ flexDirection:'row', justifyContent:'space-around', marginBottom: 12 }}>
-          <Button title="Select Image" onPress={pickImage} />
-          <Button title="Take Photo" onPress={takePhoto} />
+          <Button title="Select Image" onPress={handlePickImage} disabled={!furnitureId}/>
+          <Button title="Take Photo" onPress={handleTakePhoto} disabled={!furnitureId}/>
         </View>
 
         {imageUri && (
