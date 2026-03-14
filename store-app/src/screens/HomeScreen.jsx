@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import {
   View,
   Text,
@@ -39,9 +40,12 @@ export default function HomeScreen() {
 
    const { refreshing, onRefresh } = usePullToRefresh(loadLatest);
 
-    useEffect(() => {
-    loadLatest();
-  }, [])
+    useFocusEffect(
+      useCallback(() => {
+        loadLatest();
+      }, [])
+    );
+
 
   const handleCategoryPress = catId => {
     setSelectedCategory(catId === selectedCategory ? null : catId);
