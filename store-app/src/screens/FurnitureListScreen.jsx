@@ -1,5 +1,6 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import { View, FlatList, ActivityIndicator, Text, StyleSheet, RefreshControl, } from 'react-native';
 import FurnitureCard from '../components/FurnitureCard';
 import { useNavigation } from '@react-navigation/native';
@@ -31,9 +32,11 @@ export default function FurnitureListScreen({ route }) {
 
   const { refreshing, onRefresh } = usePullToRefresh(loadFurniture);
 
-  useEffect(() => {
-  loadFurniture();
-}, [categoryId, subcategory]);
+    useFocusEffect(
+      useCallback(() => {
+        loadFurniture();
+      }, [categoryId, subcategory])
+    );
 
   if (loading) return <ActivityIndicator style={{ marginTop: 50 }} />;
 
