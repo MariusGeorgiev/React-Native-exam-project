@@ -30,6 +30,7 @@ export default function CreateFurnitureScreen({ navigation }) {
   const selectedCategory = CATEGORIES.find(c => c.id === category);
 
 const handlePickImage = async () => {
+  Keyboard.dismiss();
   if (!furnitureId) return;
 
   try {
@@ -42,6 +43,7 @@ const handlePickImage = async () => {
 };
 
 const handleTakePhoto = async () => {
+  Keyboard.dismiss();
   if (!furnitureId) return;
 
   try {
@@ -109,7 +111,7 @@ async function addFurnitureHandler() {
 
     Alert.alert("Success", "Furniture added successfully!");
 
-    navigation.navigate("Categories", {
+    navigation.navigate("Home", {
       screen: "FurnitureDetails",
       params: { furnitureId: createdId },
     });

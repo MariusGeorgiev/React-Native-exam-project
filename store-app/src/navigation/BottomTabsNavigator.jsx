@@ -43,6 +43,7 @@ export default function BottomTabsNavigator() {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="list-outline" size={size} color={color} />
           ),
+          // popToTopOnBlur: true,
         }}
       />
 
