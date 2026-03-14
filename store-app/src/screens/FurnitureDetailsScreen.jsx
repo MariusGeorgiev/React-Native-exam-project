@@ -1,4 +1,5 @@
-import { useEffect, useState  } from 'react';
+import { useEffect, useState, useCallback  } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import { Alert, View, Text, Image, ActivityIndicator, ScrollView, StyleSheet, Button, TouchableOpacity } from 'react-native';
 import { getFurnitureById, deleteFurniture } from '../services/furnitureService';
 import { useAuth } from '../contexts/AuthProvider';
@@ -13,20 +14,24 @@ export default function FurnitureDetailsScreen({ route, navigation }) {
   const { user, userProfile, toggleFavorite, addToCart} = useAuth();
 
 
-   useEffect(() => {
+   useFocusEffect(
+  useCallback(() => {
     async function fetchDetails() {
+      setLoading(true);
       try {
         const data = await getFurnitureById(furnitureId);
         setFurniture(data);
       } catch (error) {
-        console.log('Error fetching furniture details:', error);
+        console.log("Error fetching furniture details:", error);
       } finally {
         setLoading(false);
       }
     }
 
     fetchDetails();
-  }, [furnitureId]);
+  }, [furnitureId])
+);
+
   
 
   if (loading) return <ActivityIndicator size="large" style={{ marginTop: 50 }} />;
