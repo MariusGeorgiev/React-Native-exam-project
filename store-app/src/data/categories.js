@@ -12,7 +12,7 @@ export const CATEGORIES = [
   { 
     id: 'kitchen', 
     title: 'Kitchen',
-    subcategories: ['Cabinets', 'Kitchen Islands', 'Dining Sets', 'Bar Stools', 'Pantry Storage']
+    subcategories: ['Tables', 'Cabinets', 'Kitchen Islands', 'Dining Sets', 'Bar Stools', 'Pantry Storage']
   },
   { 
     id: 'bathroom', 
