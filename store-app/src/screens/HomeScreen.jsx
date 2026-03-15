@@ -66,7 +66,7 @@ return (
   <FlatList
     data={[]} 
     keyExtractor={(_, index) => index.toString()}
-    contentContainerStyle={{ paddingBottom: 100 }}
+    contentContainerStyle={{ paddingBottom: 0 }}
     refreshControl={
       <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
     }
@@ -80,7 +80,7 @@ return (
 
         
         
-          <View style={styles.section}>
+          <View style={styles.sectionCat}>
             <Text style={styles.sectionTitle}>Best Categories</Text>
             <View style={styles.categoriesGrid}>
               {topCategories.map(cat => (
@@ -102,11 +102,11 @@ return (
 
       
         {selectedCategory && (
-          <View style={styles.sectionCat}>
+          <View style={styles.sectionSubCat}>
             <Text style={styles.sectionTitle}>
-              {topCategories.find(cat => cat.id === selectedCategory)?.title} Subcategories
+              Chose from {topCategories.find(cat => cat.id === selectedCategory)?.title} Subcategories
             </Text>
-            <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center' }}>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-evenly' }}>
               {topCategories
                 .find(cat => cat.id === selectedCategory)
                 ?.subcategories.map((sub, index) => (
@@ -167,18 +167,24 @@ const styles = StyleSheet.create({
   heroSection: {
     // flexDirection: 'row',
     // justifyContent: 'space-between',
-    marginBottom: 20,
+    // marginBottom: 20,
   },
   heroImage: {
     width: '100%',
     height: 150,
-    borderRadius: 0,
+   
   },
   sectionCat: {
-    // marginBottom: 20,
+    paddingTop: 10,
+    //  backgroundColor: '#f3eded', 
+  },
+  sectionSubCat: {
+    // backgroundColor: '#f3eded', 
   },
   sectionLatest: {
-     marginTop: 15,
+     paddingTop: 10,
+    borderRadius: 0,
+    //  backgroundColor: '#f3eded', 
   },
   sectionTitle: {
     fontSize: 18,
@@ -186,10 +192,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 12,
   },
-  categoriesRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
+  // categoriesRow: {
+  //   flexDirection: 'row',
+  //   justifyContent: 'space-between',
+  // },
 
 
   categoriesGrid: {
@@ -205,7 +211,8 @@ categoryCard: {
   alignItems: 'center',
   marginBottom: 5,
   paddingTop: 2,
-  backgroundColor: '#f8f8f8', 
+  // backgroundColor: '#e4dada',
+  color: 'red'
   // paddingVertical: 2,
 },
 categoryImage: {
@@ -225,12 +232,12 @@ categoryText: {
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 20,
-    backgroundColor: '#eee',
+    backgroundColor: '#879484',
     marginRight: 8,
     marginBottom: 8,
   },
   subcategoryText: {
     fontSize: 12,
-    color: '#333',
+    color: 'white',
   },
 });
