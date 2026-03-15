@@ -43,16 +43,18 @@ export default function CustomDrawerContent(props) {
                 <>
                   <DrawerItem
                     label="Profile"
+                    labelStyle={{ color: 'white' }}
                     icon={({ color, size }) => (
-                      <Ionicons name="person-outline" size={size} color={color} />
+                      <Ionicons name="person-outline" size={size} color={'white'} />
                     )}
                     onPress={() => props.navigation.navigate("Profile")}
                   />
 
                   <DrawerItem
                     label="Orders"
+                    labelStyle={{ color: 'white' }}
                     icon={({ color, size }) => (
-                      <Ionicons name="receipt-outline" size={size} color={color} />
+                      <Ionicons name="receipt-outline" size={size} color={'white'} />
                     )}
                     onPress={() => props.navigation.navigate("Orders")}
                   />
@@ -63,8 +65,9 @@ export default function CustomDrawerContent(props) {
 
         <DrawerItem
           label="Settings"
+          labelStyle={{ color: 'white' }}
           icon={({ color, size }) => (
-            <Ionicons name="settings-outline" size={size} color={color} />
+            <Ionicons name="settings-outline" size={size} color={'white'} />
           )}
           onPress={() => props.navigation.navigate('Settings')}
         />
@@ -74,8 +77,9 @@ export default function CustomDrawerContent(props) {
 
         <DrawerItem
           label="Info & Contact"
+          labelStyle={{ color: 'white' }}
           icon={({ color, size }) => (
-            <Ionicons name="information-circle-outline" size={size} color={color} />
+            <Ionicons name="information-circle-outline" size={size} color={'white'} />
           )}
           onPress={() => props.navigation.navigate('Info & Contact')}
         />
