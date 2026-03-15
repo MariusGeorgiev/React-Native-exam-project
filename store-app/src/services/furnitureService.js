@@ -1,7 +1,7 @@
 import { doc, collection, query, orderBy, limit, getDocs, getDoc, where, deleteDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase/firebaseConfig';
 
-export async function fetchLatestFurniture(limitNumber = 5) {
+export async function fetchLatestFurniture(limitNumber = 10) {
   const q = query(collection(db, 'furniture'), orderBy('createdAt', 'desc'), limit(limitNumber));
   const snapshot = await getDocs(q);
   return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
