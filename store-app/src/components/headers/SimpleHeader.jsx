@@ -19,7 +19,7 @@ export default function SimpleHeader({ title }) {
 const styles = StyleSheet.create({
   header: {
     height: 44,
-    backgroundColor: '#b09999',
+    backgroundColor: '#31737a',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',

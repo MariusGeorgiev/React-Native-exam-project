@@ -30,7 +30,7 @@ export default function BackHeader({ title, navigation }) {
 const styles = StyleSheet.create({
   header: {
     height: 44,
-    backgroundColor: '#b09999',
+    backgroundColor: '#31737a',
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 8,
