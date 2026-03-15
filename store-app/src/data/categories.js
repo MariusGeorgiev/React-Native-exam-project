@@ -12,16 +12,16 @@ export const CATEGORIES = [
     image: require('../../assets/bedroom.jpg'),
   },
   { 
-    id: 'kitchen', 
-    title: 'Kitchen',
-    subcategories: ['Tables', 'Cabinets', 'Kitchen Islands', 'Dining Sets', 'Bar Stools', 'Pantry Storage'],
-    image: require('../../assets/kitchen.jpg'),
-  },
-  { 
     id: 'bathroom', 
     title: 'Bathroom',
     subcategories: ['Cabinets', 'Mirrors', 'Shelving', 'Bathroom Sets', 'Vanities'],
     image: require('../../assets/bathroom.jpg'),
+  },
+  { 
+    id: 'kitchen', 
+    title: 'Kitchen',
+    subcategories: ['Tables', 'Cabinets', 'Kitchen Islands', 'Dining Sets', 'Bar Stools', 'Pantry Storage'],
+    image: require('../../assets/kitchen.jpg'),
   },
   { 
     id: 'office', 
