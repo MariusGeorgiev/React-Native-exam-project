@@ -1,9 +1,9 @@
-# Furniture Store App – React Native Exam Project
+# Furniture World Store App – React Native Exam Project
 
 ---
 
 ## 1. Project Overview
-**Application Name:** Furniture Store App  
+**Application Name:** Furniture World
 **Application Category / Topic:** Shopping / Furniture / E-commerce  
 **Main Purpose:**  
 Furniture shop application.  

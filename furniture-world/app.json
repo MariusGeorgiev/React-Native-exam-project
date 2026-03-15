@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "store-app",
-    "slug": "store-app",
+    "name": "Furniture World", 
+    "slug": "furniture-world",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/icon-fw.jpg",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
@@ -21,7 +21,7 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.anonymous.storeapp"
+      "package": "com.furnitureworld.app"
     },
     "web": {
       "favicon": "./assets/favicon.png"
