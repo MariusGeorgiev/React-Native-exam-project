@@ -91,7 +91,7 @@ const handleAddToCart = async () => {
         <Image source={{ uri: furniture.images[0] }} style={{ width: '100%', height: 250, borderRadius: 12, marginBottom: 16 }} />
       )}
       <Text>Dimensions: W {furniture.dimensions.width} × H {furniture.dimensions.height} × D {furniture.dimensions.depth}</Text>
-        <Text>Price: ${furniture.price}</Text>
+        <Text>Price: €{furniture.price}</Text>
         <Text>Description: {furniture.description}</Text>
 
 

@@ -85,7 +85,7 @@ const handleTakePhoto = async () => {
               ...locationData,
             }));
 
-            alert("Location Extracted!");
+            alert("Location Updated!");
           } catch (error) {
             alert(error.message);
           }

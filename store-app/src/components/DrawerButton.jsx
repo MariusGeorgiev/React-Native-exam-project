@@ -10,7 +10,7 @@ export default function DrawerButton() {
       onPress={() => navigation.toggleDrawer()}
       style={styles.drawerBtn}
     >
-      <Ionicons name="menu" size={28} color="black" />
+      <Ionicons name="menu" size={28} color="white" />
     </TouchableOpacity>
   );
 }
@@ -20,6 +20,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     // top: 5,     
     right: 10,    
-    zIndex: 10, 
+    zIndex: 10,
+    
   },
 });

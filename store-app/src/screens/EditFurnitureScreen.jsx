@@ -132,7 +132,7 @@ const handleTakePhoto = async () => {
     if (!proceed) return;
   }
 
-  // Prepare updated furniture
+ 
   try {
     const updatedFurniture = {
       title,

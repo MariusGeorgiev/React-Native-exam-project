@@ -64,13 +64,13 @@ const sendEmail = () => {
       contentContainerStyle={{ paddingBottom: 100 }}
     >
 
-      <Text style={styles.title}>Furniture Store App</Text>
+      <Text style={styles.title}>Furniture World</Text>
 
       
-      <Text style={styles.section}>About </Text>
+      <Text style={styles.section}>About</Text>
 
       <Text style={styles.text}>
-        Furniture Store App is a student project created in 2026. 
+        Furniture World is a Store App for s student project created in 2026. 
         The project demonstrates building a furniture shop app with React Native, including 
         features like product categories, favorites, shopping cart, profile and order management e.t.c.
         App is created by Marius Georgiev.

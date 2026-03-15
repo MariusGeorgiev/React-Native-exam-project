@@ -8,8 +8,8 @@ export default function FurnitureCard({ furniture, onPress  }) {
       )}
       <View style={styles.info}>
         <Text style={styles.title} numberOfLines={2}>{furniture.title}</Text>
-        <Text style={styles.price}>${furniture.price.toFixed(2)}</Text>
-        <Text style={styles.desc} numberOfLines={3}>{furniture.description}</Text>
+        <Text style={styles.price}>€{furniture.price}</Text>
+        <Text style={styles.desc} numberOfLines={2}>{furniture.description}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -19,14 +19,20 @@ const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
     marginBottom: 12,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#f2f1f9',
     borderRadius: 8,
     overflow: 'hidden',
     padding: 8,
+
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4,
   },
   image: {
-    width: 80,
-    height: 80,
+    width: 100,
+    height: 100,
     borderRadius: 6,
   },
   info: {

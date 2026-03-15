@@ -4,7 +4,7 @@ import HomeScreen from '../screens/HomeScreen';
 import FurnitureListScreen from '../screens/FurnitureListScreen';
 import FurnitureDetailsScreen from '../screens/FurnitureDetailsScreen';
 import EditFurnitureScreen from '../screens/EditFurnitureScreen';
-import { SimpleHeader, BackHeader } from '../components/headers';
+import { BackHeader, HomeHeader } from '../components/headers';
 
 const Stack = createNativeStackNavigator();
 
@@ -14,7 +14,7 @@ export default function HomeStackNavigator() {
     
       >
       <Stack.Screen name="HomeScreen" component={HomeScreen} 
-          options={{ header: () => <SimpleHeader title='Home furniture world' /> }}
+          options={{ header: () => <HomeHeader title='Home' /> }}
       />
       <Stack.Screen name="FurnitureList" component={FurnitureListScreen}
           options={({ navigation, route }) => ({
