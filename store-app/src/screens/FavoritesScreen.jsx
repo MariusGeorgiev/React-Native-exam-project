@@ -11,33 +11,38 @@ export default function FavoritesScreen({ navigation }) {
   const [favorites, setFavorites] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  async function fetchFavorites() {
-    if (!userProfile?.favorites?.length) {
-      setFavorites([]);
-      setLoading(false);
-      return;
-    }
-
-    try {
-      const items = await Promise.all(
-        userProfile.favorites.map(async id => {
-          try {
-            return await getFurnitureById(id);
-          } catch (error) {
-            console.warn(`Furniture with id ${id} not found, skipping`);
-            return null; 
-          }
-        })
-      );
- 
-      const validItems = items.filter(item => item !== null);
-      setFavorites(validItems);
-    } catch (error) {
-      console.log("Error fetching favorite items:", error);
-    } finally {
-      setLoading(false);
-    }
+async function fetchFavorites() {
+  if (!userProfile?.favorites?.length) {
+    setFavorites([]);
+    setLoading(false);
+    return;
   }
+
+  try {
+    const items = await Promise.all(
+      userProfile.favorites.map(async id => {
+        try {
+          return await getFurnitureById(id);
+        } catch (error) {
+          console.warn(`Furniture with id ${id} not found, skipping`);
+          return null;
+        }
+      })
+    );
+
+    const validItems = items.filter(item => item !== null);
+
+    const sortedItems = validItems
+      .sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+
+    setFavorites(sortedItems);
+  } catch (error) {
+    console.log("Error fetching favorite items:", error);
+  } finally {
+    setLoading(false);
+  }
+}
+
 
   const { refreshing, onRefresh } = usePullToRefresh(fetchFavorites);
 
