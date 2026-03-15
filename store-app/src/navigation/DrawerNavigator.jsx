@@ -21,17 +21,18 @@ export default function DrawerNavigator() {
         drawerType: 'front',
         drawerStyle: {
           width: '55%',
+          backgroundColor: '#31737a',
         },
       }}
     >
-      <Drawer.Screen name="MainTabs" component={BottomTabsNavigator}  options={{ headerShown: false }}  />
+      <Drawer.Screen name="MainTabs" component={BottomTabsNavigator}  options={{ headerShown: false, }}  />
       <Drawer.Screen name="Profile" component={ProfileScreen} 
           options={({ navigation }) => ({
              header: () => <BackHeader title='Profile' navigation={navigation}/> })}
       />
       <Drawer.Screen name="Orders" component={OrdersStackNavigator} 
           options={{
-            headerShown: false
+            headerShown: false,
           }}
       />
       <Drawer.Screen name="Settings" component={SettingsScreen} 
