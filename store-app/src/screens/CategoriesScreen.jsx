@@ -27,13 +27,13 @@ export default function CategoriesScreen({ navigation }) {
                   flatListRef.current.scrollToIndex({ index, animated: true, viewPosition: 0.2 });
                 }
               }}
-              style={{ padding: 16, backgroundColor: '#eee', borderRadius: 8 }}
+              style={{ padding: 16, backgroundColor: '#879484', borderRadius: 8, }}
             >
-              <Text style={{ fontSize: 16 }}>{item.title}</Text>
+              <Text style={{ fontSize: 16, color: 'white', }}>{item.title}</Text>
           </TouchableOpacity>
 
             {openCategory === item.id && (
-              <View style={{ marginTop: 8, paddingLeft: 16 }}>
+              <View style={{ marginTop: 8, paddingLeft: 16,  }}>
                 {item.subcategories.map((sub, index) => (
                   <TouchableOpacity
                     key={index}
@@ -44,9 +44,9 @@ export default function CategoriesScreen({ navigation }) {
                         subcategory: sub,
                       })
                     }
-                    style={{ padding: 8 }}
+                    style={{ padding: 8,  }}
                   >
-                    <Text>{sub}</Text>
+                    <Text style={{color: 'white', padding: 8, borderRadius: 8, backgroundColor: '#879484', textAlign: 'center'}}>{sub}</Text>
                   </TouchableOpacity>
                 ))}
               </View>
