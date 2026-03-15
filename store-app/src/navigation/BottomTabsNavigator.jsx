@@ -22,7 +22,12 @@ export default function BottomTabsNavigator() {
     <Tab.Navigator
   screenOptions={({ route }) => ({
     headerShown: false,
-    tabBarStyle: hideTabBarForRoutes(route),
+    tabBarStyle: [
+      { backgroundColor: '#31737a' },
+      hideTabBarForRoutes(route),
+    ],
+    tabBarActiveTintColor: '#a5c385',
+    tabBarInactiveTintColor: '#cfd8dc',
   })}
 >
       
