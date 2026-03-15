@@ -43,7 +43,7 @@ export default function OrdersScreen({ navigation }) {
       const q = query(
         collection(db, "orders"),
         where("userId", "==", user.uid),
-        orderBy("createdAt")
+        orderBy("createdAt", 'desc')
       );
       const snapshot = await getDocs(q);
 
@@ -119,7 +119,7 @@ export default function OrdersScreen({ navigation }) {
             <Text style={styles.orderId}>Order #{item.id.slice(0, 6)}</Text>
             <Text style={styles.text}>Date: {formatDate(item.createdAt)}</Text>
             <Text style={styles.text}>Items: {(item.items || []).length}</Text>
-            <Text style={styles.text}>Total: ${item.total?.toFixed(2)}</Text>
+            <Text style={styles.text}>Total: €{item.total}</Text>
             <Text style={styles.status}>Status: {item.status}</Text>
           </TouchableOpacity>
         )}
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
   orderCard: {
     padding: 16,
     borderRadius: 10,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#f2f1f9",
     marginBottom: 12,
   },
   orderId: { fontWeight: "bold", fontSize: 16, marginBottom: 4 },
