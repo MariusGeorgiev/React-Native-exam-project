@@ -1,8 +1,15 @@
 import { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Button, ActivityIndicator, TextInput } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ActivityIndicator,
+  TextInput,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
 import { useAuth } from "../contexts/AuthProvider";
 import { getUserProfile } from "../services/authService";
-
 import { db } from "../firebase/firebaseConfig";
 import {
   addDoc,
@@ -20,14 +27,17 @@ export default function CheckoutScreen({ navigation, route }) {
 
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [placingOrder, setPlacingOrder] = useState(false);
+
   const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [phoneCode, setPhoneCode] = useState("");
   const [phone, setPhone] = useState("");
   const [street, setStreet] = useState("");
   const [city, setCity] = useState("");
   const [postalCode, setPostalCode] = useState("");
   const [country, setCountry] = useState("");
-  const [placingOrder, setPlacingOrder] = useState(false);
+  const [locationUpdated, setLocationUpdated] = useState(false);
 
   useEffect(() => {
     if (!user) return;
@@ -35,19 +45,16 @@ export default function CheckoutScreen({ navigation, route }) {
     async function fetchProfile() {
       try {
         const data = await getUserProfile(user.uid);
-
         setProfile(data);
 
         setUsername(data.username || "");
-
+        setEmail(data.email || "");
         setPhoneCode(data.phoneCode || "");
         setPhone(data.phone || "");
-
         setStreet(data.address?.street || "");
         setCity(data.address?.city || "");
         setPostalCode(data.address?.postalCode || "");
         setCountry(data.address?.country || "");
-
       } catch (err) {
         console.log("Error loading profile:", err);
       } finally {
@@ -58,9 +65,78 @@ export default function CheckoutScreen({ navigation, route }) {
     fetchProfile();
   }, [user]);
 
-  function validateCheckoutForm({ username, phoneCode, phone, street, city, postalCode, country }) {
-  
-    if (!username.trim() || username.length < 3 || username.length > 40) {
+
+async function handlePickLocation() {
+  try {
+    const location = await pickLocation();
+    if (!location) return;
+
+    setStreet(location.street || "");
+    setCity(location.city || "");
+    setPostalCode(location.postalCode || "");
+    setCountry(location.country || "");
+
+    setLocationUpdated(true);
+    setTimeout(() => setLocationUpdated(false), 3000);
+  } catch (error) {
+    alert("Unable to get location.");
+  }
+}
+
+
+  const placeOrder = async () => {
+    if (!profile || placingOrder) return;
+    setPlacingOrder(true);
+
+    const error = validateForm();
+    if (error) {
+      alert(error);
+      setPlacingOrder(false);
+      return;
+    }
+
+    try {
+      const orderItems = cartItems.map((item) => ({
+        productId: item.furniture.id,
+        title: item.furniture.title,
+        price: item.furniture.price,
+        quantity: item.quantity,
+      }));
+
+      const orderData = {
+        userId: user.uid,
+        username,
+        email,
+        phoneCode,
+        phone,
+        address: { street, city, postalCode, country },
+        items: orderItems,
+        total: totalPrice,
+        status: "pending",
+        createdAt: serverTimestamp(),
+      };
+
+      const orderRef = await addDoc(collection(db, "orders"), orderData);
+
+      await updateDoc(doc(db, "users", user.uid), {
+        orders: arrayUnion(orderRef.id),
+        cart: [],
+      });
+
+      if (setUserProfile) setUserProfile((prev) => ({ ...prev, cart: [] }));
+
+      alert("Order placed successfully!");
+      navigation.reset({ index: 0, routes: [{ name: "Orders" }] });
+    } catch (err) {
+      console.log(err);
+      alert("Something went wrong while placing your order!");
+    } finally {
+      setPlacingOrder(false);
+    }
+  };
+
+  const validateForm = () => {
+     if (!username.trim() || username.length < 3 || username.length > 40) {
     return "Username is required and should be 3-40 characters.";
   }
   
@@ -87,233 +163,186 @@ export default function CheckoutScreen({ navigation, route }) {
   if (!country.trim() || country.length < 2 || country.length > 50) {
     return "Country is required and should be 2-50 characters.";
   }
+    return null;
+  };
 
-  return null;
-}
 
-async function handlePickLocation() {
-  try {
-    const location = await pickLocation();
+  if (loading) return <ActivityIndicator style={{ marginTop: 50 }} />;
 
-    if (!location) return;
-
-    setStreet(location.street || "");
-    setCity(location.city || "");
-    setPostalCode(location.postalCode || "");
-    setCountry(location.country || "");
-
-  } catch (error) {
-    alert("Unable to get location.");
-  }
-}
-
-async function placeOrder() {
-    if (!profile || placingOrder) return;
-
-      const error = validateCheckoutForm({ username, phoneCode, phone, street, city, postalCode, country });
-        if (error) {
-          alert(error);
-          return;
-        }
-
-    try {
-      const orderItems = cartItems.map(item => ({
-        productId: item.furniture.id,
-        title: item.furniture.title,
-        price: item.furniture.price,
-        quantity: item.quantity
-      }));
-
-      const orderData = {
-        userId: user.uid,
-        username,
-        phone,
-        phoneCode,
-        address: { street, city, postalCode, country },
-        items: orderItems,
-        total: totalPrice,
-        status: "pending",
-        createdAt: serverTimestamp(),
-      };
-
-      
-      const orderRef = await addDoc(collection(db, "orders"), orderData);
-
-      
-      await updateDoc(doc(db, "users", user.uid), { 
-        orders: arrayUnion(orderRef.id), 
-        cart: [] 
-      });
-
-      
-      if (setUserProfile) {
-        setUserProfile(prev => ({ ...prev, cart: [] }));
-      }
-
-      alert("Order placed successfully!");
-
-      
-      navigation.reset({
-        index: 0,
-        routes: [{ name: "Orders" }],
-      });
-
-    } catch (error) {
-    alert("Something went wrong while placing your order!");
-  } finally {
-    setPlacingOrder(false);
-  }
-}
-
-  if (loading) {
-    return (
-      <View style={styles.center}>
-        <ActivityIndicator />
-      </View>
-    );
-  }
-
-  if (!profile) {
+  if (!profile)
     return (
       <View style={styles.center}>
         <Text>No profile data found.</Text>
       </View>
     );
-  }
 
   return (
-    <View style={styles.container}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={{ paddingBottom: 30 }}
+    >
+     
+      <Text style={styles.section}>Customer Info</Text>
+      <View style={styles.row}>
+        <View style={{ flex: 1 }}>
+          <Text style={styles.label}>Email</Text>
+          <TextInput style={styles.input} value={email} editable={false} />
+        </View>
+        <View style={{ flex: 1, marginLeft: 10 }}>
+          <Text style={styles.label}>Username</Text>
+          <TextInput
+            style={styles.input}
+            value={username}
+            onChangeText={setUsername}
+          />
+        </View>
+      </View>
 
-      <Text style={styles.section}>Customer</Text>
+     
+      <View style={styles.row}>
+        <View style={{ flex: 0.3 }}>
+          <Text style={styles.label}>Code</Text>
+          <TextInput
+            style={styles.input}
+            value={phoneCode}
+            onChangeText={setPhoneCode}
+            keyboardType="phone-pad"
+          />
+        </View>
+        <View style={{ flex: 0.7, marginLeft: 10 }}>
+          <Text style={styles.label}>Phone</Text>
+          <TextInput
+            style={styles.input}
+            value={phone}
+            onChangeText={setPhone}
+            keyboardType="numeric"
+          />
+        </View>
+      </View>
 
-      <Text style={styles.value}>{profile.email}</Text>
+      <Text style={styles.section}>Shipping Address</Text>
 
-      <TextInput
-        style={styles.input}
-        value={username}
-        autoCapitalize="words"
-        onChangeText={setUsername}
-        placeholder="Name"
-      />
-      
+<View style={styles.row}>
+        <View style={{ flex: 0.5 }}>
+          <Text style={styles.label}>City</Text>
+          <TextInput style={styles.input} value={city} onChangeText={setCity} />
+        </View>
+        <View style={{ flex: 0.5, marginLeft: 10 }}>
+          <Text style={styles.label}>Country</Text>
+          <TextInput
+            style={styles.input}
+            value={country}
+            onChangeText={setCountry}
+          />
+        </View>
+      </View>
 
-      <Text style={styles.section}>Phone</Text>
 
-      <TextInput
-        style={styles.input}
-        keyboardType="phone-pad"
-        value={phoneCode}
-        onChangeText={setPhoneCode}
-        placeholder="+359"
-      />
+      <View style={styles.row}>
+        <View style={{ flex: 0.3, }}>
+          <Text style={styles.label}>Postal Code</Text>
+          <TextInput
+            style={styles.input}
+            value={postalCode}
+            onChangeText={setPostalCode}
+            keyboardType="numeric"
+          />
+        </View>
+        <View style={{ flex: 0.7, marginLeft: 10 }}>
+          <Text style={styles.label}>Street</Text>
+          <TextInput
+            style={styles.input}
+            value={street}
+            onChangeText={setStreet}
+          />
+        </View>
+      </View>
 
-      <TextInput
-        style={styles.input}
-        value={phone}
-        keyboardType="numeric"
-        onChangeText={setPhone}
-        placeholder="Phone number"
-      />
+      {locationUpdated && (
+        <Text style={{ color: "green", marginBottom: 8, textAlign: "center" }}>
+          Location updated!
+        </Text>
+      )}
 
-      
-     <Text style={styles.section}>Shipping Address</Text>
 
-      <TextInput
-        style={styles.input}
-        value={street}
-        onChangeText={setStreet}
-        placeholder="Street"
-      />
+      <TouchableOpacity style={styles.locationBtn} onPress={handlePickLocation}>
+        <Text style={styles.locationBtnText}>Use Phone Location</Text>
+      </TouchableOpacity>
 
-      <TextInput
-        style={styles.input}
-        value={postalCode}
-        onChangeText={setPostalCode}
-        keyboardType="numeric"
-        placeholder="Postal Code"
-      />
-
-      <TextInput
-        style={styles.input}
-        value={city}
-        autoCapitalize="words"
-        onChangeText={setCity}
-        placeholder="City"
-      />
-
-      <TextInput
-        style={styles.input}
-        value={country}
-        autoCapitalize="words"
-        onChangeText={setCountry}
-        placeholder="Country"
-      />
-
-      <Button
-        title="Use phone location"
-        onPress={handlePickLocation}
-      />
-
-       <Text style={styles.section}>Order Summary</Text>
-
-    {cartItems.map(item => (
-      <View key={item.id} style={{marginTop:5}}>
-        <Text>
+      <Text style={styles.section}>Order Summary</Text>
+      {cartItems.map((item) => (
+        <Text key={item.id} style={styles.orderItem}>
           {item.furniture.title} x {item.quantity}
         </Text>
-      </View>
-    ))}
+      ))}
+      <Text style={styles.total}>Total: €{totalPrice}</Text>
 
-    <Text style={{fontWeight:"bold", marginTop:10}}>
-      Total: ${totalPrice.toFixed(2)}
-    </Text>
+      <TouchableOpacity
+        style={styles.orderBtn}
+        onPress={placeOrder}
+        disabled={placingOrder}
+      >
+        <Text style={styles.orderBtnText}>
+          {placingOrder ? "Placing order..." : "Place Order"}
+        </Text>
+      </TouchableOpacity>
 
-      
-      <View style={styles.buttonContainer}>
-        <Button
-          title={placingOrder ? "Placing order..." : "Place Order"}
-          onPress={placeOrder}
-          disabled={placingOrder}
-        />
-      </View>
-
-      <Button title="Back to Cart" onPress={() => navigation.goBack()} />
-    </View>
+      <TouchableOpacity
+        style={styles.backBtn}
+        onPress={() => navigation.goBack()}
+      >
+        <Text style={styles.backBtnText}>Back to Cart</Text>
+      </TouchableOpacity>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: "#fff",
-  },
-
-  center: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-
-  header: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-  },
-
+  container: { flex: 1, paddingHorizontal: 10, backgroundColor: "#fff" },
+  center: { flex: 1, justifyContent: "center", alignItems: "center" },
   section: {
     fontSize: 18,
     fontWeight: "bold",
     marginTop: 20,
+    marginBottom: 8,
+    textAlign: "center",
   },
-
-  value: {
+  label: { fontSize: 14, marginBottom: 4, color: "#555", textAlign: 'center' },
+  input: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 6,
+    padding: 10,
     fontSize: 16,
-    marginTop: 4,
+    backgroundColor: "#f9f9f9",
+    textAlign: 'center'
   },
-
-  buttonContainer: {
-    marginTop: 30,
-    marginBottom: 10,
+  row: { flexDirection: "row", marginBottom: 12 },
+  locationBtn: {
+    marginTop: 10,
+    padding: 12,
+    backgroundColor: "#879484",
+    borderRadius: 6,
+    alignItems: "center",
   },
+  locationBtnText: { color: "#fff", fontWeight: "bold", },
+  orderItem: { fontSize: 16, marginTop: 4 },
+  total: { fontSize: 18, fontWeight: "bold", marginTop: 10 },
+  orderBtn: {
+    marginTop: 20,
+    backgroundColor: "#28a745",
+    paddingVertical: 14,
+    borderRadius: 8,
+    alignItems: "center",
+  },
+  orderBtnText: { color: "#fff", fontWeight: "bold", fontSize: 16 },
+  backBtn: {
+    marginTop: 10,
+    paddingVertical: 14,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#31737a",
+    alignItems: "center",
+  },
+  backBtnText: { color: "#31737a", fontWeight: "bold", fontSize: 16 },
 });
