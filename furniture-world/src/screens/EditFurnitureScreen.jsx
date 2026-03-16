@@ -4,6 +4,8 @@ import { Picker } from '@react-native-picker/picker';
 import { CATEGORIES } from '../data/categories';
 import { getFurnitureById, updateFurniture } from '../services/furnitureService';
 import { pickImageAndUpload, takePhotoAndUpload } from "../services/pickerService";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+
 
 export default function EditFurnitureScreen({ route, navigation }) {
 
@@ -177,13 +179,15 @@ const handleTakePhoto = async () => {
 
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-    //   keyboardVerticalOffset={5}
+    <KeyboardAwareScrollView
+      style={styles.container}
+      keyboardShouldPersistTaps="handled"
+      extraScrollHeight={300} 
+      enableOnAndroid={true}  
+      showsVerticalScrollIndicator={false}
     >
 
-      <ScrollView style={styles.container} keyboardShouldPersistTaps="handled">
+      <ScrollView style={styles.container} keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag" contentContainerStyle={{ paddingBottom: 140 }}>
 
         <Text style={[styles.label, {textAlign: 'center'}]}>Title:</Text>
             <TextInput
@@ -319,13 +323,14 @@ const handleTakePhoto = async () => {
           />
 
 
-        <View style={styles.row}>
+        <View style={[styles.row, {justifyContent: 'space-evenly', gap: 10} ]}>
         
             <View style={styles.dimensionRow}>
-            <Text style={styles.label}>Width: </Text>
+            <Text style={[styles.label, {textAlign: 'center'}]}>Width: </Text>
 
             <View style={styles.inputWithUnit}>
                 <TextInput
+                style={styles.dimInput}
                 placeholder="0"
                 value={width}
                 onChangeText={(text) => setWidth(text.replace(/[^0-9]/g, ""))}
@@ -334,14 +339,15 @@ const handleTakePhoto = async () => {
                 />
                 
             </View>
-            <Text style={styles.unit}>mm</Text>
+            <Text style={[styles.unit, {textAlign: 'center'}]}>mm</Text>
             </View>
 
             <View style={styles.dimensionRow}>
-            <Text style={styles.label}>Height: </Text>
+            <Text style={[styles.label, {textAlign: 'center'}]}>Height: </Text>
 
             <View style={styles.inputWithUnit}>
                 <TextInput
+                style={styles.dimInput}
                 placeholder="0"
                 value={height}
                 onChangeText={(text) => setHeight(text.replace(/[^0-9]/g, ""))}
@@ -350,14 +356,15 @@ const handleTakePhoto = async () => {
                 />
                 
             </View>
-            <Text style={styles.unit}>mm</Text>
+            <Text style={[styles.unit, {textAlign: 'center'}]}>mm</Text>
             </View>
 
             <View style={styles.dimensionRow}>
-            <Text style={styles.label}>Depth: </Text>
+            <Text style={[styles.label, {textAlign: 'center'}]}>Depth: </Text>
 
             <View style={styles.inputWithUnit}>
                 <TextInput
+                style={styles.dimInput}
                 placeholder="0"
                 value={depth}
                 onChangeText={(text) => setDepth(text.replace(/[^0-9]/g, ""))}
@@ -366,7 +373,7 @@ const handleTakePhoto = async () => {
                 />
                 
             </View>
-            <Text style={styles.unit}>mm</Text>
+            <Text style={[styles.unit, {textAlign: 'center'}]}>mm</Text>
             </View>
 
         </View>
@@ -389,7 +396,7 @@ const handleTakePhoto = async () => {
 
       </ScrollView>
 
-    </KeyboardAvoidingView>
+    </KeyboardAwareScrollView>
   );
 }
 
@@ -401,7 +408,7 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: 'row',
-    gap: 8,
+    // gap: 8,
     marginBottom: 12,
   },
   dimInput: {
@@ -420,7 +427,8 @@ input: {
   marginBottom: 10,
 },
 dimensionRow: {
-  flexDirection: 'row',
+  flex: 1,
+  flexDirection: 'column',
 },
 inputWithUnit: {
   flexDirection: "row",
@@ -433,9 +441,11 @@ inputWithUnit: {
 dimInput: {
   flex: 1,
   paddingVertical: 8,
+  paddingHorizontal: 6,
+  textAlign: "center",
 },
 unit: {
-  marginLeft: 8,
+  // marginLeft: 8,
   color: "#555",
   fontWeight: "500",
 },

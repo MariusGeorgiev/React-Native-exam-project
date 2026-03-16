@@ -27,6 +27,7 @@ import {
   pickImageAndUpload,
   takePhotoAndUpload,
 } from "../services/pickerService";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 export default function CreateFurnitureScreen({ navigation }) {
   const [title, setTitle] = useState("");
@@ -160,11 +161,13 @@ export default function CreateFurnitureScreen({ navigation }) {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={90}
-    >
+     <KeyboardAwareScrollView
+          style={styles.container}
+          keyboardShouldPersistTaps="handled"
+          extraScrollHeight={220} 
+          enableOnAndroid={true}  
+          showsVerticalScrollIndicator={false}
+        >
       <ScrollView
         style={styles.container}
         keyboardShouldPersistTaps="handled"
@@ -356,7 +359,7 @@ export default function CreateFurnitureScreen({ navigation }) {
           )}
         </TouchableOpacity>
       </ScrollView>
-    </KeyboardAvoidingView>
+    </KeyboardAwareScrollView>
   );
 }
 
