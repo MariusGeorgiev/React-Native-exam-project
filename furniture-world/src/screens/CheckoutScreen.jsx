@@ -271,14 +271,22 @@ async function handlePickLocation() {
 
       <Text style={styles.section}>Order Summary</Text>
       {cartItems.map((item) => (
-        <View style={{paddingBottom: 10, paddingTop: 5}}>
-          <Text style={{textAlign: 'center', fontSize: 18, fontWeight: '600', paddingBottom: 3 }}>Furniture Title:</Text>
-          <View key={item.id} style={{ gap: 5}}>
-            <Text style={{textAlign: 'center', fontSize: 16, fontWeight: '500', paddingHorizontal: 20}}>{item.furniture.title}</Text>
-            <Text style={{textAlign: 'center', fontSize: 16, fontWeight: '500',}}>quantity:{item.quantity}</Text>
-          </View>
-        </View>
-      ))}
+  <View key={item.id} style={{ paddingBottom: 10, paddingTop: 5 }}>
+    <Text style={{textAlign: 'center', fontSize: 18, fontWeight: '600', paddingBottom: 3}}>
+      Furniture Title:
+    </Text>
+
+    <View style={{ gap: 5 }}>
+      <Text style={{textAlign: 'center', fontSize: 16, fontWeight: '500', paddingHorizontal: 20}}>
+        {item.furniture.title}
+      </Text>
+
+      <Text style={{textAlign: 'center', fontSize: 16, fontWeight: '500'}}>
+        quantity: {item.quantity}
+      </Text>
+    </View>
+  </View>
+))}
       <Text style={styles.total}>Total: €{totalPrice.toLocaleString('fr-FR')}</Text>
 
       <TouchableOpacity

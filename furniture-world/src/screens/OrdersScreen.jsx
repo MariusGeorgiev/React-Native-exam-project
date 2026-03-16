@@ -119,7 +119,7 @@ export default function OrdersScreen({ navigation }) {
             <Text style={styles.orderId}>Order #{item.id.slice(0, 6)}</Text>
             <Text style={styles.text}>Date: {formatDate(item.createdAt)}</Text>
             <Text style={styles.text}>Items: {(item.items || []).length}</Text>
-            <Text style={styles.text}>Total: €{item.total}</Text>
+            <Text style={styles.text}>Total: €{item.total.toLocaleString('fr-FR')}</Text>
             <Text style={styles.status}>Status: {item.status}</Text>
           </TouchableOpacity>
         )}
