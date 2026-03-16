@@ -32,7 +32,7 @@ export default function FurnitureCard({ furniture, onPress }) {
           {furniture.title}
         </Text>
 
-        <Text style={styles.price}>€{furniture.price}</Text>
+        <Text style={styles.price}>€{furniture.price.toLocaleString('fr-FR')}</Text>
 
         <Text style={styles.desc} numberOfLines={2}>
           {furniture.description}

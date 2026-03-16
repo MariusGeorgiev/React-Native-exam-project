@@ -90,7 +90,7 @@ const handleAddToCart = async () => {
         <Text style={{fontSize: 16}}><Text style={{fontWeight: "700"}}>Material: </Text>{furniture.material.join(', ')}</Text>
         <Text style={{fontSize: 16}}><Text style={{fontWeight: "700"}}>Colors: </Text>{furniture.colors.join(', ')}</Text>
       </View>
-      <Text style={{fontSize: 24}}>Price: €{furniture.price}</Text>
+      <Text style={{fontSize: 24}}>Price: €{furniture.price.toLocaleString('fr-FR')}</Text>
     </View>
 
       

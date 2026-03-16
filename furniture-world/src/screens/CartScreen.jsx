@@ -97,11 +97,11 @@ const renderItem = ({ item }) => (
           {item.furniture.title}
         </Text>
 
-        <Text>Price: €{item.furniture.price}</Text>
+        <Text>Price: €{item.furniture.price.toLocaleString('fr-FR')}</Text>
         <Text>Quantity: {item.quantity}</Text>
 
         <Text>
-          Total price items: €{item.quantity * item.furniture.price}
+          Total price items: €{(item.quantity * item.furniture.price).toLocaleString('fr-FR')}
         </Text>
       </View>
     </TouchableOpacity>
@@ -161,7 +161,7 @@ const renderItem = ({ item }) => (
         contentContainerStyle={{ paddingBottom: 100 }}
       />
       <View style={styles.footer}>
-        <Text style={styles.total}>Total: €{totalPrice}</Text>
+        <Text style={styles.total}>Total: €{totalPrice.toLocaleString('fr-FR')}</Text>
         <TouchableOpacity
           style={styles.checkoutBtn}
           onPress={() =>
@@ -226,7 +226,7 @@ footer: {
   borderColor: '#eee',
   backgroundColor: '#ffffff',
 },
-  total: { fontSize: 18, fontWeight: "bold", marginBottom: 8 },
+  total: { fontSize: 18, fontWeight: "bold", marginBottom: 8,  textAlign: 'center', },
   checkoutBtn: {
   backgroundColor: '#879484',
   paddingVertical: 14,
