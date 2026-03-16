@@ -6,7 +6,8 @@ import { Picker } from '@react-native-picker/picker';
 import { formatDate } from "../utils/formatDateUtils";
 import { pickLocation } from "../services/locationService";
 import { pickImageAndUpload, takePhotoAndUpload } from "../services/pickerService";
-import defaultProfileImage from '../../assets/profileImageDefault.jpg'; 
+import defaultProfileImage from '../../assets/profileImageDefault.jpg';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 
 export default function ProfileScreen() {
@@ -14,6 +15,7 @@ export default function ProfileScreen() {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [editData, setEditData] = useState({});
+  const [imageLoading, setImageLoading] = useState(false);
 
     useEffect(() => {
     if (!user) return;
@@ -54,6 +56,7 @@ export default function ProfileScreen() {
 
 const handlePickImage = async () => {
   try {
+    setImageLoading(true)
     const url = await pickImageAndUpload(`users/${user.uid}`);
     if (url) {
       setEditData(prev => ({ ...prev, image: url }));
@@ -61,10 +64,13 @@ const handlePickImage = async () => {
   } catch (err) {
     console.log("Error picking image:", err);
     alert("Failed to pick image");
+  } finally {
+    setImageLoading(false)
   }
 };
 
 const handleTakePhoto = async () => {
+  setImageLoading(true)
   try {
     const url = await takePhotoAndUpload(`users/${user.uid}`);
     if (url) {
@@ -73,6 +79,8 @@ const handleTakePhoto = async () => {
   } catch (err) {
     console.log("Error taking photo:", err);
     alert("Failed to take photo");
+  } finally {
+    setImageLoading(false)
   }
 };
 
@@ -130,28 +138,53 @@ const handleTakePhoto = async () => {
     );
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <KeyboardAwareScrollView
+              style={styles.container}
+              keyboardShouldPersistTaps="handled"
+              extraScrollHeight={220} 
+              enableOnAndroid={true}  
+              showsVerticalScrollIndicator={false}
+            >
+      <ScrollView contentContainerStyle={styles.container}>
   
        
         <View style={{ alignItems: "center", marginBottom: 16 }}>
-          <View style={[styles.nameAndRoleGroup, {marginBottom: 5}]}>
-              <Text style={{fontSize: 16, fontWeight: 'bold'}}>Role:</Text>
-              <Text style={{fontSize: 16, fontWeight: '500'}}>{profile.role}</Text>
-            </View>
-          <Image
-            source={
-               editData.image
-                ? { uri: editData.image }
-                : defaultProfileImage
-            }
-            style={styles.avatar}
-          />
-          <View style={{ flexDirection: "row", gap: 10, marginTop: 5 }}>
-            <TouchableOpacity onPress={handlePickImage}>
-              <Text style={{ color: "blue" }}>Pick from Library</Text>
+          <View style={[styles.nameAndRoleGroup, { marginBottom: 5 }]}>
+            <Text style={{ fontSize: 16, fontWeight: "bold" }}>Role:</Text>
+            <Text
+              style={{
+                fontSize: 16,
+                fontWeight: "500",
+                color: profile.role === "admin" ? "red" : "green",
+              }}
+            >
+              {profile.role}
+            </Text>
+          </View>
+          
+          <View style={styles.avatarWrapper}>
+            <Image
+              source={
+                editData.image
+                  ? { uri: editData.image }
+                  : defaultProfileImage
+              }
+              style={styles.avatar}
+            />
+
+            {imageLoading && (
+              <View style={styles.imageLoadingOverlay}>
+                <ActivityIndicator size="large" color="#fff" />
+              </View>
+            )}
+          </View>
+
+          <View style={styles.imageButtonsRow}>
+            <TouchableOpacity style={styles.imageButton} onPress={handlePickImage} disabled={imageLoading}>
+              <Text style={styles.imageButtonText}>Add  Image</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={handleTakePhoto}>
-              <Text style={{ color: "blue" }}>Take a Picture</Text>
+            <TouchableOpacity style={styles.imageButton} onPress={handleTakePhoto} disabled={imageLoading}>
+              <Text style={styles.imageButtonText}>Take Photo</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -160,14 +193,14 @@ const handleTakePhoto = async () => {
           <View style={styles.nameAndRole}>
 
             <View style={[styles.nameAndRoleGroup, {flexDirection:'column'}]}>
-              <Text style={{fontSize: 16, fontWeight: 'bold'}}>Email:</Text>
+              <Text style={{fontSize: 16, fontWeight: 'bold', textAlign: 'center'}}>Email:</Text>
               <Text style={{fontSize: 16, fontWeight: '500'}}>{profile.email}</Text>
             </View>
 
             
 
             <View style={[styles.nameAndRoleGroup, {flexDirection:'column'}]}>
-              <Text style={{fontSize: 16, fontWeight: 'bold'}}>Crated At:</Text>
+              <Text style={{fontSize: 16, fontWeight: 'bold', textAlign: 'center'}}>Crated At:</Text>
               <Text style={{fontSize: 16, fontWeight: '500'}}>
                 {formatDate(profile.createdAt)}
               </Text>
@@ -182,7 +215,7 @@ const handleTakePhoto = async () => {
         <View style={[styles.genderAndNameGroup, {flexDirection: 'row', justifyContent: 'space-between'}]}>
 
           <View style={[styles.gender, {flex: 0.25} ]}>
-              <Text style={styles.label}>Gender:</Text>
+              <Text style={{fontWeight: "bold", marginTop: 16, textAlign: "center"}}>        Gender:</Text>
               <View style={styles.pickerWrapper}>
                 <Picker
                   selectedValue={editData.gender}
@@ -309,7 +342,7 @@ const handleTakePhoto = async () => {
             <Text style={styles.label}>Postal Code:</Text>
             <TextInput
               style={[styles.input, styles.addressInput]}
-              placeholder="Postal Code"
+              placeholder="Code"
               keyboardType="numeric"
               maxLength={9}
               value={editData.postalCode}
@@ -335,19 +368,20 @@ const handleTakePhoto = async () => {
           
 
               <TouchableOpacity style={styles.locationBtn} onPress={handlePickLocation}>
-                <Text style={{ color: "white" }}>Use Current Location</Text>
+                <Text style={{ color: "#a2da89" }}>Use Current Location</Text>
               </TouchableOpacity>
 
           <TouchableOpacity style={styles.saveBtn} onPress={handleSave}>
-             <Text style={{ color: "white" }}>Save Changes</Text>
+             <Text style={{ color: "red" }}>Save Changes</Text>
           </TouchableOpacity>
 
 </ScrollView>
+</KeyboardAwareScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { padding: 10 },
+  container: { paddingHorizontal: 10, paddingTop: 5, paddingBottom: 40 },
   center: { flex: 1, justifyContent: "center", alignItems: "center" },
   label: { fontWeight: "bold", marginTop: 16, textAlign: "center" },
   value: { fontSize: 16, marginTop: 4 },
@@ -374,11 +408,8 @@ pickerWrapper: {
 },
 phoneRow: {
   flexDirection: "row",
-  // justifyContent: 'center',
-  // alignItems: "center",
   marginTop: 4
 },
-
 phoneCode: {
   borderWidth: 1,
   borderColor: "#ccc",
@@ -386,7 +417,6 @@ phoneCode: {
   width: 130,
   marginRight: 8
 },
-
 phoneInput: {
   fontSize: 16,
   borderWidth: 1,
@@ -408,42 +438,29 @@ locationBtn: {
 addressRow: {
   flexDirection: "row",
   justifyContent: "space-evenly",
-  
 },
 addressInput: {
   flex: 1,
-  // minWidth: 120,
-  // marginRight: 8
 },
 nameAndRole: {
   fontSize: 18,
   flexDirection: "row",
   justifyContent: 'space-around',
-
 },
 nameAndRoleGroup:{ 
   flexDirection: 'row',
   gap: 3,
-  
-
 },
-// ageAndGenderGroup: {
-//   flexDirection: 'row',
-//   justifyContent: "space-evenly",
-// },
 ageInput: {
   textAlign: 'center',
   borderWidth: 1,
   borderColor: "#ccc",
   borderRadius: 6,
-  // marginTop: 4,
   paddingTop: 17,
   paddingBottom: 17,
-  // paddingLeft: 12, 
-  // paddingRight: 12, 
 },
 inputName: {
-borderWidth: 1,
+  borderWidth: 1,
   borderColor: "#ccc",
   borderRadius: 6,
   marginTop: 4,
@@ -451,7 +468,6 @@ borderWidth: 1,
   paddingBottom: 17,
   paddingLeft: 12, 
   paddingRight: 12, 
-  
 },
 avatar: {
   width: 120,
@@ -459,7 +475,34 @@ avatar: {
   borderRadius: 60,
   marginBottom: 12
 },
-
-
-
+imageButtonsRow: {
+  flexDirection: "row",
+  marginBottom: 12,
+  gap: 50
+},
+imageButton: {
+  flexDirection: "row",
+  alignItems: "center",
+  backgroundColor: "#879484",
+  padding: 12,
+  borderRadius: 8,
+},
+  imageButtonText: { color: "#fff", fontWeight: "600" },
+  avatarWrapper: {
+  position: "relative",
+  width: 120,
+  height: 120,
+  marginBottom: 12,
+},
+imageLoadingOverlay: {
+  position: "absolute",
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+  borderRadius: 60,
+  backgroundColor: "rgba(0,0,0,0.4)",
+  justifyContent: "center",
+  alignItems: "center",
+},
 });
