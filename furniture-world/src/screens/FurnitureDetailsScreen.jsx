@@ -90,65 +90,69 @@ const handleAddToCart = async () => {
         {furniture.images && furniture.images[0] && (
         <Image source={{ uri: furniture.images[0] }} style={{ width: '100%', height: 250, borderRadius: 12, marginBottom: 16 }} />
       )}
-      <Text>Dimensions: W {furniture.dimensions.width} × H {furniture.dimensions.height} × D {furniture.dimensions.depth}</Text>
+      <Text>Dimensions: Width: {furniture.dimensions.width}mm × Height: {furniture.dimensions.h}mm × Depth {furniture.dimensions.depth}mm</Text>
         <Text>Price: €{furniture.price}</Text>
         <Text>Description: {furniture.description}</Text>
 
 
         {user && (
             <>
+
+                  
                 
-                  <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 10 }}>
-                    <TouchableOpacity onPress={handleDecrement} style={styles.qtyBtn}>
-                      <Text style={styles.qtyBtnText}>-</Text>
-                    </TouchableOpacity>
+                  <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 50, paddingTop: 15 }}>
 
-                    <Text style={{ marginHorizontal: 12 }}>{quantity}</Text>
+                    <TouchableOpacity
+                      style={styles.favoriteBtn}
+                      onPress={() => toggleFavorite(furniture.id)}
+                    >
+                      <FontAwesome
+                        name={userProfile?.favorites?.includes(furniture.id) ? "heart" : "heart-o"}
+                        size={32}
+                        color={userProfile?.favorites?.includes(furniture.id) ? "red" : "gray"}
+                      />
+                  </TouchableOpacity>
 
-                    <TouchableOpacity onPress={handleIncrement} style={styles.qtyBtn}>
-                      <Text style={styles.qtyBtnText}>+</Text>
-                    </TouchableOpacity>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', }}>
+                        <TouchableOpacity onPress={handleDecrement} style={styles.qtyBtn}>
+                          <Text style={styles.qtyBtnText}>-</Text>
+                        </TouchableOpacity>
 
-                    <TouchableOpacity onPress={handleAddToCart} style={styles.addToCartBtn}>
-                      <Text style={styles.addToCartBtnText}>🛒 Add to Cart ({quantity})</Text>
-                    </TouchableOpacity>
+                        <Text style={{ marginHorizontal: 12 }}>{quantity}</Text>
+
+                        <TouchableOpacity onPress={handleIncrement} style={styles.qtyBtn}>
+                          <Text style={styles.qtyBtnText}>+</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity onPress={handleAddToCart} style={styles.addToCartBtn}>
+                          <Text style={styles.addToCartBtnText}><FontAwesome name="cart-arrow-down" size={22} color='white'/>  Add to Cart ({quantity})</Text>
+                        </TouchableOpacity>
+                    </View>
+
                   </View>
                 
 
                 {userProfile?.role === "admin" && (
-                  
-                  <View style={{ marginTop: 20 }}>
-                    
-                  <Button
-                    title="Edit"
-                    onPress={() => navigation.navigate("EditFurniture", {
-                      furnitureId,
-                      onUpdate: async () => {
-                        const data = await getFurnitureById(furnitureId);
-                        setFurniture(data); 
-                      },
-                    })}
-                  />
+                  <View style={{ marginTop: 20, flexDirection: 'row', justifyContent: 'center', gap: 120 }}>
+                      <TouchableOpacity
+                        style={styles.editBtn}
+                        onPress={() => navigation.navigate("EditFurniture", {
+                        furnitureId,
+                        onUpdate: async () => {
+                          const data = await getFurnitureById(furnitureId);
+                          setFurniture(data); 
+                        },
+                      })}
+                      ><Text style={{color: 'white', fontWeight: '600'}}><FontAwesome name="edit" size={22} color='white'/>  Edit</Text></TouchableOpacity>
 
-                    <Button
-                      title="Delete"
-                      color="red"
-                      onPress={handleDelete}
-                    />
+                    <TouchableOpacity
+                        style={styles.deleteBtn}
+                        onPress={handleDelete}
+                      ><Text style={{color: 'white', fontWeight: '600'}}><FontAwesome name="trash" size={22} color='red'/>  Delete</Text></TouchableOpacity>
                   </View>
-                  
                 )}
 
-                <TouchableOpacity
-            style={styles.favoriteBtn}
-            onPress={() => toggleFavorite(furniture.id)}
-          >
-            <FontAwesome
-              name={userProfile?.favorites?.includes(furniture.id) ? "heart" : "heart-o"}
-              size={32}
-              color={userProfile?.favorites?.includes(furniture.id) ? "red" : "gray"}
-            />
-          </TouchableOpacity>
+                
 
             </>
          )}
@@ -160,7 +164,7 @@ const handleAddToCart = async () => {
 const styles = StyleSheet.create({
   title: { fontSize: 20, fontWeight: 'bold', marginBottom: 8 },
   favoriteBtn: {
-  marginTop: 16,
+  // marginTop: 16,
   alignSelf: 'flex-start',
 },
   qtyBtn: {
@@ -175,7 +179,7 @@ const styles = StyleSheet.create({
   },
   addToCartBtn: {
     marginLeft: 12,
-    backgroundColor: '#b09999',
+    backgroundColor: '#879484',
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 4,
@@ -183,5 +187,17 @@ const styles = StyleSheet.create({
   addToCartBtnText: {
     color: '#fff',
     fontWeight: 'bold',
+  },
+  editBtn: {
+    borderRadius: 4,
+    backgroundColor: '#879484',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  deleteBtn: {
+    borderRadius: 4,
+    backgroundColor: '#879484',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
   }
 });
