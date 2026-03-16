@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Text, Alert, View, TextInput, Button, StyleSheet, Image, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import { ActivityIndicator, TouchableOpacity, Text, Alert, View, TextInput, StyleSheet, Image, ScrollView, Keyboard, KeyboardAvoidingView, Platform } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { CATEGORIES } from '../data/categories';
 import { getFurnitureById, updateFurniture } from '../services/furnitureService';
@@ -26,7 +26,10 @@ export default function EditFurnitureScreen({ route, navigation }) {
   const [height, setHeight] = useState('');
   const [depth, setDepth] = useState('');
 
-  const selectedCategory = CATEGORIES.find(c => c.id === category);
+  const [imageLoading, setImageLoading] = useState(false);
+  const [update, setUpdate] = useState(false);
+
+  const selectedCategory = CATEGORIES.find(c => c.title === category);
 
   useEffect(() => {
 
@@ -59,7 +62,9 @@ export default function EditFurnitureScreen({ route, navigation }) {
 
 
 const handlePickImage = async () => {
+   Keyboard.dismiss();
   try {
+    setImageLoading(true);
     const url = await pickImageAndUpload(`furniture/${furnitureId}`);
     if (url) {
       setImageUri(url); 
@@ -67,12 +72,16 @@ const handlePickImage = async () => {
   } catch (err) {
     console.log("Error picking image:", err);
     alert("Failed to pick image");
+  } finally {
+    setImageLoading(false);
   }
 };
 
 
 const handleTakePhoto = async () => {
+   Keyboard.dismiss();
   try {
+    setImageLoading(true);
     const url = await takePhotoAndUpload(`furniture/${furnitureId}`);
     if (url) {
       setImageUri(url); 
@@ -80,6 +89,8 @@ const handleTakePhoto = async () => {
   } catch (err) {
     console.log("Error taking photo:", err);
     alert("Failed to take photo");
+  } finally {
+    setImageLoading(false);
   }
 };
 
@@ -97,12 +108,12 @@ const handleTakePhoto = async () => {
     return Alert.alert("Validation Error", "Price must be a positive number.");
   }
 
-   if (!material.trim() || material.length < 3 || material.length > 50) {
-    return Alert.alert("Validation Error", "Material must be 3-50 characters.");
+   if (!material.trim() || material.length < 3 || material.length > 20) {
+    return Alert.alert("Validation Error", "Materials must be 3-20 characters.");
   }
 
-  if (!colors.trim() || colors.length < 3 || colors.length > 50) {
-    return Alert.alert("Validation Error", "Colors must be 3-50 characters.");
+  if (!colors.trim() || colors.length < 3 || colors.length > 20) {
+    return Alert.alert("Validation Error", "Colors must be 3-20 characters.");
   }
 
   const widthNum = Number(width);
@@ -134,6 +145,7 @@ const handleTakePhoto = async () => {
 
  
   try {
+    setUpdate(true);
     const updatedFurniture = {
       title,
       images: imageUri ? [imageUri] : [],
@@ -158,9 +170,10 @@ const handleTakePhoto = async () => {
   } catch (error) {
     console.log("Error updating furniture:", error);
     Alert.alert("Error", "Failed to update furniture");
+  } finally {
+    setUpdate(false);
   }
 }
-
 
 
   return (
@@ -172,7 +185,7 @@ const handleTakePhoto = async () => {
 
       <ScrollView style={styles.container} keyboardShouldPersistTaps="handled">
 
-        <Text style={styles.label}>Title:</Text>
+        <Text style={[styles.label, {textAlign: 'center'}]}>Title:</Text>
             <TextInput
             placeholder="Enter furniture title"
             value={title}
@@ -182,78 +195,103 @@ const handleTakePhoto = async () => {
             numberOfLines={2}
             />
 
-        <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
 
-          <Button title="Select Image" onPress={handlePickImage} />
+         <View style={styles.imageButtonsRow}>
+            <TouchableOpacity
+              style={styles.imageButton}
+              onPress={handlePickImage}
+              disabled={imageLoading}
+            >
+              <Text style={styles.imageButtonText}>Select Image</Text>
+            </TouchableOpacity>
 
-          <Button title="Take Photo" onPress={handleTakePhoto} />
-
-        </View>
-
-        {imageUri && (
-      <View style={styles.imageWrapper}>
-        <Image
-          source={{ uri: imageUri }}
-          style={styles.imagePreview}
-        />
-      </View>
-    )}
-
-       <View style={styles.CatAndSubCat}>
-            <Text style={styles.label}>Category: </Text>
-
-            <View style={styles.pickerWrapper}>
-                <Picker
-                selectedValue={category}
-                onValueChange={(value) => {
-                    setCategory(value);
-                    setSubcategory('');
-                }}
-                >
-                <Picker.Item label="Select category" value="" />
-
-                {CATEGORIES.map(cat => (
-                    <Picker.Item key={cat.id} label={cat.title} value={cat.id} />
-                ))}
-                </Picker>
-            </View>
-        </View>
+            <TouchableOpacity
+              style={styles.imageButton}
+              onPress={handleTakePhoto}
+              disabled={imageLoading}
+            >
+              <Text style={styles.imageButtonText}>Take Photo</Text>
+            </TouchableOpacity>
+          </View>
 
 
-           <View style={styles.CatAndSubCat}>
-            <Text style={styles.label}>Subcategory: </Text>
+          {imageUri && (
+            <View style={styles.imageWrapper}>
 
-            {selectedCategory && (
-                <View style={styles.pickerWrapper}>
-                <Picker
-                    selectedValue={subcategory}
-                    onValueChange={setSubcategory}
-                     enabled={!!category}
-                >
-                    <Picker.Item label="Select subcategory" value="" />
+              <Image
+                source={{ uri: imageUri }}
+                style={styles.imagePreview}
+              />
 
-                    {selectedCategory.subcategories.map(sub => (
-                    <Picker.Item key={sub} label={sub} value={sub} />
-                    ))}
-                </Picker>
+              {imageLoading && (
+                <View style={styles.imageLoadingOverlay}>
+                  <ActivityIndicator size="large" color="#fff" />
                 </View>
-            )}
+              )}
+
+            </View>
+          )}
+
+
+      <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 10}}>
+              <View style={{flex: 0.6}}>
+                  <View style={[styles.CatAndSubCat]}>
+                        <Text style={[styles.label, {textAlign: 'center', paddingBottom: 5}]}>Category: </Text>
+
+                        <View style={[styles.pickerWrapper, {textAlign: 'center',}]}>
+                            <Picker
+                            selectedValue={category}
+                            onValueChange={(value) => {
+                                setCategory(value);
+                                setSubcategory('');
+                            }}
+                            >
+                            <Picker.Item label="Select category" value="" />
+
+                            {CATEGORIES.map(cat => (
+                                <Picker.Item key={cat.id} label={cat.title} value={cat.title} />
+                            ))}
+                            </Picker>
+                        </View>
+                    </View>
+
+                    <View style={styles.CatAndSubCat}>
+                      <Text style={[styles.label,{textAlign: 'center', paddingBottom: 5}]}>Subcategory: </Text>
+
+                      {selectedCategory && (
+                          <View style={styles.pickerWrapper}>
+                          <Picker
+                          
+                              selectedValue={subcategory}
+                              onValueChange={setSubcategory}
+                              enabled={!!category}
+                          >
+                              <Picker.Item label="Select subcategory" value="" />
+
+                              {selectedCategory.subcategories.map(sub => (
+                              <Picker.Item key={sub} label={sub} value={sub} />
+                              ))}
+                          </Picker>
+                          </View>
+                      )}
+                  </View>
+              </View>
+
+              <View style={{flex: 0.3, gap: 10}}>
+                  <Text style={[styles.label, {textAlign: 'center', fontSize: 18}]}>Price:</Text>
+                  <TextInput
+                  placeholder="Enter price"
+                  value={price}
+                  onChangeText={(text) => setPrice(text.replace(/[^0-9]/g, ""))}
+                  keyboardType="numeric"
+                  maxLength={5}
+                  style={[styles.input, {textAlign: 'center', fontSize: 22}]}
+                  />
+              </View>
         </View>
 
 
-
-        <Text style={styles.label}>Price:</Text>
-            <TextInput
-            placeholder="Enter price"
-            value={price}
-            onChangeText={setPrice}
-            keyboardType="numeric"
-            style={styles.input}
-            />
-
-        
-
-        <Text style={styles.label}>Material:</Text>
+        <Text style={[styles.label, {textAlign: 'center'}]}>Material:</Text>
         <TextInput
           placeholder="Wood, Metal"
           value={material}
@@ -261,7 +299,7 @@ const handleTakePhoto = async () => {
           style={styles.input}
         />
 
-        <Text style={styles.label}>Colors:</Text>
+        <Text style={[styles.label, {textAlign: 'center'}]}>Colors:</Text>
         <TextInput
           placeholder="Black, White"
           value={colors}
@@ -270,7 +308,7 @@ const handleTakePhoto = async () => {
         />
 
 
-        <Text style={styles.label}>Description:</Text>
+        <Text style={[styles.label, {textAlign: 'center'}]}>Description:</Text>
           <TextInput
             placeholder="Enter Description of the Furniture"
             value={description}
@@ -290,7 +328,7 @@ const handleTakePhoto = async () => {
                 <TextInput
                 placeholder="0"
                 value={width}
-                onChangeText={setWidth}
+                onChangeText={(text) => setWidth(text.replace(/[^0-9]/g, ""))}
                 keyboardType="numeric"
                 maxLength={4}
                 />
@@ -306,7 +344,7 @@ const handleTakePhoto = async () => {
                 <TextInput
                 placeholder="0"
                 value={height}
-                onChangeText={setHeight}
+                onChangeText={(text) => setHeight(text.replace(/[^0-9]/g, ""))}
                 keyboardType="numeric"
                 maxLength={4}
                 />
@@ -322,7 +360,7 @@ const handleTakePhoto = async () => {
                 <TextInput
                 placeholder="0"
                 value={depth}
-                onChangeText={setDepth}
+                onChangeText={(text) => setDepth(text.replace(/[^0-9]/g, ""))}
                 keyboardType="numeric"
                 maxLength={4}
                 />
@@ -335,14 +373,19 @@ const handleTakePhoto = async () => {
 
 
 
-        <View style={{ marginBottom: 50 }}>
-
-          <Button
-            title="Update Furniture"
-            onPress={updateFurnitureHandler}
-          />
-
-        </View>
+          <View style={{ marginBottom: 50 }}>
+                <TouchableOpacity
+                    style={styles.submitButton}
+                    onPress={updateFurnitureHandler}
+                    disabled={update}
+                  >
+                    {update ? (
+                      <ActivityIndicator color="#fff" />
+                    ) : (
+                      <Text style={styles.submitButtonText}>Update Furniture</Text>
+                    )}
+               </TouchableOpacity>
+          </View>
 
       </ScrollView>
 
@@ -353,27 +396,22 @@ const handleTakePhoto = async () => {
 
 
 const styles = StyleSheet.create({
-
   container: {
-    padding: 16,
+    paddingHorizontal: 16,
   },
-
   row: {
     flexDirection: 'row',
     gap: 8,
     marginBottom: 12,
   },
-
   dimInput: {
     flex: 1,
   },
-
   label: {
   marginTop: 10,
   marginBottom: 4,
   fontWeight: '600',
 },
-
 input: {
   borderWidth: 1,
   borderColor: '#ccc',
@@ -382,7 +420,6 @@ input: {
   marginBottom: 10,
 },
 dimensionRow: {
-//   marginBottom: 12,
   flexDirection: 'row',
 },
 inputWithUnit: {
@@ -397,18 +434,11 @@ dimInput: {
   flex: 1,
   paddingVertical: 8,
 },
-
 unit: {
   marginLeft: 8,
   color: "#555",
   fontWeight: "500",
 },
-CatAndSubCat: {
-  flexDirection: "row",
-  alignItems: "center",
-  marginBottom: 12,
-},
-
 pickerWrapper: {
   flex: 1,
   borderWidth: 1,
@@ -416,22 +446,30 @@ pickerWrapper: {
   borderRadius: 6,
 },
 imageWrapper: {
-  alignItems: 'center',
-  marginVertical: 10,
   borderWidth: 1,
   borderColor: '#ccc',
   borderRadius: 8,
   padding: 5,
-  backgroundColor: '#f9f9f9',
+  position: "relative",
+  alignItems: "center",
 },
 
 imagePreview: {
-  width: 250,
-  height: 250,
-  borderRadius: 8,
-  resizeMode: 'cover',
+  width: 200,
+  height: 200,
+  borderRadius: 10,
 },
-
+imageLoadingOverlay: {
+  position: "absolute",
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+  justifyContent: "center",
+  alignItems: "center",
+  backgroundColor: "rgba(0,0,0,0.4)",
+  borderRadius: 10,
+},
 descriptionInput: {
   height: 140,
   textAlignVertical: 'top',
@@ -442,4 +480,25 @@ titleInput: {
   textAlignVertical: 'top',
   paddingTop: 10,
 },
+ imageButtonsRow: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginBottom: 10,
+  },
+  imageButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#879484",
+    padding: 12,
+    borderRadius: 8,
+  },
+  imageButtonText: { color: "#fff", fontWeight: "600" },
+submitButton: {
+    backgroundColor: "#879484",
+    padding: 16,
+    borderRadius: 8,
+    alignItems: "center",
+    marginTop: 16,
+  },
+submitButtonText: { color: "#fff", fontWeight: "bold", fontSize: 16 },
 });
