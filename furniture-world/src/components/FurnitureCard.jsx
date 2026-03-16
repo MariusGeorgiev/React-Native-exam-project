@@ -1,16 +1,44 @@
-import { View, Text, Image, StyleSheet, TouchableOpacity  } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { useState } from 'react';
 
-export default function FurnitureCard({ furniture, onPress  }) {
+export default function FurnitureCard({ furniture, onPress }) {
+
+  const [imageLoading, setImageLoading] = useState(true);
+
   return (
     <TouchableOpacity onPress={onPress} style={styles.card}>
-      {furniture.images?.[0] && (
-        <Image source={{ uri: furniture.images[0] }} style={styles.image} />
-      )}
-      <View style={styles.info}>
-        <Text style={styles.title} numberOfLines={2}>{furniture.title}</Text>
-        <Text style={styles.price}>€{furniture.price}</Text>
-        <Text style={styles.desc} numberOfLines={2}>{furniture.description}</Text>
+
+      <View style={styles.imageWrapper}>
+        {furniture.images?.[0] && (
+          <>
+            <Image
+              source={{ uri: furniture.images[0] }}
+              style={styles.image}
+              onLoadStart={() => setImageLoading(true)}
+              onLoadEnd={() => setImageLoading(false)}
+            />
+
+            {imageLoading && (
+              <View style={styles.loader}>
+                <ActivityIndicator size="small" color="#555" />
+              </View>
+            )}
+          </>
+        )}
       </View>
+
+      <View style={styles.info}>
+        <Text style={styles.title} numberOfLines={2}>
+          {furniture.title}
+        </Text>
+
+        <Text style={styles.price}>€{furniture.price}</Text>
+
+        <Text style={styles.desc} numberOfLines={2}>
+          {furniture.description}
+        </Text>
+      </View>
+
     </TouchableOpacity>
   );
 }
@@ -35,6 +63,20 @@ const styles = StyleSheet.create({
     height: 100,
     borderRadius: 6,
   },
+  imageWrapper: {
+  width: 100,
+  height: 100,
+  borderRadius: 6,
+  overflow: "hidden",
+  justifyContent: "center",
+  alignItems: "center",
+},
+
+loader: {
+  position: "absolute",
+  justifyContent: "center",
+  alignItems: "center",
+},
   info: {
     flex: 1,
     marginLeft: 12,
