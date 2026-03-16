@@ -102,7 +102,7 @@ const handleAddToCart = async () => {
           <Text style={{fontSize: 16, textAlign: 'center'}}>Width: {furniture.dimensions.width} mm.  Height: {furniture.dimensions.height} mm.  Depth {furniture.dimensions.depth} mm.</Text>
         </View>
 
-        <View>
+        <View style={{paddingBottom: 15}}>
           <Text style={{fontSize: 16, textAlign: 'center', marginBottom: 2, fontWeight: "700"}}>Description:</Text>
           <Text style={{fontSize: 16, }}>{furniture.description}</Text>
         </View>
@@ -110,7 +110,7 @@ const handleAddToCart = async () => {
 
         {user && (
             <>
-                  <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 50, paddingTop: 15 }}>
+                  <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 50, }}>
                       <TouchableOpacity
                         style={styles.favoriteBtn}
                         onPress={() => toggleFavorite(furniture.id)}
