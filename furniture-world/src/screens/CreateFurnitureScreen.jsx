@@ -49,7 +49,7 @@ export default function CreateFurnitureScreen({ navigation }) {
     setFurnitureId(newDocRef.id);
   }, []);
 
-  const selectedCategory = CATEGORIES.find((c) => c.id === category);
+  const selectedCategory = CATEGORIES.find((c) => c.title === category);
 
   const handlePickImage = async () => {
     Keyboard.dismiss();
@@ -92,10 +92,10 @@ export default function CreateFurnitureScreen({ navigation }) {
     const priceNum = Number(price);
     if (isNaN(priceNum) || priceNum <= 0)
       return "Price must be a positive number.";
-    if (!material.trim() || material.length < 3)
-      return "Material must be at least 3 characters.";
-    if (!colors.trim() || colors.length < 3)
-      return "Colors must be at least 3 characters.";
+    if (!material.trim() || material.length < 3 || material.length > 20)
+      return "Materials must be 3-20 characters.";
+    if (!colors.trim() || material.length < 3 || material.length > 20)
+      return "Colors must be 3-20 characters.";
     const w = Number(width),
       h = Number(height),
       d = Number(depth);
@@ -235,7 +235,7 @@ export default function CreateFurnitureScreen({ navigation }) {
           >
             <Picker.Item label="Select category" value="" />
             {CATEGORIES.map((cat) => (
-              <Picker.Item key={cat.id} label={cat.title} value={cat.id} />
+              <Picker.Item key={cat.id} label={cat.title} value={cat.title} />
             ))}
           </Picker>
         </View>

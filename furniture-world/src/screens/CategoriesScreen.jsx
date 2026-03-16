@@ -39,7 +39,7 @@ export default function CategoriesScreen({ navigation }) {
                     key={index}
                     onPress={() =>
                       navigation.navigate('FurnitureList', {
-                        categoryId: item.id,
+                        categoryId: item.title,
                         categoryTitle: item.title,
                         subcategory: sub,
                       })

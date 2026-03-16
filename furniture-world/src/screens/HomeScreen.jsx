@@ -56,7 +56,7 @@ export default function HomeScreen() {
 
   const handleSubcategoryPress = (cat, sub) => {
     navigation.navigate('FurnitureList', {
-      categoryId: cat.id,
+      categoryId: cat.title,
       categoryTitle: cat.title,
       subcategory: sub,
     });
