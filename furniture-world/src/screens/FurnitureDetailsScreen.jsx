@@ -90,7 +90,7 @@ const handleAddToCart = async () => {
         <Text style={{fontSize: 16}}><Text style={{fontWeight: "700"}}>Material: </Text>{furniture.material.join(', ')}</Text>
         <Text style={{fontSize: 16}}><Text style={{fontWeight: "700"}}>Colors: </Text>{furniture.colors.join(', ')}</Text>
       </View>
-      <Text style={{fontSize: 30}}>Price: €{furniture.price}</Text>
+      <Text style={{fontSize: 24}}>Price: €{furniture.price}</Text>
     </View>
 
       
@@ -141,7 +141,7 @@ const handleAddToCart = async () => {
                 
 
                 {userProfile?.role === "admin" && (
-                  <View style={{ marginTop: 20, flexDirection: 'row', justifyContent: 'center', gap: 120 }}>
+                  <View style={{ marginTop: 20, flexDirection: 'row', justifyContent: 'center', gap: 120, paddingBottom: 50 }}>
                       <TouchableOpacity
                         style={styles.editBtn}
                         onPress={() => navigation.navigate("EditFurniture", {

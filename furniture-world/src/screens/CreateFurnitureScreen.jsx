@@ -163,15 +163,17 @@ export default function CreateFurnitureScreen({ navigation }) {
     <KeyboardAvoidingView
       style={{ flex: 1 }}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={90}
     >
       <ScrollView
         style={styles.container}
         keyboardShouldPersistTaps="handled"
-        contentContainerStyle={{ paddingBottom: 120 }}
+        contentContainerStyle={{ paddingBottom: 50 }}
       >
         
+        <Text style={[styles.label, {textAlign: 'center'}]}>Title:</Text>
         <TextInput
-          placeholder="Title"
+          placeholder="Create Furniture Title"
           placeholderTextColor="#000"
           value={title}
           onChangeText={setTitle}
@@ -187,78 +189,86 @@ export default function CreateFurnitureScreen({ navigation }) {
             onPress={handlePickImage}
             disabled={imageLoading}
           >
-            <Text style={styles.imageButtonText}>
-              {imageLoading ? "Uploading..." : "Select Image"}
-            </Text>
-            {imageLoading && (
-              <ActivityIndicator
-                size="small"
-                color="#fff"
-                style={{ marginLeft: 5 }}
-              />
-            )}
+            <Text style={styles.imageButtonText}>Select Image</Text>
           </TouchableOpacity>
+
+          {imageLoading && !imageUri && (
+            <View style={styles.firstImageLoader}>
+              <ActivityIndicator size="large" color="#879484" />
+              <Text style={styles.firstImageLoaderText}>Uploading image...</Text>
+            </View>
+          )}
+
           <TouchableOpacity
             style={styles.imageButton}
             onPress={handleTakePhoto}
             disabled={imageLoading}
           >
-            <Text style={styles.imageButtonText}>
-              {imageLoading ? "Uploading..." : "Take Photo"}
-            </Text>
-            {imageLoading && (
-              <ActivityIndicator
-                size="small"
-                color="#fff"
-                style={{ marginLeft: 5 }}
-              />
-            )}
+            <Text style={styles.imageButtonText}>Take Photo</Text>
           </TouchableOpacity>
         </View>
 
         
         {imageUri && (
-          <View style={styles.imageWrapper}>
-            <Image source={{ uri: imageUri }} style={styles.imagePreview} />
-          </View>
-        )}
+            <View style={styles.imageWrapper}>
 
-        
-        <Text style={styles.label}>Category</Text>
-        <View style={styles.pickerWrapper}>
-          <Picker
-            selectedValue={category}
-            onValueChange={(val) => {
-              setCategory(val);
-              setSubcategory("");
-            }}
-          >
-            <Picker.Item label="Select category" value="" />
-            {CATEGORIES.map((cat) => (
-              <Picker.Item key={cat.id} label={cat.title} value={cat.title} />
-            ))}
-          </Picker>
-        </View>
+              <Image
+                source={{ uri: imageUri }}
+                style={styles.imagePreview}
+              />
 
-        
-        {selectedCategory && (
-          <>
-            <Text style={styles.label}>Subcategory</Text>
+              {imageLoading && (
+                <View style={styles.imageLoadingOverlay}>
+                  <ActivityIndicator size="large" color="#fff" />
+                </View>
+              )}
+
+            </View>
+          )}
+
+    <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 10}}>
+
+      <View style={{flex: 0.6}}>
+        <View style={[styles.CatAndSubCat]}>
+            <Text style={[styles.label, {textAlign: 'center', paddingBottom: 5}]}>Category:</Text>
             <View style={styles.pickerWrapper}>
               <Picker
-                selectedValue={subcategory}
-                onValueChange={setSubcategory}
+                selectedValue={category}
+                onValueChange={(val) => {
+                  setCategory(val);
+                  setSubcategory("");
+                }}
               >
-                <Picker.Item label="Select subcategory" value="" />
-                {selectedCategory.subcategories.map((sub) => (
-                  <Picker.Item key={sub} label={sub} value={sub} />
+                <Picker.Item label="Select category" value="" />
+                {CATEGORIES.map((cat) => (
+                  <Picker.Item key={cat.id} label={cat.title} value={cat.title} />
                 ))}
               </Picker>
             </View>
-          </>
-        )}
+        </View>
 
+        <View style={[styles.CatAndSubCat]}>
+              {selectedCategory && (
+                <>
+                  <Text style={[styles.label, {textAlign: 'center', paddingBottom: 5}]}>Subcategory:</Text>
+                  <View style={styles.pickerWrapper}>
+                    <Picker
+                      selectedValue={subcategory}
+                      onValueChange={setSubcategory}
+                    >
+                      <Picker.Item label="Select subcategory" value="" />
+                      {selectedCategory.subcategories.map((sub) => (
+                        <Picker.Item key={sub} label={sub} value={sub} />
+                      ))}
+                    </Picker>
+                  </View>
+                </>
+              )}
+        </View>
+      </View>
         
+        <View style={{flex: 0.3, gap: 10}}>
+          <Text style={[styles.label, {textAlign: 'center', fontSize: 18}]}>Price:</Text>
         <TextInput
           placeholder="Price €"
           placeholderTextColor="#000"
@@ -268,8 +278,13 @@ export default function CreateFurnitureScreen({ navigation }) {
           maxLength={5}
           style={styles.input}
         />
+        </View>
+     </View>
+
+
+<Text style={[styles.label, {textAlign: 'center'}]}>Description:</Text>
         <TextInput
-          placeholder="Description"
+          placeholder="Describe the Furniture"
           placeholderTextColor="#000"
           value={description}
           onChangeText={setDescription}
@@ -277,6 +292,8 @@ export default function CreateFurnitureScreen({ navigation }) {
           multiline
           numberOfLines={6}
         />
+
+        <Text style={[styles.label, {textAlign: 'center'}]}>Material:</Text>
         <TextInput
           placeholder="Material (e.g. Wood, Aluminum, Steal, Glass)"
           placeholderTextColor="#000"
@@ -284,6 +301,8 @@ export default function CreateFurnitureScreen({ navigation }) {
           onChangeText={setMaterial}
           style={styles.input}
         />
+
+        <Text style={[styles.label, {textAlign: 'center'}]}>Colors:</Text>
         <TextInput
           placeholder="Colors (e.g. Black, White)"
           placeholderTextColor="#000"
@@ -292,8 +311,9 @@ export default function CreateFurnitureScreen({ navigation }) {
           style={styles.input}
         />
 
-        
+        <Text style={[styles.label, {textAlign: 'center'}]}>Dimensions:</Text>
         <View style={styles.row}>
+          
           <TextInput
             placeholder="Width in mm"
             placeholderTextColor="#000"
@@ -325,7 +345,7 @@ export default function CreateFurnitureScreen({ navigation }) {
 
         
         <TouchableOpacity
-          style={styles.submitButton}
+          style={[styles.submitButton, {}]}
           onPress={addFurnitureHandler}
           disabled={adding}
         >
@@ -367,23 +387,30 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   label: { fontWeight: "600", marginBottom: 4 },
-
   imageWrapper: {
-    alignItems: "center",
-    marginVertical: 10,
-    borderWidth: 1,
-    borderColor: "#502222",
-    borderRadius: 8,
-    padding: 5,
-    backgroundColor: "#f9f9f9",
-  },
-  imagePreview: {
-    width: 250,
-    height: 250,
-    borderRadius: 8,
-    resizeMode: "cover",
-  },
-
+   borderWidth: 1,
+  borderColor: '#ccc',
+  borderRadius: 8,
+  padding: 5,
+  position: "relative",
+  alignItems: "center",
+  marginBottom: 5,
+},
+imagePreview: {
+  width: 220,
+  height: 220,
+  borderRadius: 10
+},
+imageLoadingOverlay: {
+  position: "absolute",
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+  justifyContent: "center",
+  alignItems: "center",
+  backgroundColor: "rgba(0,0,0,0.35)",
+},
   imageButtonsRow: {
     flexDirection: "row",
     justifyContent: "space-around",
@@ -406,4 +433,15 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   submitButtonText: { color: "#fff", fontWeight: "bold", fontSize: 16 },
+  firstImageLoader: {
+  alignItems: "center",
+  justifyContent: "center",
+  marginVertical: 10,
+},
+
+firstImageLoaderText: {
+  marginTop: 6,
+  color: "#555",
+  fontWeight: "500",
+},
 });
