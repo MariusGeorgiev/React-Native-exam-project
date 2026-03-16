@@ -185,11 +185,11 @@ async function handlePickLocation() {
       <Text style={styles.section}>Customer Info</Text>
       <View style={styles.row}>
         <View style={{ flex: 1 }}>
-          <Text style={styles.label}>Email</Text>
-          <TextInput style={styles.input} value={email} editable={false} />
+          <Text style={styles.label}>Email:</Text>
+          <TextInput style={{fontSize: 16, textAlign: 'center'}} value={email} editable={false} />
         </View>
         <View style={{ flex: 1, marginLeft: 10 }}>
-          <Text style={styles.label}>Username</Text>
+          <Text style={styles.label}>Username:</Text>
           <TextInput
             style={styles.input}
             value={username}
@@ -201,7 +201,7 @@ async function handlePickLocation() {
      
       <View style={styles.row}>
         <View style={{ flex: 0.3 }}>
-          <Text style={styles.label}>Code</Text>
+          <Text style={styles.label}>Code:</Text>
           <TextInput
             style={styles.input}
             value={phoneCode}
@@ -210,7 +210,7 @@ async function handlePickLocation() {
           />
         </View>
         <View style={{ flex: 0.7, marginLeft: 10 }}>
-          <Text style={styles.label}>Phone</Text>
+          <Text style={styles.label}>Phone:</Text>
           <TextInput
             style={styles.input}
             value={phone}
@@ -224,11 +224,11 @@ async function handlePickLocation() {
 
 <View style={styles.row}>
         <View style={{ flex: 0.5 }}>
-          <Text style={styles.label}>City</Text>
+          <Text style={styles.label}>City:</Text>
           <TextInput style={styles.input} value={city} onChangeText={setCity} />
         </View>
         <View style={{ flex: 0.5, marginLeft: 10 }}>
-          <Text style={styles.label}>Country</Text>
+          <Text style={styles.label}>Country:</Text>
           <TextInput
             style={styles.input}
             value={country}
@@ -240,7 +240,7 @@ async function handlePickLocation() {
 
       <View style={styles.row}>
         <View style={{ flex: 0.3, }}>
-          <Text style={styles.label}>Postal Code</Text>
+          <Text style={styles.label}>Postal Code:</Text>
           <TextInput
             style={styles.input}
             value={postalCode}
@@ -249,7 +249,7 @@ async function handlePickLocation() {
           />
         </View>
         <View style={{ flex: 0.7, marginLeft: 10 }}>
-          <Text style={styles.label}>Street</Text>
+          <Text style={styles.label}>Street:</Text>
           <TextInput
             style={styles.input}
             value={street}
@@ -271,11 +271,15 @@ async function handlePickLocation() {
 
       <Text style={styles.section}>Order Summary</Text>
       {cartItems.map((item) => (
-        <Text key={item.id} style={styles.orderItem}>
-          {item.furniture.title} x {item.quantity}
-        </Text>
+        <View style={{paddingBottom: 10, paddingTop: 5}}>
+          <Text style={{textAlign: 'center', fontSize: 18, fontWeight: '600', paddingBottom: 3 }}>Furniture Title:</Text>
+          <View key={item.id} style={{ gap: 5}}>
+            <Text style={{textAlign: 'center', fontSize: 16, fontWeight: '500', paddingHorizontal: 20}}>{item.furniture.title}</Text>
+            <Text style={{textAlign: 'center', fontSize: 16, fontWeight: '500',}}>quantity:{item.quantity}</Text>
+          </View>
+        </View>
       ))}
-      <Text style={styles.total}>Total: €{totalPrice}</Text>
+      <Text style={styles.total}>Total: €{totalPrice.toLocaleString('fr-FR')}</Text>
 
       <TouchableOpacity
         style={styles.orderBtn}
@@ -307,7 +311,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     textAlign: "center",
   },
-  label: { fontSize: 14, marginBottom: 4, color: "#555", textAlign: 'center' },
+  label: { fontSize: 16, marginBottom: 4, color: "#555", textAlign: 'center', fontWeight: '600' },
   input: {
     borderWidth: 1,
     borderColor: "#ccc",
@@ -327,7 +331,7 @@ const styles = StyleSheet.create({
   },
   locationBtnText: { color: "#fff", fontWeight: "bold", },
   orderItem: { fontSize: 16, marginTop: 4 },
-  total: { fontSize: 18, fontWeight: "bold", marginTop: 10 },
+  total: { fontSize: 18, fontWeight: "bold", marginTop: 10, textAlign: 'center', },
   orderBtn: {
     marginTop: 20,
     backgroundColor: "#28a745",
