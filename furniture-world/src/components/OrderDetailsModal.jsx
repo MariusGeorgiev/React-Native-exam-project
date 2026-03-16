@@ -23,37 +23,55 @@ export default function OrderDetailsModal({ visible, order, onClose, navigation,
       <Pressable style={styles.modalOverlay} onPress={onClose}>
         <View style={styles.modalContainer}>
 
-          <Text style={styles.modalHeader}>
-            Order #{order?.id.slice(0, 6)}
-          </Text>
+          <View style={styles.modalHeader}>
+            <Text style={{fontSize: 20, fontWeight: '700'}}>Order #</Text>
+            <Text style={{fontSize: 20, fontWeight: '400'}}>{order?.id.slice(0, 6)}</Text>
+            
+          </View>
 
-          <Text style={styles.text}>
-            Recipient name: {order?.username}
-          </Text>
+          <View style={{flexDirection: 'row', justifyContent: 'space-around', paddingBottom: 10}}>
+            <View>
+              <Text style={{alignSelf: 'center', fontSize: 16, fontWeight: '700'}}>Recipient name:</Text>
+              <Text style={{alignSelf: 'center', fontSize: 16, fontWeight: '400'}}>{order?.username}</Text>
+            </View>
+            <View style={styles.text}>
+              <Text style={{alignSelf: 'center', fontSize: 16, fontWeight: '700'}}>Contact number:</Text>
+              <Text style={{alignSelf: 'center', fontSize: 16, fontWeight: '400'}}>{order?.phoneCode} {order?.phone}</Text>
+            </View>
+          </View>
 
-          <Text style={styles.text}>
-            Contact phone number: {order?.phoneCode} {order?.phone}
-          </Text>
+          
 
-          <Text style={styles.text}>
-            Address for Delivery: {order?.address
+          <View style={{alignSelf: 'center', paddingBottom: 10}}>
+            <Text style={{alignSelf: 'center', fontSize: 16, fontWeight: '700'}}>Address for Delivery:</Text>
+            <Text style={{alignSelf: 'center', fontSize: 16, fontWeight: '400'}}>{order?.address
               ? `${order.address.street}, ${order.address.city}, ${order.address.postalCode}, ${order.address.country}`
-              : "N/A"}
-          </Text>
+              : "N/A"}</Text>
+             
+          </View>
 
-          <Text style={styles.modalText}>
-            Date: {formatDate(order?.createdAt)}
-          </Text>
+          <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
+            <View>
+              <Text style={{alignSelf: 'center', fontSize: 16, fontWeight: '700'}}>Date:</Text>
+              <Text style={{alignSelf: 'center', fontSize: 16, fontWeight: '400'}}>{formatDate(order?.createdAt)}</Text>
+            </View>
+            <View>
+              <Text style={{alignSelf: 'center', fontSize: 16, fontWeight: '700'}}> Status:</Text>
+              <Text style={{alignSelf: 'center', fontSize: 16, fontWeight: '400'}}>{order?.status}</Text>
+            </View>
+          </View>
 
-          <Text style={styles.modalText}>
-            Status: {order?.status}
-          </Text>
+          
 
-          <Text style={[styles.modalText, { marginTop: 10 }]}>Items:</Text>
+          <Text style={[styles.modalText, { marginTop: 10, fontSize: 20, textAlign: 'center', fontWeight: '600'}]}>Items:</Text>
+          
 
           <ScrollView style={{ maxHeight: 300 }}>
+            
             {(order?.items || []).map((item, index) => (
+              
               <View key={index} style={{ marginBottom: 10 }}>
+                <Text>Quantity: {item.quantity}</Text>
                 {item.furniture ? (
                   <FurnitureCard
                     furniture={item.furniture}
@@ -69,7 +87,7 @@ export default function OrderDetailsModal({ visible, order, onClose, navigation,
                   <Text>Item data not found</Text>
                 )}
 
-                <Text>Quantity: {item.quantity}</Text>
+                
               </View>
             ))}
           </ScrollView>
@@ -101,7 +119,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 16,
   },
-  modalHeader: { fontSize: 18, fontWeight: "bold", marginBottom: 8 },
+  modalHeader: { flexDirection: 'row', alignSelf: 'center', paddingBottom: 10 },
   modalText: { fontSize: 14 },
   closeBtn: {
     backgroundColor: "#333",
