@@ -1,6 +1,6 @@
-import { useEffect, useState, useCallback  } from 'react';
+import { useState, useCallback } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
-import { Alert, View, Text, Image, ActivityIndicator, ScrollView, StyleSheet, Button, TouchableOpacity } from 'react-native';
+import { Alert, View, Text, Image, ActivityIndicator, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { getFurnitureById, deleteFurniture } from '../services/furnitureService';
 import { useAuth } from '../contexts/AuthProvider';
 import { FontAwesome } from '@expo/vector-icons';
@@ -32,7 +32,6 @@ export default function FurnitureDetailsScreen({ route, navigation }) {
   }, [furnitureId])
 );
 
-  
 
   if (loading) return <ActivityIndicator size="large" style={{ marginTop: 50 }} />;
 
@@ -77,58 +76,67 @@ const handleAddToCart = async () => {
 };
 
   return (
-    <ScrollView contentContainerStyle={{ padding: 16 }}>
-      
+    <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 5 }}>
+      <Text style={{fontSize: 15, textAlign: 'center', fontWeight: "700"}}>Title:</Text>
       <Text style={styles.title}>{furniture.title}</Text>
       
-      <Text>Category: {furniture.category}</Text>
-      <Text>Subcategory: {furniture.subcategory}</Text>
-     
-      <Text>Material: {furniture.material.join(', ')}</Text>
-      <Text>Colors: {furniture.colors.join(', ')}</Text>
+      <View style={{flexDirection: 'row', justifyContent: 'space-around', paddingBottom: 5, gap: 3}}> 
+          <Text style={{fontSize: 15}}><Text style={{fontWeight: "700"}}>Category: </Text>{furniture.category}</Text>
+          <Text style={{fontSize: 15}}><Text style={{fontWeight: "700"}}>Subcategory: </Text>{furniture.subcategory}</Text>
+     </View>
+
+     <View style={{flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', paddingBottom: 5,}}>
+      <View style={{gap: 2}}>
+        <Text style={{fontSize: 16}}><Text style={{fontWeight: "700"}}>Material: </Text>{furniture.material.join(', ')}</Text>
+        <Text style={{fontSize: 16}}><Text style={{fontWeight: "700"}}>Colors: </Text>{furniture.colors.join(', ')}</Text>
+      </View>
+      <Text style={{fontSize: 30}}>Price: €{furniture.price}</Text>
+    </View>
+
       
         {furniture.images && furniture.images[0] && (
-        <Image source={{ uri: furniture.images[0] }} style={{ width: '100%', height: 250, borderRadius: 12, marginBottom: 16 }} />
+        <Image source={{ uri: furniture.images[0] }} style={{ width: '100%', height: 250, borderRadius: 12, marginBottom: 6 }} />
       )}
-      <Text>Dimensions: Width: {furniture.dimensions.width}mm × Height: {furniture.dimensions.h}mm × Depth {furniture.dimensions.depth}mm</Text>
-        <Text>Price: €{furniture.price}</Text>
-        <Text>Description: {furniture.description}</Text>
+        <View style={{marginBottom: 6}}>
+          <Text style={{fontSize: 16, textAlign: 'center', fontWeight: "700"}}>Dimensions:</Text>
+          <Text style={{fontSize: 16, textAlign: 'center'}}>Width: {furniture.dimensions.width} mm.  Height: {furniture.dimensions.height} mm.  Depth {furniture.dimensions.depth} mm.</Text>
+        </View>
+
+        <View>
+          <Text style={{fontSize: 16, textAlign: 'center', marginBottom: 2, fontWeight: "700"}}>Description:</Text>
+          <Text style={{fontSize: 16, }}>{furniture.description}</Text>
+        </View>
 
 
         {user && (
             <>
-
-                  
-                
                   <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 50, paddingTop: 15 }}>
+                      <TouchableOpacity
+                        style={styles.favoriteBtn}
+                        onPress={() => toggleFavorite(furniture.id)}
+                      >
+                        <FontAwesome
+                          name={userProfile?.favorites?.includes(furniture.id) ? "heart" : "heart-o"}
+                          size={32}
+                          color={userProfile?.favorites?.includes(furniture.id) ? "red" : "gray"}
+                        />
+                      </TouchableOpacity>
 
-                    <TouchableOpacity
-                      style={styles.favoriteBtn}
-                      onPress={() => toggleFavorite(furniture.id)}
-                    >
-                      <FontAwesome
-                        name={userProfile?.favorites?.includes(furniture.id) ? "heart" : "heart-o"}
-                        size={32}
-                        color={userProfile?.favorites?.includes(furniture.id) ? "red" : "gray"}
-                      />
-                  </TouchableOpacity>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', }}>
+                          <TouchableOpacity onPress={handleDecrement} style={styles.qtyBtn}>
+                            <Text style={styles.qtyBtnText}>-</Text>
+                          </TouchableOpacity>
 
-                      <View style={{ flexDirection: 'row', alignItems: 'center', }}>
-                        <TouchableOpacity onPress={handleDecrement} style={styles.qtyBtn}>
-                          <Text style={styles.qtyBtnText}>-</Text>
-                        </TouchableOpacity>
+                          <Text style={{ marginHorizontal: 12 }}>{quantity}</Text>
 
-                        <Text style={{ marginHorizontal: 12 }}>{quantity}</Text>
+                          <TouchableOpacity onPress={handleIncrement} style={styles.qtyBtn}>
+                            <Text style={styles.qtyBtnText}>+</Text>
+                          </TouchableOpacity>
 
-                        <TouchableOpacity onPress={handleIncrement} style={styles.qtyBtn}>
-                          <Text style={styles.qtyBtnText}>+</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity onPress={handleAddToCart} style={styles.addToCartBtn}>
-                          <Text style={styles.addToCartBtnText}><FontAwesome name="cart-arrow-down" size={22} color='white'/>  Add to Cart ({quantity})</Text>
-                        </TouchableOpacity>
-                    </View>
-
+                          <TouchableOpacity onPress={handleAddToCart} style={styles.addToCartBtn}>
+                            <Text style={styles.addToCartBtnText}><FontAwesome name="cart-arrow-down" size={22} color='white'/>  Add to Cart ({quantity})</Text>
+                          </TouchableOpacity>
+                      </View>
                   </View>
                 
 
@@ -151,20 +159,17 @@ const handleAddToCart = async () => {
                       ><Text style={{color: 'white', fontWeight: '600'}}><FontAwesome name="trash" size={22} color='red'/>  Delete</Text></TouchableOpacity>
                   </View>
                 )}
-
-                
-
             </>
          )}
+
 
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  title: { fontSize: 20, fontWeight: 'bold', marginBottom: 8 },
+  title: { fontSize: 20, fontWeight: 'bold', marginBottom: 8, textAlign: 'center' },
   favoriteBtn: {
-  // marginTop: 16,
   alignSelf: 'flex-start',
 },
   qtyBtn: {
