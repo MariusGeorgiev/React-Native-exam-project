@@ -1,13 +1,20 @@
 # Furniture World Store App 
 
-# 📱 [Download APK Furniture World App](https://github.com/MariusGeorgiev/React-Native-exam-project/releases/download/1.0/furniture-world.apk)
+## 📱 Download APK
 
-# [Reserved Link for APK](https://drive.google.com/file/d/1FGf34zS0BWsbYkvvaGZbHmdD6_vVZMjg/view?usp=sharing)
+**[Download APK Furniture World App](https://github.com/MariusGeorgiev/React-Native-exam-project/releases/download/1.0/furniture-world.apk)**
 
-## To test full functionality of the app use some of admin users down:
-### Admin user: Email - admin@abv.bg / Password - asdasd
-### Admin user secondary: Email - maro1@abv.bg / Password - asdasd
-### Admin user third: Email - admin1@abv.bg / Password - 123456
+> If the GitHub link does not work, use the backup link:
+> [Google Drive Download](https://drive.google.com/file/d/1FGf34zS0BWsbYkvvaGZbHmdD6_vVZMjg/view?usp=sharing)
+
+## Test Accounts
+
+To test full functionality (including admin features), use:
+
+**Admin Accounts:**
+- Email: admin@abv.bg | Password: asdasd  
+- Email: maro1@abv.bg | Password: asdasd  
+- Email: admin1@abv.bg | Password: 123456  
 
 ---
 
@@ -19,7 +26,7 @@
 - Shopping / Furniture / E-commerce  
 
 **Main Purpose:**
-- Furniture World is a mobile application that allows users to browse and purchase furniture easily from their phones. The app helps users discover furniture by categories, view detailed product information, and place orders quickly. It simplifies the shopping process and provide a convenient way to manage favorites. 
+- Furniture World is a mobile application that allows users to browse and purchase furniture easily from their phones. The app helps users discover furniture by categories, view detailed product information, and place orders quickly. It simplifies the shopping process and provides a convenient way to manage favorites. 
 
 ---
 
@@ -66,7 +73,7 @@
 
 - Root Navigation Logic:
 
-The application split navigation based on the user’s authentication state. When the app starts, it listens for authentication changes from Firebase. If a user is authenticated, they are redirected to the main part of the app. If no authenticated the app displays Guest screens & Login / Register.
+The application splits navigation based on the user’s authentication state. When the app starts, it listens for authentication changes from Firebase. If a user is authenticated, they are redirected to the main part of the app. If no user is authenticated the app displays Guest screens & Login / Register.
 
 - Main Navigation:
 
@@ -188,9 +195,19 @@ The application includes several forms such as Login, Register, Edit Profile, Ad
 
 ## 12. Screenshots - need to add later
 
-### App is tested on physical devices with Android 16 on 6.8" screen and Android 11 on 6.2" screen view on smaller screens is not tested 
+![Home Screen](./screenshots/home.png)
+![Details Screen](./screenshots/details.png)
 
-## 13. Installation & Setup
+
+## 13. Device Testing
+
+**The application has been tested on physical Android devices:**
+- Android 16 (6.8" screen)
+- Android 11 (6.2" screen)
+
+Note: UI behavior on smaller screens has not been fully tested.
+
+## 14. Installation & Setup
 
 **Clone the Repository**
 
@@ -225,7 +242,7 @@ npm start
 
 - If you don’t want to run the project with Expo:
 
-- - Download th from the link above
+- - Download the APK from the link above
 - - Transfer it to your Android device
 - - Open the file and install it (allow unknown sources if needed)
 
@@ -265,7 +282,6 @@ npm run build:android:release
 ```bash
 npx expo start -c
 ```
-
 
 
  
