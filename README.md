@@ -1,15 +1,18 @@
-# Furniture World Store App – React Native Exam Project
+# Furniture World Store App 
 
 # Release Build Download APK -
 # Reserved Link
 
-## 📱 Download APK Prerelease - need later to reupload after fix some styles
+## 📱 Download APK Prerelease - need later to reupload
 
-[Download Furniture World App](https://github.com/MariusGeorgiev/React-Native-exam-project/releases/download/1.0/app-release.apk)
+# [Download Furniture World App](https://github.com/MariusGeorgiev/React-Native-exam-project/releases/download/1.0/app-release.apk)
 
-# Admin user: Email - admin@abv.bg / Password - asdasd
-# Admin user secondary: - Email - maro1@abv.bg / Password - asdasd
-# Admin user third: Email - admin1@abv.bg / Password - 123456
+## To test full functionality of the app use some admin users down:
+### Admin user: Email - admin@abv.bg / Password - asdasd
+### Admin user secondary: Email - maro1@abv.bg / Password - asdasd
+### Admin user third: Email - admin1@abv.bg / Password - 123456
+
+---
 
 ## 1. Project Overview
 **Application Name:**
@@ -186,9 +189,84 @@ The application includes several forms such as Login, Register, Edit Profile, Ad
 
 ---
 
-## Screenshots
+## 12. Screenshots - need to add later
 
-## 12. Getting Started 
+## 13. Installation & Setup
 
-**Installation:**
+###  Clone the Repository
+
+```bash
+git clone https://github.com/MariusGeorgiev/React-Native-exam-project.git
+cd furniture-world
+```
+
+---
+
+### 2. Install Dependencies
+
+Make sure you have Node.js installed, then run:
+
+```bash
+npm install
+```
+
+---
+
+### 3. Start the Application (Expo)
+
+```bash
+npm start
+```
+
+* Scan the QR code using the **Expo Go app** on your phone
+
+---
+
+## 📱 Running the APK (Alternative)
+
+If you don’t want to run the project with Expo:
+
+1. Download the APK from the link above
+2. Transfer it to your Android device
+3. Open the file and install it (allow unknown sources if needed)
+
+---
+
+## 📦 Building the APK
+
+To create a production release build:
+
+```bash
+npm run build:android:release
+```
+
+---
+
+### 📍 Where to find the APK
+
+  ```
+  android/app/build/outputs/apk/release/app-release.apk
+  ```
+
+---
+
+## 🛠 Requirements
+
+* Node.js
+* Expo CLI
+* Android Studio (for emulator) or a physical Android device
+
+---
+
+## 🚀 Notes
+
+* Ensure your device and development machine are on the same network when using Expo
+* If something fails, try to clear cache:
+
+```bash
+npx expo start -c
+```
+
+
+
  
