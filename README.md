@@ -62,7 +62,7 @@
 
 ---
 
-## 4. Navigation Structure**
+## 4. Navigation Structure
 
 - Root Navigation Logic:
 
@@ -157,7 +157,7 @@ The application includes several forms such as Login, Register, Edit Profile, Ad
 
 ## 9. Native Device Features
 **Used Native Feature(s):** 
-- Camera / Image Picker
+- Camera & Image Picker
 - Location 
 
 **Usage Description:**  
@@ -192,7 +192,7 @@ The application includes several forms such as Login, Register, Edit Profile, Ad
 
 ## 13. Installation & Setup
 
-###  Clone the Repository
+**Clone the Repository**
 
 ```bash
 git clone https://github.com/MariusGeorgiev/React-Native-exam-project.git
@@ -201,9 +201,9 @@ cd furniture-world
 
 ---
 
-### 2. Install Dependencies
+**Install Dependencies**
 
-Make sure you have Node.js installed, then run:
+- Make sure you have Node.js installed, then run:
 
 ```bash
 npm install
@@ -211,29 +211,29 @@ npm install
 
 ---
 
-### 3. Start the Application (Expo)
+**Start the Application (Expo)**
 
 ```bash
 npm start
 ```
 
-* Scan the QR code using the **Expo Go app** on your phone
+ - Scan the QR code using the **Expo Go app** on your phone
 
 ---
 
-## 📱 Running the APK (Alternative)
+**Running the APK (Alternative)**
 
-If you don’t want to run the project with Expo:
+- If you don’t want to run the project with Expo:
 
-1. Download the APK from the link above
-2. Transfer it to your Android device
-3. Open the file and install it (allow unknown sources if needed)
+- - Download th from the link above
+- - Transfer it to your Android device
+- - Open the file and install it (allow unknown sources if needed)
 
 ---
 
-## 📦 Building the APK for Android
+**Building the APK**
 
-To create a production release build:
+- To create a production release build for android:
 
 ```bash
 npm run build:android:release
@@ -241,7 +241,7 @@ npm run build:android:release
 
 ---
 
-### 📍 Where to find the APK
+**Where to find the APK**
 
   ```
   android/app/build/outputs/apk/release/app-release.apk
@@ -249,18 +249,18 @@ npm run build:android:release
 
 ---
 
-## 🛠 Requirements
+**Requirements**
 
-* Node.js
-* Expo CLI
-* Android Studio (for emulator) or a physical Android device
+- Node.js
+- Expo CLI
+- Android Studio (for emulator) or a physical Android device
 
 ---
 
-## 🚀 Notes
+**Notes**
 
-* Ensure your device and development machine are on the same network when using Expo
-* If something fails, try to clear cache:
+- Ensure your device and development machine are on the same network when using Expo
+- If something fails, try to clear cache:
 
 ```bash
 npx expo start -c
