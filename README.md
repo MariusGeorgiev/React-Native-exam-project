@@ -9,10 +9,10 @@
 
 ## Test Accounts
 
-To test full functionality (including admin features), use:
+To test full app functionality (including admin features create, edit, delete), use one of admin accounts:
 
 **Admin Accounts:**
-- Email: admin@abv.bg | Password: asdasd  
+- Email: admin@abv.bg | Password: asdasd
 - Email: maro1@abv.bg | Password: asdasd  
 - Email: admin1@abv.bg | Password: 123456  
 
@@ -195,8 +195,11 @@ The application includes several forms such as Login, Register, Edit Profile, Ad
 
 ## 12. Screenshots - need to add later
 
-![Home Screen](./screenshots/home.png)
-![Details Screen](./screenshots/details.png)
+<p align="center">
+  <img src="./furniture-world/assets/screenshots/home-screen.jpg" width="250" />
+  <img src="./furniture-world/assets/screenshots/details-screen.jpg" width="250" />
+  <img src="./furniture-world/assets/screenshots/cart-screen.jpg" width="250" />
+</p>
 
 
 ## 13. Device Testing
