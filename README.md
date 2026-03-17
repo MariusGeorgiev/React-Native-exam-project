@@ -2,7 +2,9 @@
 
 # Release Build Download APK -
 # Reserved Link 
-# Admin user: 
+# Admin user: Email - admin@abv.bg / password - asdasd
+# Admin user secondary: - Email -maro1@abv.bg / asdasd
+# Admin user third: Email - admin1@abv.bg / password - 123456
 
 ## 1. Project Overview
 **Application Name:**
@@ -116,6 +118,15 @@ Application uses nested navigation by combining stack navigators inside some tab
 The application includes several forms such as Login, Register, Edit Profile, Add/Create Furniture, Edit Furniture, and Checkout. These forms allow users to authenticate, manage their personal information, create or modify furniture items (admin), and complete orders.
 
 - Validation Rules:
+
+- - Login:
+- - - **Email & Password:** Please enter email and password
+- - - Please check your internet connection.
+
+- - Register: 
+- - - **Email:** The email is already occupied, Please enter a valid email address
+- - - **Password:** Password cannot contain spaces, Password must be at least 6 characters, Passwords do not match
+- - - Network error. Please check your internet connection.
 
 - - Edit & Create:
 - - - **Title:** 3–100 characters, required.
