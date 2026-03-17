@@ -86,7 +86,7 @@ export default function CreateFurnitureScreen({ navigation }) {
 
   const validateInputs = () => {
     if (!imageUri) return "Please add image.";
-    if (!title.trim() || title.length < 3)
+    if (!title.trim() || title.length < 3 || title.length > 100)
       return "Title must be at least 3 characters.";
     if (!category) return "Please select a category.";
     if (!subcategory) return "Please select a subcategory.";
@@ -102,7 +102,7 @@ export default function CreateFurnitureScreen({ navigation }) {
       d = Number(depth);
     if ([w, h, d].some((v) => isNaN(v) || v <= 0))
       return "Dimensions must be positive numbers.";
-    if (!description.trim() || description.length < 10)
+    if (!description.trim() || description.length < 10 || description.length > 500)
       return "Description must be at least 10 characters.";
     return null;
   };
