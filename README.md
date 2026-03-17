@@ -2,9 +2,9 @@
 
 # Release Build Download APK -
 # Reserved Link 
-# Admin user: Email - admin@abv.bg / password - asdasd
-# Admin user secondary: - Email -maro1@abv.bg / asdasd
-# Admin user third: Email - admin1@abv.bg / password - 123456
+# Admin user: Email - admin@abv.bg / Password - asdasd
+# Admin user secondary: - Email - maro1@abv.bg / Password - asdasd
+# Admin user third: Email - admin1@abv.bg / Password - 123456
 
 ## 1. Project Overview
 **Application Name:**
