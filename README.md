@@ -1,13 +1,10 @@
 # Furniture World Store App 
 
-# Release Build Download APK -
-# Reserved Link
+# 📱 [Download APK Furniture World App](https://github.com/MariusGeorgiev/React-Native-exam-project/releases/download/1.0/furniture-world.apk)
 
-## 📱 Download APK Prerelease - need later to reupload
+# [Reserved Link for APK](https://drive.google.com/file/d/1FGf34zS0BWsbYkvvaGZbHmdD6_vVZMjg/view?usp=sharing)
 
-# [Download Furniture World App](https://github.com/MariusGeorgiev/React-Native-exam-project/releases/download/1.0/app-release.apk)
-
-## To test full functionality of the app use some admin users down:
+## To test full functionality of the app use some of admin users down:
 ### Admin user: Email - admin@abv.bg / Password - asdasd
 ### Admin user secondary: Email - maro1@abv.bg / Password - asdasd
 ### Admin user third: Email - admin1@abv.bg / Password - 123456
@@ -65,7 +62,7 @@
 
 ---
 
-**4. Navigation Structure**
+## 4. Navigation Structure**
 
 - Root Navigation Logic:
 
@@ -141,10 +138,10 @@ The application includes several forms such as Login, Register, Edit Profile, Ad
 - - - **Image:** required.
 - - - **Category:** required.
 - - - **Subcategory:** required.
-- - - **Price:** positive number, required, max length 5 digits, cnot contain "." or ",".
+- - - **Price:** positive number, required, max length 5 digits, cannot  contain "." or ",".
 - - - **Description:** 10–500 characters, required.
 - - - **Material & Colors:** 3–20 characters, required.
-- - - **Dimensions:** Dimensions must be positive numbers, required, max length 4 digits, cnot contain "." or ",".
+- - - **Dimensions:** Dimensions must be positive numbers, required, max length 4 digits, cannot contain "." or ",".
 - - - **Description:** Description must be 10-500 characters, required.
 
 - - Checkout:
@@ -234,7 +231,7 @@ If you don’t want to run the project with Expo:
 
 ---
 
-## 📦 Building the APK
+## 📦 Building the APK for Android
 
 To create a production release build:
 
