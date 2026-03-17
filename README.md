@@ -191,6 +191,8 @@ The application includes several forms such as Login, Register, Edit Profile, Ad
 
 ## 12. Screenshots - need to add later
 
+### App is tested on physical devices with Android 16 on 6.8" screen and Android 11 on 6.2" screen view on smaller screens is not tested 
+
 ## 13. Installation & Setup
 
 ###  Clone the Repository
