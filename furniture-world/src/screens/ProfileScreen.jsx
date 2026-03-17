@@ -222,8 +222,9 @@ const handleTakePhoto = async () => {
                   onValueChange={(value) =>
                     setEditData(prev => ({ ...prev, gender: value }))
                   }
+                  style={{ color: "#000" }}
                 >
-                  <Picker.Item label="Select gender..." value="" />
+                  <Picker.Item label="Select gender..." value=""/>
                   <Picker.Item label="Male" value="male" />
                   <Picker.Item label="Female" value="female" />
                 </Picker>
@@ -251,6 +252,7 @@ const handleTakePhoto = async () => {
                 <Text style={styles.label}>Age:</Text>
                 <TextInput
                   placeholder="0"
+                  placeholderTextColor="#666"
                   style={styles.ageInput}
                   keyboardType="numeric"
                   maxLength={3}
@@ -272,6 +274,7 @@ const handleTakePhoto = async () => {
                       onValueChange={(value) =>
                         setEditData(prev => ({ ...prev, phoneCode: value }))
                       }
+                      style={{ color: "#000" }}
                     >
                       <Picker.Item label="+359 (BG)" value="+359" />
                       <Picker.Item label="+1 (US)" value="+1" />
@@ -295,6 +298,7 @@ const handleTakePhoto = async () => {
                     keyboardType="numeric"
                     maxLength={12}
                     placeholder="Phone number"
+                    placeholderTextColor="#666"
                     onChangeText={(text) =>
                       setEditData(prev => ({ ...prev, phone: text }))
                     }
@@ -315,6 +319,7 @@ const handleTakePhoto = async () => {
             <TextInput
               style={[styles.input, styles.addressInput]}
               placeholder="City"
+              placeholderTextColor="#666"
               value={editData.city}
               onChangeText={(text) =>
                 setEditData(prev => ({ ...prev, city: text }))
@@ -327,6 +332,7 @@ const handleTakePhoto = async () => {
             <TextInput
               style={[styles.input, styles.addressInput]}
               placeholder="Country"
+              placeholderTextColor="#666"
               value={editData.country}
               onChangeText={(text) =>
                 setEditData(prev => ({ ...prev, country: text }))
@@ -343,6 +349,7 @@ const handleTakePhoto = async () => {
             <TextInput
               style={[styles.input, styles.addressInput]}
               placeholder="Code"
+              placeholderTextColor="#666"
               keyboardType="numeric"
               maxLength={9}
               value={editData.postalCode}
@@ -357,6 +364,7 @@ const handleTakePhoto = async () => {
             <TextInput
               style={[styles.input, styles.addressInput]}
               placeholder="Street"
+              placeholderTextColor="#666"
               value={editData.street}
               onChangeText={(text) =>
                 setEditData(prev => ({ ...prev, street: text }))
@@ -418,6 +426,7 @@ phoneCode: {
   marginRight: 8
 },
 phoneInput: {
+  textAlign: 'center',
   fontSize: 16,
   borderWidth: 1,
   borderColor: "#ccc",
@@ -440,6 +449,7 @@ addressRow: {
   justifyContent: "space-evenly",
 },
 addressInput: {
+  textAlign: 'center',
   flex: 1,
 },
 nameAndRole: {
@@ -467,7 +477,8 @@ inputName: {
   paddingTop: 17,
   paddingBottom: 17,
   paddingLeft: 12, 
-  paddingRight: 12, 
+  paddingRight: 12,
+  textAlign: 'center'
 },
 avatar: {
   width: 120,

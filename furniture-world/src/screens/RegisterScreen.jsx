@@ -95,6 +95,7 @@ const handleRegister = async () => {
 
         <TextInput
           placeholder="Email"
+          placeholderTextColor="#666"
           style={styles.input}
           value={email}
           onChangeText={setEmail}
@@ -105,7 +106,8 @@ const handleRegister = async () => {
         <View style={styles.passwordContainer}>
           <TextInput
             placeholder="Password"
-            style={styles.passwordInput}
+            placeholderTextColor="#666"
+            style={[styles.passwordInput, {color: "#000"}]}
             value={password}
             onChangeText={setPassword}
             secureTextEntry={!showPassword}
@@ -124,7 +126,8 @@ const handleRegister = async () => {
         <View style={styles.passwordContainer}>
           <TextInput
             placeholder="Confirm Password"
-            style={styles.passwordInput}
+            placeholderTextColor="#666"
+            style={[styles.passwordInput, {color: "#000"}]}
             value={confirmPassword}
             onChangeText={setConfirmPassword}
             secureTextEntry={!showConfirmPassword}

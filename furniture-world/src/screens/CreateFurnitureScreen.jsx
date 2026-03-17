@@ -241,6 +241,7 @@ export default function CreateFurnitureScreen({ navigation }) {
                   setCategory(val);
                   setSubcategory("");
                 }}
+                style={{ color: "#000" }}
               >
                 <Picker.Item label="Select category" value="" />
                 {CATEGORIES.map((cat) => (
@@ -258,6 +259,7 @@ export default function CreateFurnitureScreen({ navigation }) {
                     <Picker
                       selectedValue={subcategory}
                       onValueChange={setSubcategory}
+                      style={{ color: "#000" }}
                     >
                       <Picker.Item label="Select subcategory" value="" />
                       {selectedCategory.subcategories.map((sub) => (
@@ -279,7 +281,7 @@ export default function CreateFurnitureScreen({ navigation }) {
           onChangeText={(text) => setPrice(text.replace(/[^0-9]/g, ""))}
           keyboardType="numeric"
           maxLength={5}
-          style={styles.input}
+          style={[styles.input, {textAlign: 'center'}]}
         />
         </View>
      </View>
@@ -372,6 +374,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#502222",
     borderRadius: 6,
+    textAlign: 'center'
   },
   input: {
     borderWidth: 1,

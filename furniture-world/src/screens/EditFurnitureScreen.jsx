@@ -192,6 +192,7 @@ const handleTakePhoto = async () => {
         <Text style={[styles.label, {textAlign: 'center'}]}>Title:</Text>
             <TextInput
             placeholder="Enter furniture title"
+            placeholderTextColor="#666"
             value={title}
             onChangeText={setTitle}
             style={[styles.input, styles.titleInput]}
@@ -249,6 +250,7 @@ const handleTakePhoto = async () => {
                                 setCategory(value);
                                 setSubcategory('');
                             }}
+                            style={{ color: "#000" }}
                             >
                             <Picker.Item label="Select category" value="" />
 
@@ -269,6 +271,7 @@ const handleTakePhoto = async () => {
                               selectedValue={subcategory}
                               onValueChange={setSubcategory}
                               enabled={!!category}
+                              style={{ color: "#000" }}
                           >
                               <Picker.Item label="Select subcategory" value="" />
 
@@ -284,7 +287,8 @@ const handleTakePhoto = async () => {
               <View style={{flex: 0.3, gap: 10}}>
                   <Text style={[styles.label, {textAlign: 'center', fontSize: 18}]}>Price:</Text>
                   <TextInput
-                  placeholder="Enter price"
+                  placeholder="€"
+                  placeholderTextColor="#666"
                   value={price}
                   onChangeText={(text) => setPrice(text.replace(/[^0-9]/g, ""))}
                   keyboardType="numeric"
@@ -298,6 +302,7 @@ const handleTakePhoto = async () => {
         <Text style={[styles.label, {textAlign: 'center'}]}>Material:</Text>
         <TextInput
           placeholder="Wood, Metal"
+          placeholderTextColor="#666"
           value={material}
           onChangeText={setMaterial}
           style={styles.input}
@@ -306,6 +311,7 @@ const handleTakePhoto = async () => {
         <Text style={[styles.label, {textAlign: 'center'}]}>Colors:</Text>
         <TextInput
           placeholder="Black, White"
+          placeholderTextColor="#666"
           value={colors}
           onChangeText={setColors}
           style={styles.input}
@@ -315,6 +321,7 @@ const handleTakePhoto = async () => {
         <Text style={[styles.label, {textAlign: 'center'}]}>Description:</Text>
           <TextInput
             placeholder="Enter Description of the Furniture"
+            placeholderTextColor="#666"
             value={description}
             onChangeText={setDescription}
             style={[styles.input, styles.descriptionInput]}
@@ -332,6 +339,7 @@ const handleTakePhoto = async () => {
                 <TextInput
                 style={styles.dimInput}
                 placeholder="0"
+                placeholderTextColor="#666"
                 value={width}
                 onChangeText={(text) => setWidth(text.replace(/[^0-9]/g, ""))}
                 keyboardType="numeric"
@@ -349,6 +357,7 @@ const handleTakePhoto = async () => {
                 <TextInput
                 style={styles.dimInput}
                 placeholder="0"
+                placeholderTextColor="#666"
                 value={height}
                 onChangeText={(text) => setHeight(text.replace(/[^0-9]/g, ""))}
                 keyboardType="numeric"
@@ -366,6 +375,7 @@ const handleTakePhoto = async () => {
                 <TextInput
                 style={styles.dimInput}
                 placeholder="0"
+                placeholderTextColor="#666"
                 value={depth}
                 onChangeText={(text) => setDepth(text.replace(/[^0-9]/g, ""))}
                 keyboardType="numeric"

@@ -109,12 +109,14 @@ const sendEmail = () => {
         <TextInput
           style={styles.input}
           placeholder="Subject"
+          placeholderTextColor="#666"
           value={subject}
           onChangeText={setSubject}
         />
         <TextInput
           style={styles.input}
           placeholder="Write your message..."
+          placeholderTextColor="#666"
           multiline
           numberOfLines={4}
           value={message}
