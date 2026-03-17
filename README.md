@@ -193,12 +193,12 @@ The application includes several forms such as Login, Register, Edit Profile, Ad
 
 ---
 
-## 12. Screenshots - need to add later
+## 12. Screenshots
 
 <p align="center">
-  <img src="./furniture-world/assets/screenshots/home-screen.jpg" width="250" />
-  <img src="./furniture-world/assets/screenshots/details-screen.jpg" width="250" />
-  <img src="./furniture-world/assets/screenshots/cart-screen.jpg" width="250" />
+  <img src="./furniture-world/assets/screenshots/home-screen.jpg" width="200" />
+  <img src="./furniture-world/assets/screenshots/details-screen.jpg" width="200" />
+  <img src="./furniture-world/assets/screenshots/cart-screen.jpg" width="200" />
 </p>
 
 
