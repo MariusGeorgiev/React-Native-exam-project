@@ -1,7 +1,12 @@
 # Furniture World Store App – React Native Exam Project
 
 # Release Build Download APK -
-# Reserved Link 
+# Reserved Link
+
+## 📱 Download APK Prerelease - need later to reupload after fix some styles
+
+[Download Furniture World App](https://github.com/MariusGeorgiev/React-Native-exam-project/releases/download/1.0/app-release.apk)
+
 # Admin user: Email - admin@abv.bg / Password - asdasd
 # Admin user secondary: - Email - maro1@abv.bg / Password - asdasd
 # Admin user third: Email - admin1@abv.bg / Password - 123456
