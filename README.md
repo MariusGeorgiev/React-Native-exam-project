@@ -1,38 +1,43 @@
 # Furniture World Store App – React Native Exam Project
 
-# Release Build APK - 
----
+# Release Build Download APK -
+# Reserved Link 
+# Admin user: 
 
 ## 1. Project Overview
-**Application Name:** Furniture World
-**Application Category / Topic:** Shopping / Furniture / E-commerce  
-**Main Purpose:**  
-Furniture shop application.  
+**Application Name:**
+- Furniture World
+
+**Application Category / Topic:** 
+- Shopping / Furniture / E-commerce  
+
+**Main Purpose:**
+- Furniture World is a mobile application that allows users to browse and purchase furniture easily from their phones. The app helps users discover furniture by categories, view detailed product information, and place orders quickly. It simplifies the shopping process and provide a convenient way to manage favorites. 
 
 ---
 
 ## 2. User Access & Permissions
 **Guest (Not Authenticated)**  
-- Browse Home/furniture list  
-- View furniture details  
+- Browse Home/ Furniture List  
+- View Furniture Details  
 - Contact via contact form  
 
-**Authenticated User** 
+**User (Authenticated for)** 
 - All from Guest
-- Add favorites 
-- Remove favorites
-- View profile data
-- Edit profile data
+- Add Favorites 
+- Remove Favorites
+- View Profile data
+- Edit Profile data
 - Add items to cart
 - Remove items from cart
-- Place an Orders
+- Place an Order
 - View Orders
 
-**Admin User**
-- All from Guest and User
-- Create furniture items  
-- Edit furniture items  
-- Delete furniture items  
+**Admin (Authenticated for)**
+- All from User
+- Create Furniture items  
+- Edit Furniture items  
+- Delete Furniture items  
 
 ---
 
@@ -44,35 +49,43 @@ Furniture shop application.
 4. Logout clears session and returns to guest state  
 
 **Session Persistence:**  
-- User session stored  
-- Automatic login after app restart  
+- The user session is managed by Firebase Authentication and stored locally on the device using AsyncStorage.
+
+- When the application restarts, Firebase automatically restores the authentication state from AsyncStorage.
 
 ---
 
-## 4. Navigation Structure
-**Root Navigation Logic:**  
-- Split between authenticated and unauthenticated routes  
+**4. Navigation Structure**
 
-**Main Navigation:**  
-- Tab-based navigation (Home, Categories, Favorites, Cart, Add/Create)
-- Drawer navigation (Profile, Orders, Info & Contact) 
+- Root Navigation Logic:
 
-**Nested Navigation:**  
-- Stack navigators inside tabs  
-- Screens: Furniture List, Details, Edit, Checkout, Create
-- Stack navigators inside drawer
-- Screens: Orders List, Orders Details, Details furniture
+The application split navigation based on the user’s authentication state. When the app starts, it listens for authentication changes from Firebase. If a user is authenticated, they are redirected to the main part of the app. If no authenticated the app displays Guest screens & Login / Register.
+
+- Main Navigation:
+
+The main navigation is structured using a bottom tab navigator. It consists of several primary sections such as Home-(show 4 best category and 10 last items), Categories-(browse in all categories), Cart, and if user is Admin add/create screen.
+
+- Secondary Navigation:
+
+The application includes also a drawer navigation that provides access to additional sections beyond the main tabs. It is accessible from the header and allows users to quickly navigate to secondary navigation screens such as Profile, My Orders, Information & Contact.
+
+- Nested Navigation:
+
+Application uses nested navigation by combining stack navigators inside some tab's & drawer's. This allows for deeper navigation within each screen. For example, in the Home tab, users can navigate from product to screen details. Additional screens include edit/create furniture screens (for admins), Cart contain checkout screen, Orders contain list of orders and details for them. 
 
 ---
 
 ## 5. List → Details Flow
-**List / Overview Screen:**  
-- Displays furniture items with image, title, and price  
-- Tap an item to view details  
 
-**Details Screen:**  
-- Navigation  
-- Displays images, dimensions, material, colors, description  
+**List / Overview Screen:**
+
+* Displays furniture items with image, title, and price
+* Tap an item to view details
+
+**Details Screen:**
+
+* Navigation is triggered when the user taps on a furniture card, which calls the navigation function to open the details screen.
+* The selected furniture item's data is passed through route parameters to the details screen, where it is used to display detailed information.
 
 ---
 
@@ -88,7 +101,7 @@ Furniture shop application.
 - Fetch furniture data for list and details screens  
 
 **Create (POST):**  
-- Admins can create furniture entries via Add/Create Furniture form  
+- Admins can create furniture via Add/Create Furniture form  
 
 **Update / Delete (Mutation):**  
 - Admins can edit or delete existing furniture  
@@ -97,16 +110,32 @@ Furniture shop application.
 ---
 
 ## 8. Forms & Validation
-**Forms**  
-- 
 
-**Validation Rules:**  
-- **Title:** 3–100 characters, required  
-- **Price:** positive number, required  
-- **Description:** 10–500 characters, required  
-- **Material & Colors:** 3–50 characters  
-- **Dimensions:** positive numbers
-- Field name with multiple validation rules:
+- Forms Used:
+
+The application includes several forms such as Login, Register, Edit Profile, Add/Create Furniture, Edit Furniture, and Checkout. These forms allow users to authenticate, manage their personal information, create or modify furniture items (admin), and complete orders.
+
+- Validation Rules:
+
+- - Edit & Create:
+- - - **Title:** 3–100 characters, required.
+- - - **Image:** required.
+- - - **Category:** required.
+- - - **Subcategory:** required.
+- - - **Price:** positive number, required, max length 5 digits, cnot contain "." or ",".
+- - - **Description:** 10–500 characters, required.
+- - - **Material & Colors:** 3–20 characters, required.
+- - - **Dimensions:** Dimensions must be positive numbers, required, max length 4 digits, cnot contain "." or ",".
+- - - **Description:** Description must be 10-500 characters, required.
+
+- - Checkout:
+- - - **Username:** Should be 3-40 characters, required.
+- - - **Phone code:** It should start with '+' and 1-5 digits, required.
+- - - **Phone number:** It should be 6-15 digits, required.
+- - - **Street:** It should be 3-50 characters, required.
+- - - **City:** It should be 2-50 characters, required.
+- - - **Postal code:** It should be 2-10 characters, required.
+- - - **Country:** It should be 2-50 characters, required.
 
 ---
 
@@ -136,13 +165,14 @@ Furniture shop application.
 ## 11. Error & Edge Case Handling
 - **Authentication errors:** show alert  
 - **Network or data errors:** alert and fallback UI  
-- **Empty or missing data:** placeholders or "No data" messages  
+- **Empty or missing data:** placeholders or "min length required" messages  
 - **Form validation errors:** alert user with field-specific rules  
 
 ---
 
-## 12. Getting Started
-**Prerequisites:**  
+## Screenshots
 
+## 12. Getting Started 
 
-**Installation:**  
+**Installation:**
+ 
