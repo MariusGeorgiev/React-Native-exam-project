@@ -197,8 +197,21 @@ The application includes several forms such as Login, Register, Edit Profile, Ad
 
 <p align="center">
   <img src="./furniture-world/assets/screenshots/home-screen.jpg" width="200" />
+  <img src="./furniture-world/assets/screenshots/login-screen.jpg" width="200" />
+  <img src="./furniture-world/assets/screenshots/register-screen.jpg" width="200" />
+  <img src="./furniture-world/assets/screenshots/categories-screen.jpg" width="200" />
+  <img src="./furniture-world/assets/screenshots/subcategories-list-screen.jpg" width="200" />
   <img src="./furniture-world/assets/screenshots/details-screen.jpg" width="200" />
+  <img src="./furniture-world/assets/screenshots/edit-screen.jpg" width="200" />
+  <img src="./furniture-world/assets/screenshots/favorites-screen.jpg" width="200" />
   <img src="./furniture-world/assets/screenshots/cart-screen.jpg" width="200" />
+  <img src="./furniture-world/assets/screenshots/checkout-screen.jpg" width="200" />
+  <img src="./furniture-world/assets/screenshots/create-screen.jpg" width="200" />
+  <img src="./furniture-world/assets/screenshots/home-drawer-screen.jpg" width="200" />
+  <img src="./furniture-world/assets/screenshots/profile-screen.jpg" width="200" />
+  <img src="./furniture-world/assets/screenshots/orders-screen.jpg" width="200" />
+  <img src="./furniture-world/assets/screenshots/orders-details-screen.jpg" width="200" />
+  <img src="./furniture-world/assets/screenshots/info-screen.jpg" width="200" />
 </p>
 
 
